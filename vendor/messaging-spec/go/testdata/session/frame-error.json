@@ -1,0 +1,11 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 2,
+  "type": "error",
+  "request_id": "attach-1",
+  "payload": {
+    "code": "workspace_unavailable",
+    "message": "workspace is not visible",
+    "retryable": false
+  }
+}

@@ -1,0 +1,509 @@
+/* App.css */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@plugin "@tailwindcss/typography";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+
+/* ========== Theme Custom Properties ========== */
+/* These tokens are applied programmatically by ThemeProvider.
+   Defaults here ensure styles work even before JS hydrates. */
+:root {
+    --theme-page-bg: #f9fafb;
+    --theme-page-text: #111827;
+    --theme-page-text-secondary: #6b7280;
+    --theme-page-text-muted: #9ca3af;
+    --theme-header-bg: #ffffff;
+    --theme-header-text: #1f2937;
+    --theme-header-border: #d1d5db;
+    --theme-sidebar-bg: #f9fafb;
+    --theme-sidebar-text: #374151;
+    --theme-sidebar-text-muted: #9ca3af;
+    --theme-sidebar-border: #e5e7eb;
+    --theme-sidebar-hover-bg: #f3f4f6;
+    --theme-sidebar-active-bg: #dbeafe;
+    --theme-sidebar-active-text: #1e40af;
+    /* Collapsed sidebar uses a darker chrome to visually distinguish itself
+     * from the expanded light sidebar — matches the pre-theming color
+     * (Tailwind gray-800 in oklch space). */
+    --theme-sidebar-collapsed-bg: oklch(0.278 0.033 256.848);
+    --theme-sidebar-collapsed-text: #ffffff;
+    --theme-accent: #2563eb;
+    --theme-accent-hover: #1d4ed8;
+    --theme-accent-foreground: #ffffff;
+    --theme-accent-light: #dbeafe;
+    --theme-accent-muted: #93c5fd;
+    --theme-card-bg: #ffffff;
+    --theme-card-border: #e5e7eb;
+    --theme-input-bg: #ffffff;
+    --theme-input-border: #d1d5db;
+    --theme-input-focus-ring: #3b82f6;
+    --theme-input-text: #111827;
+    --theme-input-placeholder: #9ca3af;
+    --theme-border: #e5e7eb;
+    --theme-border-muted: #f3f4f6;
+    --theme-success: #059669;
+    --theme-success-bg: #d1fae5;
+    --theme-warning: #d97706;
+    --theme-warning-bg: #fef3c7;
+    --theme-error: #dc2626;
+    --theme-error-bg: #fee2e2;
+    --theme-info: #2563eb;
+    --theme-info-bg: #dbeafe;
+    --theme-chat-bg: #ffffff;
+    --theme-chat-user-bg: #eff6ff;
+    --theme-chat-ai-bg: #f9fafb;
+    --theme-chat-input-bg: #e5e7eb;
+    --theme-focus-ring: #3b82f6;
+    --theme-overlay-bg: rgba(0,0,0,0.5);
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* Breakpoints + state variants (cartesian product).
+   NOTE: This can grow fast; trim if bundle gets big. */
+@source inline("{,sm:,md:,lg:,xl:,2xl:}{,hover:,focus:,active:,disabled:,focus-visible:,group-hover:,focus-within:}{,dark:}");
+
+/* ========== Layout & Grid ========== */
+@source inline("{,sm:,md:,lg:,xl:,2xl:}grid");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}flex {,sm:,md:,lg:,xl:,2xl:}flex-col");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}items-{start,center,end} {,sm:,md:,lg:,xl:,2xl:}justify-{start,center,between,end}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}grid-cols-{1..12}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}col-span-{1..12}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}col-start-{1..12}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}col-end-{1..13}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}gap-{0,0.5,1,1.5,2,2.5,3,3.5,4,5,6,8,10,12,16,20,24}");
+@source inline("space-y-{1,1.5,2,2.5,3,3.5,4,5,6,8,10,12}");
+@source inline("last:border-0");
+@source inline("selection:bg-blue-100");
+@source inline("sticky top-0 left-0");
+@source inline("inset-0");
+@source inline("flex-1");
+
+/* ========== Spacing ========== */
+@source inline("m{,x,y,t,r,b,l}-{0,px,0.5,1,1.5,2,2.5,3,3.5,4,5,6,8,10,12,16,20,24}");
+@source inline("p{,x,y,t,r,b,l}-{0,px,0.5,1,1.5,2,2.5,3,3.5,4,5,6,8,10,12,16,20,24}");
+@source inline("mb-{0,2,4,6,8}");
+
+/* ========== Sizing ========== */
+@source inline("w-{0,px,0.5,1,1.5,2,2.5,3,4,5,6,8,10,12,16,20,24,28,32,36,40,48,56,64,72,80,96,full,screen,fit,min,max}");
+@source inline("h-{0,px,0.5,1,1.5,2,2.5,3,4,5,6,8,10,12,16,20,24,28,32,36,40,48,56,64,72,80,96,full,screen,fit,min,max}");
+@source inline("max-w-{sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
+@source inline("min-h-{0,full,screen}");
+/* Arbitrary / fractional sizes used by Document Matrix */
+@source inline("max-w-[1800px] w-[250px] min-w-[250px] min-w-[300px] max-w-[180px] max-w-[250px] min-h-[40px] w-[600px] h-[500px] w-80 text-[10px] scale-[0.99] w-1/3 w-px");
+
+/* ========== Typography ========== */
+@source inline("font-{sans,normal,medium,semibold,bold}");
+@source inline("text-{xs,sm,base,lg,xl,2xl,3xl,4xl,5xl}");
+@source inline("tracking-tight truncate");
+@source inline("tracking-wider");
+@source inline("prose prose-{sm,lg} prose-invert"); /* typography plugin classes */
+@source inline("text-left whitespace-nowrap underline hover:underline decoration-dashed decoration-slate-300 underline-offset-4");
+
+/* ========== Colors (tune palettes/range to your needs) ========== */
+@source inline("{,sm:,md:,lg:,xl:,2xl:}{,hover:,focus:,active:,disabled:}{,dark:}bg-{slate,gray,zinc,neutral,stone,blue,indigo,emerald,green,red,rose,yellow}-{50,100,200,300,400,500,600,700,800,900}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}{,hover:,focus:,active:,disabled:}{,dark:}text-{slate,gray,zinc,neutral,stone,blue,indigo,emerald,green,red,rose,yellow}-{50,100,200,300,400,500,600,700,800,900}");
+@source inline("{,sm:,md:,lg:,xl:,2xl:}{,hover:,focus:,active:,disabled:}{,dark:}border-{slate,gray,zinc,neutral,stone,blue,indigo,emerald,green,red,rose,yellow}-{50,100,200,300,400,500,600,700,800,900}");
+/* With opacity suffixes (examples) */
+@source inline("bg-{slate,gray,blue}-{50,100,200}/{10,20,30,40,50,60,70,75,80,90}");
+@source inline("border-{slate}-{50,200}/{60,75,80}");
+@source inline("text-white text-emerald-600 text-indigo-700 text-blue-800 text-blue-400 text-red-800 text-red-500 text-slate-700 text-slate-800 text-slate-900");
+@source inline("bg-transparent hover:bg-white");
+@source inline("group-hover:text-indigo-700");
+
+/* ========== Borders / Radius ========== */
+@source inline("border border-transparent border-b border-b-{0,2} border-{0,2,4,8} border-r border-t border-l border-dashed");
+@source inline("rounded-{none,sm,md,lg,xl,2xl,3xl,full} rounded-t-md");
+
+/* ========== Shadows ========== */
+@source inline("{,hover:}shadow-{,sm,md,lg,xl,2xl}");
+@source inline("shadow-none shadow-indigo-200 hover:shadow-indigo-200 shadow-lg shadow-indigo-200");
+
+/* ========== Transitions / Durations ========== */
+@source inline("transition-{none,all,colors} duration-{75,100,150,200,300,500,700}");
+@source inline("transition-opacity transition-all transition-colors");
+@source inline("hover:scale-105 active:scale-95 -translate-y-0.5 active:translate-y-0");
+
+/* ========== Additional Classes for Selected Animation+ Items ========== */
+@source inline("h-px");
+@source inline("bg-gradient-to-r from-transparent via-slate-{200} to-transparent");
+@source inline("animate-pulse animate-spin");
+@source inline("text-center");
+@source inline("inline-flex");
+@source inline("font-mono");
+@source inline("gap-{1.5,3}");
+@source inline("rounded-full");
+@source inline("overflow-hidden overflow-x-auto overflow-y-auto");
+@source inline("cursor-pointer cursor-default cursor-text cursor-not-allowed cursor-grab active:cursor-grabbing");
+@source inline("select-none grayscale");
+@source inline("resize-none");
+@source inline("table-fixed border-collapse");
+@source inline("truncate line-clamp-1 line-clamp-4");
+@source inline("animate-ping");
+@source inline("align-top shrink-0");
+@source inline("bg-black/50");
+@source inline("max-w-full w-[500px] max-h-[300px]");
+@source inline("animate-[progress_1s_ease-in-out_infinite] origin-left");
+/* Shared TODO checklist panel (TodoPanel.tsx) */
+@source inline("animate-todo-pulse translate-y-0 translate-y-full max-h-0 max-h-72 line-through");
+@source inline("rounded-t-lg rounded-t-xl shadow-[0_-2px_12px_rgba(0,0,0,0.06)] z-20 z-30");
+/* Tool-approval permission card (ApprovalCard.tsx) — amber accent isn't in the
+   palette whitelist above, so pin the exact classes used. */
+@source inline("{,hover:}border-amber-{300,400,500} {,hover:}bg-amber-{50,500,600} text-amber-{500,700}");
+@source inline("text-emerald-600 text-red-600 max-h-48 whitespace-pre-wrap flex-wrap tabular-nums");
+
+/* ========== Theme Token Utility Classes ========== */
+@source inline("bg-theme-{page-bg,header-bg,sidebar-bg,sidebar-hover-bg,sidebar-active-bg,sidebar-collapsed-bg,accent,accent-hover,accent-light,card-bg,input-bg,success-bg,warning-bg,error-bg,info-bg,chat-bg,chat-user-bg,chat-ai-bg,chat-input-bg}");
+@source inline("text-theme-{page-text,page-text-secondary,page-text-muted,header-text,sidebar-text,sidebar-text-muted,sidebar-active-text,sidebar-collapsed-text,accent,accent-foreground,accent-muted,input-text,input-placeholder,success,warning,error,info}");
+/* Note: theme-sidebar-collapsed-{bg,text} are mapped in tailwind.config.js
+ * under colors.theme — that's the actual binding for bg-theme-* utilities.
+ * The @source inline above is a Tailwind v4 source hint kept for parity. */
+@source inline("border-theme-{header-border,sidebar-border,card-border,input-border,border,border-muted}");
+@source inline("ring-theme-{input-focus-ring,focus-ring,accent}");
+@source inline("{,hover:}bg-theme-{accent,accent-hover,sidebar-hover-bg,sidebar-active-bg}");
+@source inline("{,hover:}text-theme-{accent,sidebar-active-text,page-text}");
+
+/* =========== Additional Classes for Document Matrix and/or other Dynamic JSX Applications ========= */
+@source inline("relative pointer-events-none z-{0,1,2,3,4,5,6,7,8,9,10,20,40,50,60,70,80,90,100} opacity-{0,5,10,20,30,40,50,60,70,80,90,100}");
+@source inline("absolute top-0 -top-1 right-0 left-1/2 -translate-x-1/2");
+@source inline("justify-between items-center items-start");
+@source inline("bg-white bg-slate-50/30");
+@source inline("group-hover:bg-slate-50/50");
+@source inline("bg-indigo-50/30 hover:bg-indigo-50/40");
+@source inline("px-2 px-3 px-4 py-0.5 py-1 py-1.5 py-2 py-2.5 p-0 p-1 p-2 p-3 p-4 p-6 p-8");
+@source inline("h-2 h-3 h-8 h-16 h-24 w-2 w-3 w-8 w-10 w-16 w-80 min-w-[100px]");
+@source inline("gap-1 gap-2 gap-3 gap-4");
+@source inline("rounded rounded-md rounded-lg rounded-xl rounded-2xl");
+@source inline("mx-1 mx-auto mr-1 mr-2 ml-2 mb-1 mb-4 mb-6");
+@source inline("font-normal font-medium font-semibold font-bold uppercase italic");
+@source inline("leading-relaxed");
+@source inline("group group/cell group-hover:opacity-100 group-hover/cell:opacity-100");
+@source inline("disabled:opacity-30 disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-slate-400 disabled:hover:border-slate-300 disabled:cursor-not-allowed");
+@source inline("focus:ring-0 focus:ring-2 ring-0 ring-1 ring-2 ring-blue-500 focus:ring-blue-500 outline-none");
+@source inline("border-l-2");
+@source inline("min-h-[60px]");
+@source inline("backdrop-blur-sm");
+
+/* Optional: Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Light grey track */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1; /* Medium grey thumb */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1; /* Darker grey thumb on hover */
+}
+
+/* Custom Animations (if not defined in tailwind.config.js) */
+@layer utilities {
+    /* Support for tailwindcss-animate like utilities used in the app */
+    @keyframes inFade {
+        from {
+            opacity: 0
+        }
+        to {
+            opacity: 1
+        }
+    }
+    @keyframes slideFromTop2 {
+        from {
+            transform: translateY(-0.5rem);
+            opacity: 0
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1
+        }
+    }
+    @keyframes slideFromBottom1 {
+        from {
+            transform: translateY(0.25rem);
+            opacity: 0
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1
+        }
+    }
+    @keyframes zoomIn95 {
+        from {
+            transform: scale(0.95);
+            opacity: 0
+        }
+        to {
+            transform: scale(1);
+            opacity: 1
+        }
+    }
+    @keyframes progress {
+        from {
+            transform: scaleX(0);
+        }
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    .animate-in {
+        animation-name: inFade;
+        animation-duration: 150ms;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in {
+        animation-name: inFade;
+    }
+
+    .slide-in-from-top-2 {
+        animation-name: slideFromTop2;
+    }
+
+    .slide-in-from-bottom-1 {
+        animation-name: slideFromBottom1;
+    }
+
+    .zoom-in-95 {
+        animation-name: zoomIn95;
+    }
+
+    /* line-clamp utilities (inline equivalent of @tailwindcss/line-clamp) */
+    .line-clamp-1 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+    }
+
+    .line-clamp-4 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    /* Gentle "in progress" pulse for the shared TODO checklist — a slow,
+       low-amplitude opacity breathe so an active task reads as live without
+       the harsh strobe of Tailwind's default animate-pulse. */
+    @keyframes todoPulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.6;
+        }
+    }
+    .animate-todo-pulse {
+        animation: todoPulse 1.8s ease-in-out infinite;
+    }
+}
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: 'Geist Variable', sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ========== Dark Mode Theme Token Overrides ========== */
+/* These override the :root --theme-* defaults when .dark class is active. */
+.dark {
+    --theme-page-bg: #0a0a0a;
+    --theme-page-text: #fafafa;
+    --theme-page-text-secondary: #a1a1aa;
+    --theme-page-text-muted: #71717a;
+    --theme-header-bg: #18181b;
+    --theme-header-text: #fafafa;
+    --theme-header-border: #27272a;
+    --theme-sidebar-bg: #0a0a0a;
+    --theme-sidebar-text: #d4d4d8;
+    --theme-sidebar-text-muted: #71717a;
+    --theme-sidebar-border: #27272a;
+    --theme-sidebar-hover-bg: #1f1f23;
+    --theme-sidebar-active-bg: #1e3a5f;
+    --theme-sidebar-active-text: #93c5fd;
+    /* Match the light-theme collapsed bg so the collapsed sidebar reads
+     * the same in both themes (it's already a dark chrome surface). */
+    --theme-sidebar-collapsed-bg: oklch(0.278 0.033 256.848);
+    --theme-sidebar-collapsed-text: #ffffff;
+    --theme-accent: #3b82f6;
+    --theme-accent-hover: #60a5fa;
+    --theme-accent-foreground: #ffffff;
+    --theme-accent-light: #1e3a5f;
+    --theme-accent-muted: #93c5fd;
+    --theme-card-bg: #18181b;
+    --theme-card-border: #27272a;
+    --theme-input-bg: #27272a;
+    --theme-input-border: #3f3f46;
+    --theme-input-focus-ring: #3b82f6;
+    --theme-input-text: #fafafa;
+    --theme-input-placeholder: #71717a;
+    --theme-border: #27272a;
+    --theme-border-muted: #1f1f23;
+    --theme-success: #34d399;
+    --theme-success-bg: #064e3b;
+    --theme-warning: #fbbf24;
+    --theme-warning-bg: #451a03;
+    --theme-error: #f87171;
+    --theme-error-bg: #450a0a;
+    --theme-info: #60a5fa;
+    --theme-info-bg: #1e3a5f;
+    --theme-chat-bg: #18181b;
+    --theme-chat-user-bg: #1e3a5f;
+    --theme-chat-ai-bg: #0a0a0a;
+    --theme-chat-input-bg: #27272a;
+    --theme-focus-ring: #3b82f6;
+    --theme-overlay-bg: rgba(0,0,0,0.7);
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+
+/* Markdown (Streamdown/Shiki) fenced code blocks.
+   Shiki paints token colors per light/dark theme, but the code container's
+   background did NOT follow light mode — so light-theme (dark) tokens landed on
+   a dark background, rendering as unreadable black-on-black. Pin a light muted
+   surface in light mode so the dark tokens contrast. Dark mode already renders
+   light tokens on Shiki's dark background, so it's left untouched. */
+html:not(.dark) .prose pre {
+    background-color: var(--muted) !important;
+}

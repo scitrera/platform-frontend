@@ -1,0 +1,74 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 1,
+  "workspace_id": "project-a",
+  "session_id": "session-1",
+  "capabilities": [
+    "session.replay.v1",
+    "session.snapshot.v1"
+  ],
+  "snapshot": {
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "cursor": {
+      "generation": "worker-a",
+      "sequence": 4
+    },
+    "messages": [],
+    "state": {}
+  },
+  "replay": {
+    "status": "partial",
+    "events": [
+      {
+        "protocol_version": 1,
+        "schema_revision": 1,
+        "workspace_id": "project-a",
+        "session_id": "session-1",
+        "cursor": {
+          "generation": "worker-a",
+          "sequence": 3
+        },
+        "kind": "chat_stream",
+        "payload": {
+          "event": "token_delta",
+          "message_id": "message-1",
+          "index": 0,
+          "text": "lo"
+        }
+      },
+      {
+        "protocol_version": 1,
+        "schema_revision": 1,
+        "workspace_id": "project-a",
+        "session_id": "session-1",
+        "cursor": {
+          "generation": "worker-a",
+          "sequence": 4
+        },
+        "kind": "chat_stream",
+        "payload": {
+          "event": "message_finalized",
+          "message_id": "message-1",
+          "message": {
+            "schema_version": "1.0",
+            "id": "message-1",
+            "role": "assistant",
+            "content": [
+              {"type": "text", "text": "hello"}
+            ],
+            "addr": {
+              "workspace_id": "project-a",
+              "thread_id": "session-1"
+            },
+            "meta": {}
+          }
+        }
+      }
+    ],
+    "through": {
+      "generation": "worker-a",
+      "sequence": 4
+    }
+  }
+}

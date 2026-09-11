@@ -1,0 +1,14 @@
+Scitrera Platform Frontend
+Copyright Scitrera contributors.
+
+First-party web and Office application source and root documentation/scripts:
+AGPL-3.0-only (LICENSE). Existing permissive components retain their licenses:
+- local-agent/: MIT, preserving the original Cargo workspace declaration.
+- vendor/messaging-spec/: Apache-2.0, pinned upstream source; see provenance.json.
+- web/src/components/Widgets/BlinkingCursor.jsx: adapted from Chainlit,
+  Copyright 2023- The Chainlit team; Apache-2.0. Adapted to JSX and local utilities.
+- web/src/components/ui/: shadcn/ui-derived primitives, MIT, Copyright (c) 2023 shadcn.
+  Local integration and visual modifications retain this permissive scope.
+
+Dependency licenses and notices are independent; see THIRD_PARTY_NOTICES.md and
+LICENSES. Scitrera names/logos identify the project; no trademark license is granted.

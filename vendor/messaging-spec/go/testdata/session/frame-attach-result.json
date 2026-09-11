@@ -1,0 +1,20 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 2,
+  "type": "attach_result",
+  "request_id": "attach-1",
+  "payload": {
+    "protocol_version": 1,
+    "schema_revision": 2,
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "capabilities": ["session.replay.v1", "session.snapshot.v1"],
+    "snapshot": {
+      "workspace_id": "project-a",
+      "session_id": "session-1",
+      "cursor": {"generation": "worker-a", "sequence": 0},
+      "messages": [],
+      "state": {}
+    }
+  }
+}

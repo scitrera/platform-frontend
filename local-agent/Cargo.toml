@@ -1,0 +1,27 @@
+[workspace]
+members = [
+    "crates/scitrera-agent",
+    "crates/scitrera-mcp-host",
+    "crates/scitrera-mcp-filesystem",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Scitrera"]
+
+[workspace.dependencies]
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+thiserror = "2"
+toml = "0.8"
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Internal crates
+scitrera-mcp-host = { path = "crates/scitrera-mcp-host" }

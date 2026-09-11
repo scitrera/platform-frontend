@@ -1,0 +1,201 @@
+{
+  "repository": "https://github.com/scitrera/ecosystem-messaging-spec",
+  "revision": "496e3ceb2826374a016e4e0e0a71f0a1ccb10155",
+  "tag": "v1.3.0",
+  "archive_url": "https://codeload.github.com/scitrera/ecosystem-messaging-spec/tar.gz/496e3ceb2826374a016e4e0e0a71f0a1ccb10155",
+  "archive_sha256": "2ad0166c7873b3b41f10c82f8a8e747e925d2ea74d4e3f67f5409ffa2c10d791",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "541bf94be9bcd60f21ea7bd4b1fb4af0e85e875ae9c0978d21bd9b1350b5f3ed"
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "6cdfaaa0974673886c27cc4ae0b5c8827224e6f476d8ec6341e6fbd291f4a976"
+    },
+    {
+      "path": "typescript/README.md",
+      "sha256": "d370cd02a1db8ee2e48ed754b7f478eaa029bc8333387602f03660ea2ab3d135"
+    },
+    {
+      "path": "typescript/package-lock.json",
+      "sha256": "3dd92a7fe2456f0a68c91d27e8dd2602783930b473bfb833ba726b88269b6622"
+    },
+    {
+      "path": "typescript/package.json",
+      "sha256": "9d7770a89bc28d0d7791be925f44daf44845948bb9a0c097530789d53b995a2b"
+    },
+    {
+      "path": "typescript/src/applyEvent.ts",
+      "sha256": "86e7fe011172930aa29c8127443bfafbaa753d37b3ae6c4dc0366e5d79587d7e"
+    },
+    {
+      "path": "typescript/src/catalog.ts",
+      "sha256": "6ed6ccfd9a554523c96a475cffcfd8ee848ecc236782f7e0077513673e43dd93"
+    },
+    {
+      "path": "typescript/src/events.ts",
+      "sha256": "67a966001778a62ee3f5a3b63c5a081de799ef2e01278fb35f972278d21696e6"
+    },
+    {
+      "path": "typescript/src/globals.d.ts",
+      "sha256": "69b3d767ed42eefcb715284912067a6b01932db67418c738f1121dfd91c287b8"
+    },
+    {
+      "path": "typescript/src/index.ts",
+      "sha256": "aa44b183226e7648a55f1863213036aebead3fbb4d26b9bf9253cd571cbb2530"
+    },
+    {
+      "path": "typescript/src/memorylayer.ts",
+      "sha256": "bb7fb48e93afa6a56db92c50f4fe1336a51728cad13ae1fbaa2a9b2a835f55b7"
+    },
+    {
+      "path": "typescript/src/schema.ts",
+      "sha256": "5814f7a712f18c854a301a397357d83953a3b740a0d64bf103ad473340e011af"
+    },
+    {
+      "path": "typescript/src/session.ts",
+      "sha256": "25b79a19905d079221f190640a10461f06ce77e222616151011e3f7802bf4c2d"
+    },
+    {
+      "path": "typescript/src/tools.ts",
+      "sha256": "c40d6a6f4306eda3888884c8da8d28057994fe1856016b2f3b0577ff30a72c2c"
+    },
+    {
+      "path": "typescript/src/workspaceExecution.ts",
+      "sha256": "bdcfc978b6492b326ed074c9a748f7b5fd4b87432fabef513e8e5bc9d8ec7a69"
+    },
+    {
+      "path": "typescript/test/applyEvent.test.ts",
+      "sha256": "11a6699604bb9c014217cac5182811dd2111b22a6b2d6cc3d261a71742ba4d07"
+    },
+    {
+      "path": "typescript/test/approval.test.ts",
+      "sha256": "72e6660e3139298ea2c6c5ab89b76fd63841c2b23e6088bc6b2a5e003e7bc6fe"
+    },
+    {
+      "path": "typescript/test/catalog.test.ts",
+      "sha256": "325c74cd32959c06966c952c1cbefd8b73deb9499d62d739c80cd29aa2fb3525"
+    },
+    {
+      "path": "typescript/test/control.test.ts",
+      "sha256": "c7de5570e131cd1a55455db1eccd5788e0109a9197f237483dea331c3bdc93a5"
+    },
+    {
+      "path": "typescript/test/feedback.test.ts",
+      "sha256": "3723d8d1e72606d96e5c89bbcbf637d5e06870402a438d11f3ad4b15f213bafa"
+    },
+    {
+      "path": "typescript/test/memorylayer.test.ts",
+      "sha256": "ade89a88d7e74ac9aabe862ca5a345edf1915a87298fd530d195b764c14f7dc9"
+    },
+    {
+      "path": "typescript/test/progress.test.ts",
+      "sha256": "02b1c6b10ad2f7c19ae17538c7b4ccce74a60a6a991648c09966467e0f1e68e7"
+    },
+    {
+      "path": "typescript/test/session.test.ts",
+      "sha256": "304015d329e19e837e929a38a7b462557fc0bc72e1933ff77eaf1bbcc73cc9a3"
+    },
+    {
+      "path": "typescript/test/subagent.test.ts",
+      "sha256": "618785321d64ceddcfd264667678f74e031de605793a6c94087f2d8556889cc9"
+    },
+    {
+      "path": "typescript/test/todo.test.ts",
+      "sha256": "c6b2a78c6e06b40ad3d0fcff824fc6af289ae46deb35e38e1ebb6c429aa768fe"
+    },
+    {
+      "path": "typescript/test/tools.test.ts",
+      "sha256": "45304b9fe8aa1f143477ed01ec7d7e3ef013fc231dabe9535f9f65b1c344a621"
+    },
+    {
+      "path": "typescript/test/workspaceExecution.test.ts",
+      "sha256": "3559d7d4c5c6587d64f5d0a9caa72714f56ccbfa15f86edd63981751ea2c7a10"
+    },
+    {
+      "path": "typescript/tsconfig.build.json",
+      "sha256": "826de85431a275e7f711be546b4322f31f62ec9d0a4058092d9c9cdbe9a8cb62"
+    },
+    {
+      "path": "typescript/tsconfig.json",
+      "sha256": "ffcaac2234c92c87935b1cbf9cc37f74ba539945469b918e09285efca89d7f14"
+    },
+    {
+      "path": "go/testdata/session/attach-request-default-workspace.json",
+      "sha256": "4f51e5cf0a10edc11d329d05e896ae832f4ada73ed3c20e5f044945bf8a566f5"
+    },
+    {
+      "path": "go/testdata/session/attach-request-state.json",
+      "sha256": "951f8b119405aa1fe95eaa7442a78c301bb281f4921d3cce7d61f0ab5c0904f0"
+    },
+    {
+      "path": "go/testdata/session/attach-request.json",
+      "sha256": "8aadf4dd3eac16057936901d1ac25c4d44a41daea957bf3b0d2726e98a98f013"
+    },
+    {
+      "path": "go/testdata/session/attach-result-complete.json",
+      "sha256": "5b39f361bcb06077a444902b94457e27349fc44232b73f9d19bcfef65ca0d761"
+    },
+    {
+      "path": "go/testdata/session/attach-result-partial.json",
+      "sha256": "431fb427d8afae19a87353fd62102ed5e5a59e3b381ebc3fc095678601b8782b"
+    },
+    {
+      "path": "go/testdata/session/attach-result-state.json",
+      "sha256": "3a8298518e6eb8c52dcdb0e0c3cf02bdcf911804bdc988f7e6feb507ecd54b95"
+    },
+    {
+      "path": "go/testdata/session/attach-result-unavailable.json",
+      "sha256": "44aec7561099e3b047bfec0f528c0e9d8927e4ec94fca8a121be553b9d46a01e"
+    },
+    {
+      "path": "go/testdata/session/frame-attach-request.json",
+      "sha256": "1a04d982015655ed4ff4384a4b7eeadca2d73ce710bfd6d8fc03f7b7b63501a7"
+    },
+    {
+      "path": "go/testdata/session/frame-attach-result.json",
+      "sha256": "3da17097e3cccd8a8275a3edf6b6c4ae0774189d9b4848c13bb5bb7a99dcca65"
+    },
+    {
+      "path": "go/testdata/session/frame-error.json",
+      "sha256": "5d098c160dfcadcc0ce8d6eaadf93266db0b63f989dfd7a51d6663427fab8ed9"
+    },
+    {
+      "path": "go/testdata/session/frame-event.json",
+      "sha256": "5fc1a731f9c85cba45bc192178f272d50cca6e80609c3253c447dca5b716ecef"
+    },
+    {
+      "path": "go/testdata/tool_catalog/invoke.json",
+      "sha256": "48ec2d1ce5d0e64993208b396a8ec0e733eb954d178f18521bf13a8ac5b8cdd6"
+    },
+    {
+      "path": "go/testdata/tool_catalog/page.json",
+      "sha256": "087fab5a4fa3c9130c92606cdbd18f0d52a85ab8fe1cec264b5d8c7b9c0d7dc4"
+    },
+    {
+      "path": "go/testdata/tool_catalog/publication.json",
+      "sha256": "a194d363c4561e8049555bfae1af1c0aded4491ee299a9684fcd944cfe040f24"
+    },
+    {
+      "path": "go/testdata/tool_catalog/query.json",
+      "sha256": "71f7419d10f10cf3297909a0142b836e591e64d879abb1e9b8c8eb7f0ec1898d"
+    },
+    {
+      "path": "go/testdata/workspace_execution/execution-binding.json",
+      "sha256": "7d815831df79cd027b96561219f1143d03eae50c0ecc3f502ecd7983efd6dab9"
+    },
+    {
+      "path": "go/testdata/workspace_execution/tool-host-registration.json",
+      "sha256": "4ec9c74d8a2b9bc2631a6d8502e002a0432da9c54036f86dc158a787aa35c9bf"
+    }
+  ],
+  "patches": {
+    "typescript/package-lock.json": {
+      "upstream_sha256": "3dd92a7fe2456f0a68c91d27e8dd2602783930b473bfb833ba726b88269b6622",
+      "sha256": "1b06b7f5a6cb38d6cd0c1905ad75fa890b488e2259917ef81ad20b51dda1a875",
+      "reason": "Development dependency security updates within existing package.json ranges; runtime TypeScript and protocol fixtures unchanged."
+    }
+  }
+}

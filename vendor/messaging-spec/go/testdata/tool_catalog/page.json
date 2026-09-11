@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "snapshot_id": "snapshot-42",
+  "catalog_revision": "revision-99",
+  "entries": [
+    {
+      "ref": {
+        "provider_id": "workspace-host",
+        "registration_id": "host-tui-1:ws-project:view-worktree-a",
+        "generation": "generation-2026-08-11-1",
+        "name": "read_file",
+        "revision": "sha256:read-file-v1"
+      },
+      "descriptor": {
+        "name": "read_file",
+        "description": "Read a file beneath the registered workspace root",
+        "kind": "frontend",
+        "awaits_result": true
+      },
+      "effect": "read",
+      "provenance": {"source": "sahara-tui", "host": "local"}
+    },
+    {
+      "ref": {
+        "provider_id": "workspace-host",
+        "registration_id": "host-tui-1:ws-project:view-worktree-a",
+        "generation": "generation-2026-08-11-1",
+        "name": "shell",
+        "revision": "sha256:shell-v1"
+      },
+      "descriptor": {
+        "name": "shell",
+        "description": "Run a command beneath the registered workspace root",
+        "kind": "frontend",
+        "awaits_result": true
+      },
+      "effect": "execute",
+      "provenance": {"source": "sahara-tui", "host": "local"}
+    }
+  ],
+  "next_cursor": "opaque-page-2",
+  "future": true
+}

@@ -1,0 +1,54 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 3,
+  "workspace_id": "project-a",
+  "session_id": "session-1",
+  "capabilities": [
+    "session.snapshot.v1",
+    "session.state.goals.v1",
+    "session.state.subagents.v1"
+  ],
+  "snapshot": {
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "cursor": {"generation": "worker-a", "sequence": 42},
+    "messages": [],
+    "state": {
+      "session.state.goals.v1": {
+        "schema_revision": 1,
+        "records": [
+          {
+            "id": "goal-1",
+            "objective": "Verify restart recovery",
+            "status": "active",
+            "created_at": "2026-08-08T20:00:00Z",
+            "updated_at": "2026-08-08T20:01:00Z",
+            "token_budget": 1000,
+            "token_usage": 125,
+            "evidence": ["message:assistant-1"]
+          }
+        ]
+      },
+      "session.state.subagents.v1": {
+        "schema_revision": 1,
+        "records": [
+          {
+            "id": "child-1",
+            "parent_session_id": "session-1",
+            "child_session_id": "session-1::sub::1",
+            "task_id": "task-1",
+            "name": "reviewer",
+            "kind": "review",
+            "model": "local-model",
+            "depth": 1,
+            "status": "running",
+            "created_at": "2026-08-08T20:00:00Z",
+            "updated_at": "2026-08-08T20:01:00Z",
+            "parent_usage": {"total_tokens": 25},
+            "child_usage": {"total_tokens": 100}
+          }
+        ]
+      }
+    }
+  }
+}

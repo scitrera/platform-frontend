@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+
+  <!-- Unique ID for this manifest. Do not reuse across hosts. -->
+  <Id>c3d4e5f6-a7b8-9012-cdef-012345678902</Id>
+  <Version>0.1.0</Version>
+  <ProviderName>Scitrera</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+
+  <DisplayName DefaultValue="Scitrera AI Assistant for PowerPoint"/>
+  <Description DefaultValue="Chat with a Scitrera AI agent that can read and edit your presentation."/>
+
+  <IconUrl DefaultValue="{{ADDIN_HOST}}/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="{{ADDIN_HOST}}/assets/icon-64.png"/>
+  <SupportUrl DefaultValue="{{ADDIN_HOST}}/support.html"/>
+
+  <AppDomains>
+    <AppDomain>{{ADDIN_HOST}}</AppDomain>
+    <AppDomain>https://login.microsoftonline.com</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Presentation"/>
+  </Hosts>
+
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="PowerPointApi" MinVersion="1.5"/>
+    </Sets>
+  </Requirements>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="{{ADDIN_HOST}}/index.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Presentation">
+        <AllFormFactors>
+          <FunctionFile resid="Commands.Url"/>
+        </AllFormFactors>
+        <DesktopFormFactor>
+          <FunctionFile resid="Commands.Url"/>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="ScitreraGroup">
+                <Label resid="GroupLabel"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                <Control xsi:type="Button" id="OpenSidebarButton">
+                  <Label resid="OpenSidebarLabel"/>
+                  <Supertip>
+                    <Title resid="OpenSidebarLabel"/>
+                    <Description resid="OpenSidebarDesc"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ScitreraAISidebar</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="{{ADDIN_HOST}}/assets/icon-32.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="{{ADDIN_HOST}}/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="{{ADDIN_HOST}}/assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="{{ADDIN_HOST}}/src/commands/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="{{ADDIN_HOST}}/index.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GroupLabel" DefaultValue="Scitrera AI"/>
+        <bt:String id="OpenSidebarLabel" DefaultValue="Open Sidebar"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="OpenSidebarDesc" DefaultValue="Open the Scitrera AI chat sidebar to interact with your presentation using AI."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+
+</OfficeApp>

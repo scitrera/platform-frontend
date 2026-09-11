@@ -1,0 +1,27 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 1,
+  "workspace_id": "default",
+  "session_id": "session-1",
+  "capabilities": [
+    "session.replay.v1",
+    "session.snapshot.v1"
+  ],
+  "snapshot": {
+    "workspace_id": "default",
+    "session_id": "session-1",
+    "cursor": {
+      "generation": "worker-b",
+      "sequence": 0
+    },
+    "messages": [],
+    "state": {}
+  },
+  "replay": {
+    "status": "unavailable",
+    "through": {
+      "generation": "worker-b",
+      "sequence": 0
+    }
+  }
+}

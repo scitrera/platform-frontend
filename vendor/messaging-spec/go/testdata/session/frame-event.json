@@ -1,0 +1,14 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 2,
+  "type": "event",
+  "payload": {
+    "protocol_version": 1,
+    "schema_revision": 2,
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "cursor": {"generation": "worker-a", "sequence": 1},
+    "kind": "chat_stream",
+    "payload": {"event": "token_delta", "message_id": "m1", "index": 0, "text": "hi"}
+  }
+}

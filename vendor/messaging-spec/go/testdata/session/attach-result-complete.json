@@ -1,0 +1,46 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 1,
+  "workspace_id": "project-a",
+  "session_id": "session-1",
+  "capabilities": [
+    "session.replay.v1",
+    "session.snapshot.v1"
+  ],
+  "snapshot": {
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "cursor": {
+      "generation": "worker-a",
+      "sequence": 2
+    },
+    "messages": [],
+    "state": {}
+  },
+  "replay": {
+    "status": "complete",
+    "events": [
+      {
+        "protocol_version": 1,
+        "schema_revision": 1,
+        "workspace_id": "project-a",
+        "session_id": "session-1",
+        "cursor": {
+          "generation": "worker-a",
+          "sequence": 2
+        },
+        "kind": "chat_stream",
+        "payload": {
+          "event": "token_delta",
+          "message_id": "message-1",
+          "index": 0,
+          "text": "hi"
+        }
+      }
+    ],
+    "through": {
+      "generation": "worker-a",
+      "sequence": 2
+    }
+  }
+}

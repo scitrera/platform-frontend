@@ -1,0 +1,44 @@
+{
+  "status": "local-source-candidate",
+  "toolchains": {
+    "node": "24.13.0",
+    "rust": "1.92.0",
+    "python": "3.11+"
+  },
+  "components": {
+    "web": {
+      "version": "0.0.6",
+      "status": "primary-completed-application",
+      "license": "AGPL-3.0-only",
+      "tag_prefix": "web/v"
+    },
+    "office-addin": {
+      "version": "0.1.0",
+      "status": "experimental-incomplete",
+      "license": "AGPL-3.0-only",
+      "tag_prefix": "office-addin/v"
+    },
+    "local-agent": {
+      "version": "0.1.0",
+      "status": "experimental-incomplete",
+      "license": "MIT",
+      "tag_prefix": "local-agent/v"
+    }
+  },
+  "dependencies": {
+    "messaging-spec": {
+      "version": "1.3.0",
+      "revision": "496e3ceb2826374a016e4e0e0a71f0a1ccb10155",
+      "source": "https://github.com/scitrera/ecosystem-messaging-spec",
+      "mechanism": "reviewed vendored source subset; independently built"
+    },
+    "platform-backend": {
+      "version": "0.1.0 candidate",
+      "compatibility": "source contract review; full deployment acceptance pending"
+    },
+    "auth-go": {
+      "version": "0.1.1 candidate",
+      "compatibility": "external login/checkz/logout contract reviewed; integrated identity deployment pending"
+    }
+  }
+}

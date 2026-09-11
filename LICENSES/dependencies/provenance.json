@@ -1,0 +1,161 @@
+{
+  "@radix-ui/number@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_number_1.1.1.txt",
+    "npm_package": "@radix-ui/number@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-compose-refs@1.1.2": {
+    "file": "LICENSES/dependencies/_radix-ui_react-compose-refs_1.1.2.txt",
+    "npm_package": "@radix-ui/react-compose-refs@1.1.2",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-context@1.1.2": {
+    "file": "LICENSES/dependencies/_radix-ui_react-context_1.1.2.txt",
+    "npm_package": "@radix-ui/react-context@1.1.2",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-direction@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-direction_1.1.1.txt",
+    "npm_package": "@radix-ui/react-direction@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-id@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-id_1.1.1.txt",
+    "npm_package": "@radix-ui/react-id@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-callback-ref@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-callback-ref_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-callback-ref@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-escape-keydown@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-escape-keydown_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-escape-keydown@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-layout-effect@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-layout-effect_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-layout-effect@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-previous@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-previous_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-previous@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-rect@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-rect_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-rect@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/react-use-size@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_react-use-size_1.1.1.txt",
+    "npm_package": "@radix-ui/react-use-size@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "@radix-ui/rect@1.1.1": {
+    "file": "LICENSES/dependencies/_radix-ui_rect_1.1.1.txt",
+    "npm_package": "@radix-ui/rect@1.1.1",
+    "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138",
+    "source": "https://raw.githubusercontent.com/radix-ui/primitives/fcef0668a5c827e5a4baac405474d75680f9a4eb/LICENSE",
+    "upstream_revision": "fcef0668a5c827e5a4baac405474d75680f9a4eb"
+  },
+  "data-uri-to-buffer@4.0.1": {
+    "file": "LICENSES/dependencies/data-uri-to-buffer_4.0.1.txt",
+    "input_file": "README.md",
+    "input_sha256": "a7cc4332acfa1f9b6530e01aac77fefe74f2efa32579215fddaa473013f9a25c",
+    "npm_package": "data-uri-to-buffer@4.0.1",
+    "sha256": "f371518d484954487c52533db5698d3cb17ce594874f7ee16eae00ce1724fcb2",
+    "source": "npm tarball README license section"
+  },
+  "esrecurse@4.3.0": {
+    "file": "LICENSES/dependencies/esrecurse_4.3.0.txt",
+    "input_file": "README.md",
+    "input_sha256": "a7007c78c9d9da690ef6cdb0e7a3427d05832edb00abd1f5a9882700d73be4ad",
+    "npm_package": "esrecurse@4.3.0",
+    "sha256": "cb1764d4708e870cc694de13d499af2e6ee98d2751026e3a3f79de608f4f4ea0",
+    "source": "npm tarball README license section"
+  },
+  "fastdom@1.0.12": {
+    "file": "LICENSES/dependencies/fastdom_1.0.12.txt",
+    "input_file": "README.md",
+    "input_sha256": "cc5669ab6f7741bb061c8a7244addc8e3af1f84ec7d2445744b59d0169a87d11",
+    "npm_package": "fastdom@1.0.12",
+    "sha256": "df2ae14f12f31864acef768195afe4584b08a257f25925f49884619279f02f37",
+    "source": "npm tarball README license section"
+  },
+  "imurmurhash@0.1.4": {
+    "file": "LICENSES/dependencies/imurmurhash_0.1.4.txt",
+    "input_file": "README.md",
+    "input_sha256": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
+    "npm_package": "imurmurhash@0.1.4",
+    "sha256": "822172b88d349ae22aac8b459f9b2e66373048cbc53389b94f80d1693971e44a",
+    "source": "npm tarball README license section"
+  },
+  "react-force-graph-2d@1.29.1": {
+    "file": "LICENSES/dependencies/react-force-graph-2d_1.29.1.txt",
+    "npm_package": "react-force-graph-2d@1.29.1",
+    "sha256": "5b6dc9ce44c7b73620b191c567339212bd00537af46fdedaf98304c34214cc9c",
+    "source": "https://raw.githubusercontent.com/vasturiano/react-force-graph/5ee21b693d83f62da569cba6e3cdf31e028406e1/LICENSE",
+    "upstream_revision": "5ee21b693d83f62da569cba6e3cdf31e028406e1"
+  },
+  "rehype-katex@7.0.1": {
+    "file": "LICENSES/dependencies/rehype-katex_7.0.1.txt",
+    "npm_package": "rehype-katex@7.0.1",
+    "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
+    "source": "https://raw.githubusercontent.com/remarkjs/remark-math/88a9497e1ede93b958237c85edbf5651faeca7af/license",
+    "upstream_revision": "88a9497e1ede93b958237c85edbf5651faeca7af"
+  },
+  "remark-math@6.0.0": {
+    "file": "LICENSES/dependencies/remark-math_6.0.0.txt",
+    "npm_package": "remark-math@6.0.0",
+    "sha256": "cb992262f361a5359e6771c28740d33c7041e15332ae8537fae40538992591a9",
+    "source": "https://raw.githubusercontent.com/remarkjs/remark-math/d5d0660b150810a535bbb07eac6cc96a4510aa24/license",
+    "upstream_revision": "d5d0660b150810a535bbb07eac6cc96a4510aa24"
+  },
+  "saxes@6.0.0": {
+    "file": "LICENSES/dependencies/saxes_6.0.0.txt",
+    "npm_package": "saxes@6.0.0",
+    "sha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e",
+    "source": "https://raw.githubusercontent.com/lddubeau/saxes/211fa0ebec9b628affc09219199639887174bfc3/LICENSE",
+    "upstream_revision": "211fa0ebec9b628affc09219199639887174bfc3"
+  },
+  "stackback@0.0.2": {
+    "file": "LICENSES/dependencies/stackback-V8-notice.txt",
+    "input_sha256": "3c1191bd7094a36098418e7d1606e2a49e7ee25b5ddee54b0b2514ea1a43b8a7",
+    "sha256": "b154c4cabeeb587f5cc63a41d0551ae69504460762d189a72ae141558ec5d184",
+    "source": "npm package stackback@0.0.2; formatstack.js leading copyright/license notice",
+    "supplemental_only": true
+  },
+  "strictdom@1.0.1": {
+    "file": "LICENSES/dependencies/strictdom_1.0.1.txt",
+    "input_file": "README.md",
+    "input_sha256": "9280accadb9c4d0aa2de2b304da7f477eacb0823504964b71370eb7ab99c202d",
+    "npm_package": "strictdom@1.0.1",
+    "sha256": "eec385fa29ca410bf6bdbb5ddd5939af2067f474d3cd6d3fd46a4488656d8cbf",
+    "source": "npm tarball README license section"
+  }
+}

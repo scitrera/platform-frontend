@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.1",
+  "call_id": "call-1",
+  "name": "read_file",
+  "tool_ref": {
+    "provider_id": "workspace-host",
+    "registration_id": "host-tui-1:ws-project:view-worktree-a",
+    "generation": "generation-2026-08-11-1",
+    "name": "read_file",
+    "revision": "sha256:read-file-v1"
+  },
+  "args": {"path": "README.md"},
+  "addr": {
+    "workspace_id": "ws-project",
+    "thread_id": "thread-1",
+    "task_id": "task-1",
+    "request_id": "window-1"
+  }
+}

@@ -1,0 +1,22 @@
+[package]
+name = "scitrera-agent"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "scitrera-agent"
+path = "src/main.rs"
+
+[dependencies]
+scitrera-mcp-host = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+toml = { workspace = true }
+# tonic + uuid will be needed when Aether proto files are integrated
+# tonic = "0.13"
+# uuid = { workspace = true }

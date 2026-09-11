@@ -1,0 +1,14 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 1,
+  "session_id": "session-1",
+  "client_id": "client-1",
+  "capabilities": [
+    "session.replay.v1",
+    "session.snapshot.v1"
+  ],
+  "resume_after": {
+    "generation": "worker-a",
+    "sequence": 9
+  }
+}

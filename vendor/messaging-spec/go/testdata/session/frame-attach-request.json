@@ -1,0 +1,14 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 2,
+  "type": "attach_request",
+  "request_id": "attach-1",
+  "payload": {
+    "protocol_version": 1,
+    "schema_revision": 2,
+    "workspace_id": "project-a",
+    "session_id": "session-1",
+    "client_id": "client-1",
+    "capabilities": ["session.replay.v1", "session.snapshot.v1"]
+  }
+}

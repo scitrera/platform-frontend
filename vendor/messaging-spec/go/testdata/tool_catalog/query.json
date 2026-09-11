@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "context": {
+    "workspace_id": "ws-project",
+    "thread_id": "thread-1",
+    "view_id": "view-worktree-a",
+    "tool_host_id": "host-tui-1",
+    "surface_kind": "tui",
+    "surface_instance_id": "window-1"
+  },
+  "query": "read or run project files",
+  "limit": 2,
+  "future": true
+}

@@ -1,0 +1,12 @@
+{
+  "protocol_version": 1,
+  "schema_revision": 3,
+  "workspace_id": "project-a",
+  "session_id": "session-1",
+  "client_id": "client-state",
+  "capabilities": [
+    "session.snapshot.v1",
+    "session.state.subagents.v1",
+    "session.state.goals.v1"
+  ]
+}
