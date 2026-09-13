@@ -181,18 +181,10 @@ export const useWorkspaceStore = create<WorkspaceStore>((set) => ({
       return;
     }
 
-    set({
-      currentWorkspaceId: data.id,
-      currentWorkspaceInfo: data,
-    });
-
-    // Pull URL-derived params so the panels reflect the current URL.
-    const { appPath, queryParams, hashParams } = parseUrlPath();
-    useAppPanelStore.getState()._setPanels({
-      appPath,
-      appQueryParams: queryParams || null,
-      appHash: hashParams || null,
-    });
+    // A freshly created workspace follows the same panel/sidebar reset as any
+    // other selection. Keep its returned metadata until navigation refreshes.
+    useWorkspaceStore.getState().setCurrentWorkspace(data.id);
+    set({currentWorkspaceInfo: data});
   },
 
   renameWorkspace: (id, label) =>

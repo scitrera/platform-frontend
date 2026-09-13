@@ -4,6 +4,7 @@ import {beforeEach, expect, it, vi} from 'vitest';
 import SelectWorkspacePrompt from './SelectWorkspacePrompt.jsx';
 import {useAuthStore} from '@/stores/authStore';
 import {useWorkspaceStore} from '@/stores/workspaceStore';
+import {useAppPanelStore} from '@/stores/appPanelStore';
 
 const rpc = vi.hoisted(() => ({sendRpcRequest: vi.fn(), sendMessage: vi.fn()}));
 vi.mock('../../hooks/useWebSocket.jsx', () => ({useWebSocket: () => rpc}));
@@ -11,6 +12,7 @@ vi.mock('../UI/LazyLucideIcon.jsx', () => ({default: () => null}));
 
 beforeEach(() => {
     vi.clearAllMocks();
+    useWorkspaceStore.getState().setCurrentWorkspace(null);
     useAuthStore.setState({userInfo: {permissions: {canCreateWorkspaces: true}},
         uiConfig: {showPrivateWorkspace: false, workspacesLabel: 'workspaces', showWorkspaceTemplateSelection: false}});
     useWorkspaceStore.setState({currentWorkspaceId: null, currentWorkspaceInfo: null,
@@ -34,6 +36,8 @@ it('creates and selects a workspace using the real creation dialog and RPC envel
     await waitFor(() => expect(useWorkspaceStore.getState().currentWorkspaceId).toBe('new-project'));
     expect(rpc.sendRpcRequest).toHaveBeenCalledWith('WS_CREATE', {title: 'New project', workspaceId: 'new-project', templateId: null});
     expect(rpc.sendMessage).toHaveBeenCalledWith('GET_WORKSPACES', null);
+    expect(useAppPanelStore.getState().main).toBeNull();
+    expect(useAppPanelStore.getState().secondary).toBeNull();
 });
 
 it('does not offer creation to users without permission and handles an empty list', () => {

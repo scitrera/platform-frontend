@@ -1326,7 +1326,7 @@
     },
     {
       "path": "web/src/components/Workspaces/SelectWorkspacePrompt.test.jsx",
-      "sha256": "7cec82832f09f349ce7b917b97c10290710511db22b345fabadbab2f39524ef3"
+      "sha256": "2cdb8d6f52257d89abbcc242305eb94766d3f1873e2a0ccb31e4c2704c306c99"
     },
     {
       "path": "web/src/components/Workspaces/WorkspaceSharing.jsx",
@@ -1546,7 +1546,7 @@
     },
     {
       "path": "web/src/stores/workspaceStore.ts",
-      "sha256": "f51fcf17c5d5c696d667e0e5419218ab0a1246b3e1e2346fb77f1d57b4dbc9de"
+      "sha256": "b004780284ba8a71229f6b1df6ab7c72599e3cc7e7d833cdfd47da7f97d88735"
     },
     {
       "path": "web/src/test/setup.ts",
