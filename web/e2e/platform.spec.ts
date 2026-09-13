@@ -6,7 +6,7 @@ const tenant = {id: 'demo', name: 'Demo Organization', default_workspace: '_priv
 const workspaces = {private: [{id: '_private', label: 'My workspace', default_app: null}], shared: [{id: 'project', label: 'Synthetic project', default_app: null}], hidden: [], templates: []};
 const makeMessage = (text: string, id = 'saved') => ({schema_version: '1.0', id, role: 'assistant', created_at: '2026-01-01T00:00:00Z', addr: {tenant_id: 'demo', workspace_id: '_private', thread_id: '_default'}, content: [{type: 'text', text}], meta: {}, ref: null});
 
-async function fixture(page: Page, options: {tenants?: object[]; authorized?: boolean; ready?: boolean; history?: boolean} = {}) {
+async function fixture(page: Page, options: {tenants?: object[]; authorized?: boolean; ready?: boolean; history?: boolean; deferHistory?: boolean} = {}) {
   const sent: any[] = [];
   const sockets: WebSocketRoute[] = [];
   const external: string[] = [];
@@ -29,7 +29,7 @@ async function fixture(page: Page, options: {tenants?: object[]; authorized?: bo
         case 'GET_APPS': return reply(msg, []);
         case 'GET_BACKGROUND_TASKS': case 'CT_LIST': return reply(msg, []);
         case 'CHAT_GET_ACTIVE_TASKS': return reply(msg, {});
-        case 'GET_CHAT_HISTORY': return reply(msg, {threadId: msg.payload.threadId || '_default', messages: options.history ? [makeMessage('Synthetic persisted conversation')] : []});
+        case 'GET_CHAT_HISTORY': if(options.deferHistory)return; return reply(msg, {threadId: msg.payload.threadId || '_default', messages: options.history ? [makeMessage('Synthetic persisted conversation')] : []});
         case 'ADMIN_RPC_CALL': return socket.send(JSON.stringify({event: 'RPC', id: msg.id, type: 'RPX', payload: {message: 'Synthetic admin service unavailable'}}));
         default: if (msg.id) reply(msg, {});
       }
@@ -147,4 +147,22 @@ test('a valid session without tenants shows an actionable empty state', async ({
   await expect(page.getByRole('heading', {name: 'No workspaces available'})).toBeVisible();
   expect(f.sockets).toHaveLength(0);
   expect(f.external).toEqual([]);
+});
+
+
+test('delayed history preserves a live approval and its scoped decision', async ({page}) => {
+  const f = await fixture(page, {deferHistory: true});
+  await page.goto('/demo/_private');
+  await expect.poll(() => f.sent.some(m => m.type === 'GET_CHAT_HISTORY')).toBe(true);
+  f.push('CHAT_MSG_TASK_STARTED', {threadId: '_default', taskId: 'late-history-task', messageId: 'live-before-history'});
+  f.push('CHAT_STREAM', {threadId: '_default', event: {event: 'message_started', message: makeMessage('Review the write', 'live-before-history')}});
+  f.push('CHAT_STREAM', {threadId: '_default', event: {event: 'part_appended', message_id: 'live-before-history', index: 1,
+    part: {type: 'approval_request', id: 'late-permission', tool: 'apply_patch', status: 'pending', options: ['once']}}});
+  await expect(page.getByText('Permission required', {exact: true})).toBeVisible();
+  f.push('GET_CHAT_HISTORY', {threadId: '_default', messages: [makeMessage('Earlier history')]});
+  await expect(page.getByText('Earlier history', {exact: true})).toBeVisible();
+  await page.getByRole('button', {name: 'Deny', exact: true}).click();
+  await expect.poll(() => f.sent.find(m => m.type === 'CHAT_MSG_CONTROL')?.payload.taskId).toBe('late-history-task');
+  expect(f.sent.find(m => m.type === 'CHAT_MSG_CONTROL').payload.message.content[0].request_id).toBe('late-permission');
+  expect(f.errors).toEqual([]);
 });

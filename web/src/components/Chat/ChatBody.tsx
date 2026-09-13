@@ -20,7 +20,7 @@ import ChatContextChip from './ChatContextChip';
 import WelcomeGreeting from './WelcomeGreeting';
 import {extractArtifacts} from '@/utils/artifactExtractor';
 import {feedbackToSpecMessage, latestTodoBoard} from '@/utils/messaging/specAdapters';
-import {DEFAULT_THREAD_ID, type ChatThread} from '@/types/chat';
+import {DEFAULT_THREAD_ID, type ChatThread, type WorkProfileOption} from '@/types/chat';
 import {useToasts} from '@/hooks/useToasts.jsx';
 
 const {MAX_WIDTH_CLASS} = CHAT_UI_CONSTANTS;
@@ -73,6 +73,7 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
     const {
         specMessageList,
         clearSpecMessages,
+        beginSpecHistoryLoad,
         latestProgress,
         filteredThreads,
         activeThreadId,
@@ -84,10 +85,29 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
         cancelledMessageIds,
     } = useChatState();
     const uiConfig = useAuthStore(s => s.uiConfig);
+    const enableWorkProfileSelection = uiConfig.enableWorkProfileSelection === true;
     const mainPanel = useAppPanelStore(s => s.main);
     const appQueryParams = useAppPanelStore(s => s.appQueryParams);
     const updateAppUrl = useAppPanelStore(s => s.updateAppUrl);
     const currentWorkspaceId = useWorkspaceStore(s => s.currentWorkspaceId);
+    const tenantId = useAuthStore(s => s.tenantId);
+    const [workProfiles, setWorkProfiles] = useState<WorkProfileOption[]>([]);
+    const [newWorkProfile, setNewWorkProfile] = useState('');
+    useEffect(() => {
+        let current = true;
+        setWorkProfiles([]);
+        setNewWorkProfile('');
+        if (isConnected && currentWorkspaceId) {
+            void sendRpcRequest<{profiles: WorkProfileOption[]}>(CHAT.WORK_PROFILES, {
+                workspaceId: currentWorkspaceId,
+            }).then(response => {
+                if (current) setWorkProfiles(response.profiles);
+            }).catch(() => {
+                // Older backends and transient disconnects retain personal chat.
+            });
+        }
+        return () => { current = false; };
+    }, [isConnected, tenantId, currentWorkspaceId, sendRpcRequest]);
 
     // "Workspace as thread" mode: one implicit thread per workspace — the
     // selector is hidden and the active thread is pinned to the workspace id
@@ -274,6 +294,7 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
         const wsId = useWorkspaceStore.getState().currentWorkspaceId;
         return sendRpcRequest<ChatThread>(CHAT.THREAD_ADD, {
             name,
+            ...(enableWorkProfileSelection ? {workProfile: newWorkProfile} : {}),
             workspaceId: wsId,
             workspaceScoped: workspaceHomed,
         }).then((response) => {
@@ -405,6 +426,7 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
         if (!isConnected) return;
         const wsId = useWorkspaceStore.getState().currentWorkspaceId;
         if (!wsId) return;
+        beginSpecHistoryLoad();
         sendWsMessage(CHAT.HISTORY, {workspace: wsId, threadId: activeThreadId, workspaceScoped: workspaceHomed});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, sendWsMessage, activeThreadId, workspaceHomed, workspaceHomed ? currentWorkspaceId : null]);
@@ -471,6 +493,9 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
                         activeThreadId={activeThreadId}
                         onThreadSelect={handleThreadSelect}
                         onThreadCreate={handleThreadCreate}
+                            workProfiles={enableWorkProfileSelection ? workProfiles : []}
+                            newWorkProfile={newWorkProfile}
+                            onWorkProfileChange={setNewWorkProfile}
                         onThreadDelete={handleThreadDelete}
                         onThreadSearch={searchThreads}
                         uiConfig={uiConfig}
@@ -517,6 +542,9 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
                             activeThreadId={activeThreadId}
                             onThreadSelect={handleThreadSelect}
                             onThreadCreate={handleThreadCreate}
+                            workProfiles={enableWorkProfileSelection ? workProfiles : []}
+                            newWorkProfile={newWorkProfile}
+                            onWorkProfileChange={setNewWorkProfile}
                             onThreadDelete={handleThreadDelete}
                             onThreadSearch={searchThreads}
                         />
@@ -541,6 +569,11 @@ export default function ChatBody({isFullscreen}: ChatBodyProps) {
                         />
                     )}
                 </div>
+                {getActiveThread()?.workProfile && (
+                    <div className="px-4 py-1 text-xs text-gray-500" aria-label="Conversation work profile">
+                        Work profile: {workProfiles.find(p => p.id === getActiveThread()?.workProfile)?.name ?? getActiveThread()?.workProfile}
+                    </div>
+                )}
                 <ChatContextChip/>
                 <MessageInput
                     workspaceId={currentWorkspaceId}

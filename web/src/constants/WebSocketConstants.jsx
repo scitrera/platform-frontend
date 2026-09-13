@@ -23,6 +23,7 @@ export const CUSTOM_COMPONENTS = {
 
 // Chat-related message types
 export const CHAT = {
+    WORK_PROFILES: 'CHAT_WORK_PROFILES',
     // CHAT HISTORY REQUEST OR RESPONSE
     HISTORY: 'GET_CHAT_HISTORY',
 

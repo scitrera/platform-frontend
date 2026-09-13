@@ -8,8 +8,9 @@ import {useChatState} from '../../hooks/useChatState';
 import {CHAT} from '../../constants/WebSocketConstants.jsx';
 import {UI_CONSTANTS} from '../../constants/AppConstants';
 import {cn} from '@/lib/utils';
-import {DEFAULT_THREAD_ID} from '@/types/chat';
+import {DEFAULT_THREAD_ID, type ChatThread} from '@/types/chat';
 import {useWorkspaceHomedThreads} from '@/hooks/useThreadMode';
+import {useToasts} from '@/hooks/useToasts';
 import ChatBody from './ChatBody';
 import ChatRailHeader from './ChatRailHeader';
 import ChatRailLauncher from './ChatRailLauncher';
@@ -76,8 +77,9 @@ export default function ChatRail() {
     const mainPanel = useAppPanelStore(s => s.main);
     const secondaryPanel = useAppPanelStore(s => s.secondary);
 
-    const {activeThreadId, clearSpecMessages} = useChatState();
-    const {sendMessage: sendWsMessage} = useWebSocket();
+    const {activeThreadId, clearSpecMessages, createThread, deleteThread} = useChatState();
+    const {addToast} = useToasts();
+    const {sendRpcRequest} = useWebSocket();
 
     const isMobile = useMediaQuery(`(max-width: ${CHAT_RAIL_MOBILE_BREAKPOINT - 1}px)`);
 
@@ -164,9 +166,20 @@ export default function ChatRail() {
     // Handler shared with header — reads current workspace at fire-time.
     const handleReset = useCallback(() => {
         const wsId = useWorkspaceStore.getState().currentWorkspaceId;
-        sendWsMessage(CHAT.CLEAR, {workspace: wsId, threadId: activeThreadId, workspaceScoped: workspaceHomed});
-        clearSpecMessages();
-    }, [sendWsMessage, activeThreadId, clearSpecMessages, workspaceHomed]);
+        void sendRpcRequest<{thread?: ChatThread}>(CHAT.CLEAR, {
+            workspace: wsId, threadId: activeThreadId, workspaceScoped: workspaceHomed,
+        }).then(response => {
+            clearSpecMessages();
+            if (response.thread) {
+                deleteThread(activeThreadId);
+                createThread(response.thread);
+                const panels = useAppPanelStore.getState();
+                panels.updateAppUrl({query: {
+                    ...(panels.appQueryParams as Record<string, string>), thread: response.thread.id,
+                }});
+            }
+        }).catch(() => addToast('Could not clear the conversation. Please try again.', 'error'));
+    }, [sendRpcRequest, activeThreadId, clearSpecMessages, createThread, deleteThread, workspaceHomed, addToast]);
 
     if (!chatEnabled) return null;
 

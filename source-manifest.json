@@ -706,7 +706,7 @@
     },
     {
       "path": "web/e2e/platform.spec.ts",
-      "sha256": "c2545f0dfb1b41dc46442b5c5a31f9eb725c2b306d89aff56529091d62c48bf5"
+      "sha256": "73bc050b49d1c2bae90b754ea75dcc0e297495d3636cce4136a5c153ef087f20"
     },
     {
       "path": "web/eslint.config.js",
@@ -1006,7 +1006,7 @@
     },
     {
       "path": "web/src/components/Apps/Chat/ThreadSidebar.tsx",
-      "sha256": "e7e11ab6d1e149e66076ea6092c0fc478d1efcc1a3c8c5f79319196915e24708"
+      "sha256": "01a83e0770b052f4a7367e7ebb7b4651d5bbdf4a2eea356630ae236bcb0aca53"
     },
     {
       "path": "web/src/components/Apps/Chat/TodoPanel.tsx",
@@ -1130,7 +1130,7 @@
     },
     {
       "path": "web/src/components/Chat/ChatBody.tsx",
-      "sha256": "a6e2ec6901cdd119d8b2303cb8f1b4d7b28d1c7e61dd3e4fdb5d721e32b46bd9"
+      "sha256": "30317d5e01c76019c07cd64be083203264744559a1bf11b77155758f57b63a50"
     },
     {
       "path": "web/src/components/Chat/ChatContextChip.tsx",
@@ -1138,7 +1138,7 @@
     },
     {
       "path": "web/src/components/Chat/ChatRail.tsx",
-      "sha256": "e5d6fab2cf78652afc0d0d923b3fe3e43e2826e35a8c21185faf0698c3921e8e"
+      "sha256": "48911633a016ef8feb02a2521cfa10048e0a13222ef6a8ae2ee1fd167f5d404a"
     },
     {
       "path": "web/src/components/Chat/ChatRailHeader.tsx",
@@ -1150,11 +1150,15 @@
     },
     {
       "path": "web/src/components/Chat/ThreadsDropdown.tsx",
-      "sha256": "baf9c7830822be13cd9b557265704fcc738496e53aae55e95c0f21353f385510"
+      "sha256": "7617ce400640f9df227a6c19aed643d4b2537d97632a0b7530a6af3d2c5cbb30"
     },
     {
       "path": "web/src/components/Chat/WelcomeGreeting.tsx",
       "sha256": "ce075fba0af8b9009f654a4bee91055f28cd03f3b26f308aecc506c93d3c9955"
+    },
+    {
+      "path": "web/src/components/Chat/WorkProfileSelect.tsx",
+      "sha256": "c8077c8d697f1bf5ac0de39e42e090076cffc27b1d7f3ea617e9116813e701d2"
     },
     {
       "path": "web/src/components/UI/AvatarMenu.jsx",
@@ -1366,7 +1370,7 @@
     },
     {
       "path": "web/src/constants/WebSocketConstants.jsx",
-      "sha256": "987eeff88612579d9a974fa89dc472d1d2d12ce40249321ba2d2ddc6cbde0027"
+      "sha256": "d300b3d88ecaadc337bad9abd9aeb572f3836fb30175aac36c007f123874641d"
     },
     {
       "path": "web/src/contexts/KnowledgebaseContext.tsx",
@@ -1405,8 +1409,12 @@
       "sha256": "69f48473ef798ff3a2f90dc9e3f19346142e2159b448c18d0c000176205246fd"
     },
     {
+      "path": "web/src/hooks/useChatState.test.tsx",
+      "sha256": "59d9c9721651b92badc47d01652962708311cefe0ea4640522c2a52764c0a1c8"
+    },
+    {
       "path": "web/src/hooks/useChatState.tsx",
-      "sha256": "10752235471ef47338a5cc14af32076b8b8047586ddda308cabaa9195dc979d4"
+      "sha256": "13a71c854955558847e5050dc5bd1c829782c13c0ee704852d93f7b5b02820c2"
     },
     {
       "path": "web/src/hooks/useDocumentPresignedUrl.jsx",
@@ -1489,8 +1497,12 @@
       "sha256": "d5790c9450017af2b3480551b164ea736c293348ab3fb1b2304e9a17a68544e8"
     },
     {
+      "path": "web/src/stores/authStore.test.ts",
+      "sha256": "57c110986d8a1a87d4687ee63884044b56db181c4a86f3607a78bdef9a0e6106"
+    },
+    {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "302f084949c0778fbf9ce49dd634929014188eaeb4cd2f153ab6396094f7d46f"
+      "sha256": "a184fb9fa12a9de9ff9b01448f4958c3cc0c442f4fb3da4873cd5c80ec65003d"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",
@@ -1510,7 +1522,7 @@
     },
     {
       "path": "web/src/types/chat.ts",
-      "sha256": "6611ac01ddc3e4f572086565b9ccd89ed8da46ae9d5385751366f45b8bea0c1a"
+      "sha256": "2216ff8299505a3a1e6add46d5b3771b25e3477dd0251b0acd43e4a6ed67f622"
     },
     {
       "path": "web/src/types/dynamic-jsx.ts",
@@ -1618,7 +1630,7 @@
     },
     {
       "path": "web/src/utils/wsMessageHandlers.js",
-      "sha256": "83f5c4ea3a00a7e35c474f0266fa9e330be702ee9485bec6a15ade66e20eefc2"
+      "sha256": "39fa7aa6029a549860aa9e3f60451d62009372620b43c8f32b60b1263e9944eb"
     },
     {
       "path": "web/src/utils/wsTransport.js",
