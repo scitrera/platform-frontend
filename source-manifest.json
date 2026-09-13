@@ -1434,7 +1434,7 @@
     },
     {
       "path": "web/src/hooks/useAppEffects.jsx",
-      "sha256": "69f48473ef798ff3a2f90dc9e3f19346142e2159b448c18d0c000176205246fd"
+      "sha256": "a6bbcc33dc064e38514ecb67aa15de805292d39f4e3863e0be1776b91acef089"
     },
     {
       "path": "web/src/hooks/useChatState.test.tsx",
@@ -1530,7 +1530,7 @@
     },
     {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "a184fb9fa12a9de9ff9b01448f4958c3cc0c442f4fb3da4873cd5c80ec65003d"
+      "sha256": "6a6bb0e0ac3fcf1fd604813e62f400211396ef450f3cb897c7b7a52e4b230675"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",
@@ -1603,6 +1603,14 @@
     {
       "path": "web/src/utils/artifactExtractor.ts",
       "sha256": "744c3a9bd3afb3f278827fa80d4ead34f17fe1355d6de87f81872947044968e3"
+    },
+    {
+      "path": "web/src/utils/defaultWorkspace.test.ts",
+      "sha256": "f24c892ae6d057e507a2d6a6708ccf4064a845d9bb1318e4be8999dbc13741d9"
+    },
+    {
+      "path": "web/src/utils/defaultWorkspace.ts",
+      "sha256": "f435a5d0f3b66e41917f1d0414e8daa2a97c389e282c48779975c3b5936a816d"
     },
     {
       "path": "web/src/utils/docViewer.ts",
