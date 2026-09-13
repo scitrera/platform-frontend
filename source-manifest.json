@@ -910,7 +910,11 @@
     },
     {
       "path": "web/src/components/Apps/AppArea.jsx",
-      "sha256": "6b85c5aa155d903153ef1b98131a87616d0b5d9819e3e639235571b82791d499"
+      "sha256": "12737109aa150709e6b7e275e23509e569a0b69db58144180c3eced34158e376"
+    },
+    {
+      "path": "web/src/components/Apps/AppArea.test.jsx",
+      "sha256": "c9ee9ce0a397a104bbb86e60b3a5734a5561759a0c88d20a5827f465765902a7"
     },
     {
       "path": "web/src/components/Apps/AppCloseButton.tsx",
