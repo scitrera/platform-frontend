@@ -910,7 +910,7 @@
     },
     {
       "path": "web/src/components/Apps/AppArea.jsx",
-      "sha256": "12737109aa150709e6b7e275e23509e569a0b69db58144180c3eced34158e376"
+      "sha256": "fef2a1c4b9961f3992c305b4b0f0beeb0fdf9e31a6963cbc2912290f31ceb9b6"
     },
     {
       "path": "web/src/components/Apps/AppArea.test.jsx",
@@ -1318,11 +1318,15 @@
     },
     {
       "path": "web/src/components/Workspaces/CreateWorkspaceDialog.jsx",
-      "sha256": "a20f99acb530224dc99f41ba7bb4a1e97fd0df5d99753a6107390809e098b700"
+      "sha256": "1b820a6eb2979c1e7934f7df9501e1e236d86600936749c414886a6ba3efc909"
     },
     {
       "path": "web/src/components/Workspaces/SelectWorkspacePrompt.jsx",
-      "sha256": "53a27a1a2c9c057f0f74d2485819bcb3462f326fe760ffedffad9d96012455d7"
+      "sha256": "6c10c5c3021bdb3e527ba3c0831776bfc1cb263964cec68d137bd8bf172ac1b2"
+    },
+    {
+      "path": "web/src/components/Workspaces/SelectWorkspacePrompt.test.jsx",
+      "sha256": "7cec82832f09f349ce7b917b97c10290710511db22b345fabadbab2f39524ef3"
     },
     {
       "path": "web/src/components/Workspaces/WorkspaceSharing.jsx",
@@ -1330,7 +1334,7 @@
     },
     {
       "path": "web/src/components/Workspaces/WorkspacesSidebar.jsx",
-      "sha256": "3030656e2bd34029ef50f9c3288505f7d056edc6501ade9fced8736a062c4cb0"
+      "sha256": "91e7d6c6208a58af6b4f75630f136e26075452d086a178e320f7e7a22811005f"
     },
     {
       "path": "web/src/components/ui/badge.tsx",
@@ -1434,7 +1438,7 @@
     },
     {
       "path": "web/src/hooks/useAppEffects.jsx",
-      "sha256": "a6bbcc33dc064e38514ecb67aa15de805292d39f4e3863e0be1776b91acef089"
+      "sha256": "cd31fba0b11496a44014d38d60d3634996b4514ecbb8b13b2cb61a02fbc54b34"
     },
     {
       "path": "web/src/hooks/useChatState.test.tsx",
@@ -1530,7 +1534,7 @@
     },
     {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "6a6bb0e0ac3fcf1fd604813e62f400211396ef450f3cb897c7b7a52e4b230675"
+      "sha256": "ee12db54b33aa8da878b903d1d74f45ffb6215a0201d6836e985c04635ebd96b"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",
@@ -1606,11 +1610,11 @@
     },
     {
       "path": "web/src/utils/defaultWorkspace.test.ts",
-      "sha256": "f24c892ae6d057e507a2d6a6708ccf4064a845d9bb1318e4be8999dbc13741d9"
+      "sha256": "10d1378b8c9c2acfeef2835ce1b08a625521b4faf6dec6f2f4085c6027fb0e79"
     },
     {
       "path": "web/src/utils/defaultWorkspace.ts",
-      "sha256": "f435a5d0f3b66e41917f1d0414e8daa2a97c389e282c48779975c3b5936a816d"
+      "sha256": "78df47dc14bb08510645c6ddc6c23d14569f56bab4bdd9993c67306304fb002c"
     },
     {
       "path": "web/src/utils/docViewer.ts",

@@ -28,6 +28,7 @@ export default function useAppEffects() {
     const userInfo = useAuthStore(s => s.userInfo);
     const tenantId = useAuthStore(s => s.tenantId);
     const currentTenant = useAuthStore(s => s.currentTenant);
+    const autoSelectWorkspace = useAuthStore(s => s.uiConfig.autoSelectWorkspace !== false);
     const showPrivateWorkspace = useAuthStore(s => s.uiConfig.showPrivateWorkspace !== false);
 
     // Workspace slice
@@ -89,9 +90,9 @@ export default function useAppEffects() {
         const hiddenHome = !showPrivateWorkspace && (currentWorkspaceId === '_private'
             || currentWorkspaceId?.startsWith('_private-user-'));
         if (currentWorkspaceId && !hiddenHome) return;
-        const target = defaultWorkspace(workspaces, currentTenant?.default_workspace, showPrivateWorkspace);
+        const target = defaultWorkspace(workspaces, currentTenant?.default_workspace, showPrivateWorkspace, autoSelectWorkspace);
         if (target || hiddenHome) setCurrentWorkspace(target);
-    }, [currentWorkspaceId, currentTenant, isConnected, workspaces, showPrivateWorkspace, setCurrentWorkspace]);
+    }, [currentWorkspaceId, currentTenant, isConnected, workspaces, showPrivateWorkspace, autoSelectWorkspace, setCurrentWorkspace]);
 
     // Initial configuration of appSplit from local storage (once at load time)
     useEffect(() => {

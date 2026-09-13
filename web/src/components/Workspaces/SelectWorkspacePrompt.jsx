@@ -1,15 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {useAuthStore} from '@/stores/authStore';
+import {useWorkspaceStore} from '@/stores/workspaceStore';
+import NewWorkspaceModal from './CreateWorkspaceDialog.jsx';
 import LazyLucideIcon from "../UI/LazyLucideIcon.jsx";
 import {titleCase} from "../../lib/utils";
 
 // Component displayed when no workspace is selected.
 const SelectWorkspacePrompt = ({message, workspaceTitle = 'workspace'}) => {
-    // TODO: potentially support an external JSX replacement for this?
-    //          (it can be _placeholder like for apps, BUT... currently no apps are tied to null workspace,
-    //              so that would require some adjustment...)
+    const [creating, setCreating] = useState(false);
+    const canCreate = useAuthStore(s => !!s.userInfo?.permissions?.canCreateWorkspaces);
+    const showPrivate = useAuthStore(s => s.uiConfig.showPrivateWorkspace !== false);
+    const workspaces = useWorkspaceStore(s => s.workspaces);
+    const loading = useWorkspaceStore(s => s.isLoadingWorkspaces);
+    const selectWorkspace = useWorkspaceStore(s => s.setCurrentWorkspace);
+    const choices = [...(workspaces.shared || []), ...(workspaces.private || [])]
+        .filter(ws => (showPrivate && ws.id === '_private')
+            || (!ws.id.startsWith('_') && !ws.id.startsWith('workspace:')));
     return (
 
-        <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="min-h-[60vh] flex items-center justify-center p-4">
+            <NewWorkspaceModal open={creating} onOpenChange={setCreating}/>
             <div className="relative w-full max-w-3xl">
                 {/* Soft background glow */}
                 <div
@@ -40,15 +50,29 @@ const SelectWorkspacePrompt = ({message, workspaceTitle = 'workspace'}) => {
                         {message ?
                             <p className="mt-2 text-center text-slate-600">{message}</p> :
                             <p className="mt-2 text-center text-slate-600">
-                                Choose a {workspaceTitle} from the sidebar on the left. <br/>
-                                We’ll load your {workspaceTitle} with the right tools and data.
+                                Choose an existing {workspaceTitle}{canCreate ? " or create a new one" : ""} to continue.
                             </p>
                         }
 
-                        {/* Subtle hint row with animation */}
-                        <div className="mt-8 flex items-center justify-center gap-3 text-slate-500">
-                            <LazyLucideIcon iconName="ArrowLeft" className="h-5 w-5 text-slate-800 animate-pulse"/>
-                            <span className="text-sm">{titleCase(workspaceTitle)}s are listed in the left panel</span>
+                        <div className="mt-8 space-y-4">
+                            {canCreate && <div className="flex justify-center">
+                                <button type="button" onClick={() => setCreating(true)}
+                                        className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                                    <LazyLucideIcon iconName="Plus" className="h-4 w-4"/>
+                                    Create {workspaceTitle}
+                                </button>
+                            </div>}
+                            {loading ? <p role="status" className="text-center text-sm text-slate-500">Loading {workspaceTitle}s…</p>
+                                : choices.length ? <div aria-label={`${titleCase(workspaceTitle)}s`} className="grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2">
+                                    {choices.map(ws => <button key={ws.id} type="button" onClick={() => selectWorkspace(ws.id)}
+                                        className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-left text-slate-800 hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-blue-600">
+                                        <LazyLucideIcon iconName="FolderOpen" className="h-5 w-5 shrink-0 text-blue-600"/>
+                                        <span className="min-w-0 break-words">{ws.label}</span>
+                                    </button>)}
+                                </div> : <p className="text-center text-sm text-slate-500">
+                                    {canCreate ? `No ${workspaceTitle}s yet. Create one to get started.`
+                                        : `No ${workspaceTitle}s are available. Ask your administrator for access.`}
+                                </p>}
                         </div>
 
                         {/* Decorative bottom accent */}

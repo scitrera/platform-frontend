@@ -83,6 +83,7 @@ const DEFAULT_UI_CONFIG: Record<string, unknown> = {
   showBackgroundTasks: true,
   showWorkspaceTemplateSelection: true,
   showPrivateWorkspace: true,
+  autoSelectWorkspace: true,
   // When true, the left sidebar uses an oversized (70vw) layout while the
   // user hasn't picked a workspace yet — the legacy "workspace-picker
   // takeover" behavior. Default false post chat-first rework so the chat

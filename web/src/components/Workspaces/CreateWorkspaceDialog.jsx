@@ -114,7 +114,7 @@ export default function NewWorkspaceModal({
                     templateId,
                 }).then((response) => {
                     // Update workspace in UI
-                    setCurrentWorkspaceCustom(response);
+                    setCurrentWorkspaceCustom(response.workspaceData ?? response);
                     // request that the server update our workspace list -- which should happen in the background
                     sendWsMessage(WORKSPACE.GET_WORKSPACES, null);
                     // close the dialog

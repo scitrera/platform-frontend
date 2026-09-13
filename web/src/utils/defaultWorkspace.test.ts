@@ -6,6 +6,10 @@ describe('defaultWorkspace', () => {
   it('honors an accessible configured default', () => {
     expect(defaultWorkspace(workspaces, 'second')).toBe('second');
   });
+  it('does not automatically select a configured or fallback workspace when disabled', () => {
+    expect(defaultWorkspace(workspaces, 'second', false, false)).toBeNull();
+    expect(defaultWorkspace(workspaces, undefined, true, false)).toBeNull();
+  });
   it('retains the personal home by default', () => {
     expect(defaultWorkspace(workspaces, 'missing')).toBe('_private');
   });

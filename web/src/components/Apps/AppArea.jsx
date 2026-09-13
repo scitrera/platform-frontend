@@ -102,7 +102,7 @@ const AppArea = () => {
 
             // if no workspace, but trying to render something other than prompt, then show prompt instead!
             if (!currentWorkspaceId && panelConfig?.id !== UI_CONSTANTS.APP_ID_SELECT_WORKSPACE_PROMPT) {
-                return <SelectWorkspacePrompt message="Error: A workspace must be selected to view this content."/>;
+                return <SelectWorkspacePrompt/>;
             }
 
             if (isMainPanel && (!panelConfig || panelConfig.id === null)) {
