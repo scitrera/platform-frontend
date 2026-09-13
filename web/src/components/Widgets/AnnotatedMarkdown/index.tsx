@@ -35,6 +35,9 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const visible = useMemo(() => annotations.filter(a => a.document === documentId), [annotations, documentId]);
   const editable = !disabled && !stale && !busy;
 
+  const findCard = (id: string) => Array.from(rail.current?.querySelectorAll<HTMLElement>('[data-comment-id]') || [])
+    .find(card => card.dataset.commentId === id);
+
   const measure = useCallback(() => {
     if (!article.current || !body.current) return;
     const bounds = body.current.getBoundingClientRect();
@@ -48,7 +51,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
       }).sort((a, b) => a.top - b.top);
     for (const p of placed) {
       p.top = Math.max(bottom, p.top);
-      const card = rail.current?.querySelector<HTMLElement>(`[data-comment-id="${p.id}"]`);
+      const card = findCard(p.id);
       bottom = p.top + (card?.offsetHeight || 180) + 12;
     }
     setPlacements(previous => JSON.stringify(previous) === JSON.stringify(placed) ? previous : placed);
@@ -108,12 +111,12 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   };
   const focusComment = (id: string) => {
     setActive(id);
-    rail.current?.querySelector<HTMLElement>(`[data-comment-id="${id}"]`)?.focus({preventScroll: true});
+    findCard(id)?.focus({preventScroll: true});
   };
   const cardTop = (id: string) => placements.find(p => p.id === id)?.top || 0;
   const cards = [...visible, ...(editor && !visible.some(a => a.id === editor.id) ? [editor] : [])];
   const last = placements.at(-1);
-  const height = last ? last.top + (rail.current?.querySelector<HTMLElement>(`[data-comment-id="${last.id}"]`)?.offsetHeight || 180) + 24 : 0;
+  const height = last ? last.top + (findCard(last.id)?.offsetHeight || 180) + 24 : 0;
 
   return <section className="annotated-markdown" aria-label="Document review">
     <div className="annotation-toolbar">

@@ -36,13 +36,15 @@ export function selectedAnchor(root: HTMLElement, selection: Selection | null) {
 export function locateAnchor(root: HTMLElement, annotation: TextAnnotation): Range | null {
   const text = root.textContent || '';
   let start = annotation.start;
-  if (text.slice(start, annotation.end) !== annotation.quote) {
+  const contextMatches = (index: number) =>
+    (!annotation.prefix || text.slice(Math.max(0, index - annotation.prefix.length), index) === annotation.prefix)
+    && (!annotation.suffix || text.slice(index + annotation.quote.length, index + annotation.quote.length + annotation.suffix.length) === annotation.suffix);
+  if (text.slice(start, annotation.end) !== annotation.quote || !contextMatches(start)) {
     // Never guess between repeated passages when rendering has changed.
     const matches: number[] = [];
     let index = text.indexOf(annotation.quote);
     while (index >= 0) {
-      if ((!annotation.prefix || text.slice(Math.max(0, index - annotation.prefix.length), index) === annotation.prefix)
-          && (!annotation.suffix || text.slice(index + annotation.quote.length, index + annotation.quote.length + annotation.suffix.length) === annotation.suffix)) matches.push(index);
+      if (contextMatches(index)) matches.push(index);
       index = text.indexOf(annotation.quote, index + 1);
     }
     if (matches.length !== 1) return null;

@@ -24,6 +24,11 @@ describe('rendered text anchors', () => {
     expect(anchor.quote).toBe('term'); expect(anchor.start).toBe(16);
     expect(locateAnchor(root, wrap(anchor))?.startOffset).toBe(16);
   });
+  it('checks context even when an old offset now points to another equal quote', () => {
+    const root = document.createElement('div'); root.textContent = 'New term. Old term.';
+    const annotation = {id:'n', document:'s',document_version:'v',start:4,end:8,quote:'term',prefix:'Old ',suffix:'.',comment:'x'};
+    expect(locateAnchor(root, annotation)?.startOffset).toBe(14);
+  });
   it('refuses an ambiguous fallback and selections outside the document', () => {
     const root = document.createElement('div'); root.textContent = 'term and term';
     expect(locateAnchor(root, {id:'n', document:'s',document_version:'v',start:99,end:103,quote:'term',prefix:'',suffix:'',comment:'x'})).toBeNull();

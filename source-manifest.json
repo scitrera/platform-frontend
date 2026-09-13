@@ -1222,15 +1222,15 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
-      "sha256": "31d71000d6d06dcc5b9606479725c32ef53980234801530db8095a33286b0346"
+      "sha256": "9e3853f80ce44c28875bd621cc2805409682ea04ebff73d1b09770a5da4565ca"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.ts",
-      "sha256": "99c01dfb2414903896eba2fec696735671810d2fa6b0ad2ff19f4a6be514bd9d"
+      "sha256": "4f829faaeb9716e6e17ea73f8befeccfc1397ed910731c424b0a06ba8a578c9f"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "4da1ce86cdd7a2c60c746217b63984f8696736c9a235936d282e59fecd4ecc86"
+      "sha256": "c8972e4d64f4600982d26f74f55ad4d40212f4e5164328bdd846b0b90c47850e"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
