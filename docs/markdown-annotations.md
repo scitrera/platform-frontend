@@ -38,3 +38,5 @@ user explicitly clears them, with confirmation.
 Keyboard users can select document text with Shift + arrow keys, tab to Add
 comment, and save with Ctrl/Cmd + Enter. Comment actions have accessible names;
 errors retain the draft and are announced through an alert.
+
+Use **Expand** for a full document review with margin space when the host app uses narrow panes. The expanded view preserves open editor text; Escape returns to the app.

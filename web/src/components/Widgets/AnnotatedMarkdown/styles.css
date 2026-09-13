@@ -47,3 +47,11 @@
  .annotation-instructions {flex-basis:100%;}
  .annotation-rail {border-top:1px solid var(--annotation-line);padding-top:12px;}
 }
+
+.annotation-dialog {position:fixed;inset:0;margin:auto;padding:0;border:1px solid var(--theme-card-border, #dce2e9);border-radius:8px;width:min(1280px, calc(100vw - 32px));height:calc(100dvh - 48px);max-width:none;max-height:none;overflow:hidden;}
+.annotation-dialog::backdrop {background:#18253866;}
+.annotation-dialog .annotation-body {grid-template-columns:minmax(0, 1fr);}
+@container (min-width: 640px) {
+ .annotation-dialog .annotation-body {grid-template-columns:minmax(0, 1fr) 280px;gap:28px;padding:28px;}
+ .annotation-dialog .annotation-document {padding:36px;}
+}

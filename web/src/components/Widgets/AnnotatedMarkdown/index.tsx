@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
-import {MessageSquarePlus, MessageSquare, Pencil, Trash2, Send, X} from 'lucide-react';
+import {MessageSquarePlus, MessageSquare, Pencil, Trash2, Send, X, Maximize2, Minimize2} from 'lucide-react';
 import {SciMarkdown} from '../../Apps/Chat/SciMarkdown';
 import {locateAnchor, selectedAnchor, type TextAnnotation} from './anchors';
 
@@ -22,6 +22,8 @@ type Placement = {id: string; top: number; rects: {top: number; left: number; wi
 /** Text-anchored, controlled feedback. Persistence and submission belong to the host app. */
 export function AnnotatedMarkdown({children, documentId, documentVersion, annotations, onChange, onSubmit,
   disabled = false, stale = false, submitLabel = 'Submit comments'}: AnnotatedMarkdownProps) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [expanded, setExpanded] = useState(false);
   const article = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const rail = useRef<HTMLElement>(null);
@@ -55,7 +57,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
       bottom = p.top + (card?.offsetHeight || 180) + 12;
     }
     setPlacements(previous => JSON.stringify(previous) === JSON.stringify(placed) ? previous : placed);
-  }, [visible, editor, stale, documentVersion]);
+  }, [visible, editor, stale, documentVersion, expanded]);
 
   useLayoutEffect(() => {
     measure();
@@ -66,7 +68,11 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
     return () => observer.disconnect();
   }, [measure]);
   useEffect(() => { setSelection(null); }, [documentId, documentVersion]);
-  useEffect(() => { if (editor) editorInput.current?.focus(); }, [editor?.id]);
+  useEffect(() => {
+    if (expanded) dialog.current?.showModal();
+    else dialog.current?.close();
+    if (editor) editorInput.current?.focus();
+  }, [expanded, editor?.id]);
   useEffect(() => {
     if (!editor) return;
     const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); };
@@ -92,7 +98,8 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
     setBusy(true); setError('');
     try {
       const comment = {...editor, comment: editor.comment.trim()};
-      await onChange([...annotations.filter(a => a.id !== editor.id), comment]);
+      await onChange(annotations.some(a => a.id === editor.id)
+        ? annotations.map(a => a.id === editor.id ? comment : a) : [...annotations, comment]);
       setEditor(null);
     } catch (e) { setError(e instanceof Error ? e.message : 'Unable to save this comment. Your text is retained.'); }
     finally { setBusy(false); }
@@ -118,8 +125,12 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const last = placements.at(-1);
   const height = last ? last.top + (findCard(last.id)?.offsetHeight || 180) + 24 : 0;
 
-  return <section className="annotated-markdown" aria-label="Document review">
+  const content = <section className="annotated-markdown" aria-label="Document review">
     <div className="annotation-toolbar">
+      <button type="button" className="annotation-button" onClick={() => setExpanded(!expanded)}
+        aria-label={expanded ? 'Close expanded view' : 'Expand document'} title={expanded ? 'Close expanded view' : 'Expand document'}>
+        {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : 'Expand'}</span>
+      </button>
       <div className="annotation-instructions"><MessageSquare size={17} aria-hidden="true"/>
         <span>Select a passage to add a comment</span>
       </div>
@@ -196,4 +207,11 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
       </div>
     </div>
   </section>;
+  return <>
+    {!expanded && content}
+    <dialog className="annotation-dialog" ref={dialog} aria-label="Expanded document review"
+      onCancel={() => setExpanded(false)} onClose={() => setExpanded(false)}>
+      {expanded && content}
+    </dialog>
+  </>;
 }

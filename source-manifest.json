@@ -170,7 +170,7 @@
     },
     {
       "path": "docs/markdown-annotations.md",
-      "sha256": "be90beb4b7f63b214f5de7782e88154769e6e15274370bf213fad28bd225a9f1"
+      "sha256": "bffa10342c0b672adedfc824608512ef7e5a6bf3c9d66911f6b0516242f6f550"
     },
     {
       "path": "docs/verification.md",
@@ -1218,7 +1218,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/AnnotatedMarkdown.test.tsx",
-      "sha256": "c384bf8642db535e1cb341e936c1a3bebd8c9bef4458cfcf4edbc61e1939d419"
+      "sha256": "396a6a0bd542b392a0e79ea7c3a2191fbf4674f9ac68634a5a4866206fbe9b47"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1230,11 +1230,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "c8972e4d64f4600982d26f74f55ad4d40212f4e5164328bdd846b0b90c47850e"
+      "sha256": "852b17099d02c20008f7f7d240e67a661862bee127f0dc32bc52dc6da09e01c3"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "c32eae63b226623286419c095ec67aff2bd749c0f73573702ad3f0a929bf4f83"
+      "sha256": "e02e62479c0549fe3abfd507e10a9049818b0f8496edc29e4da4ac26a7cf6ac9"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",

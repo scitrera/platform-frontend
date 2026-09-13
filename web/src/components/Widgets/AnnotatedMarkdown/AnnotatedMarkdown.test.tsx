@@ -6,6 +6,8 @@ import type {TextAnnotation} from './anchors';
 
 vi.mock('../../Apps/Chat/SciMarkdown', () => ({SciMarkdown: ({children}: {children: string}) => <p>{children}</p>}));
 beforeAll(() => {
+  HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
+  HTMLDialogElement.prototype.close = function () { this.removeAttribute('open'); };
   Range.prototype.getClientRects = () => [] as unknown as DOMRectList;
   vi.stubGlobal('ResizeObserver', class { observe() {} disconnect() {} });
 });
@@ -27,6 +29,15 @@ describe('margin comments', () => {
     fireEvent.click(screen.getByRole('button',{name:'Save comment'}));
     await waitFor(()=>expect(p.onChange).toHaveBeenCalledOnce());
     expect(p.onChange.mock.calls[0][0]).toEqual([p.annotations[0],expect.objectContaining({quote:'five-year term',comment:'Please shorten this.',document:'summary',document_version:'v1',start:2,end:16})]);
+  });
+  it('retains an open comment while expanding and closing the document', () => {
+    const p=props();render(<AnnotatedMarkdown {...p}/>);selectPassage();fireEvent.click(screen.getByRole('button',{name:'Add comment'}));
+    fireEvent.change(screen.getByLabelText('Your comment'),{target:{value:'Keep this open comment.'}});
+    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    expect(screen.getByRole('dialog',{name:'Expanded document review'})).toBeVisible();
+    expect(screen.getByLabelText('Your comment')).toHaveValue('Keep this open comment.');
+    fireEvent.click(screen.getByRole('button',{name:'Close expanded view'}));
+    expect(screen.getByLabelText('Your comment')).toHaveValue('Keep this open comment.');
   });
   it('keeps editor text when saving fails', async () => {
     const p=props();p.onChange.mockRejectedValue(new Error('Another tab changed these comments.'));
