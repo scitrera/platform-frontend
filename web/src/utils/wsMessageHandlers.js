@@ -333,7 +333,7 @@ export function setupSocketMessageHandlers(socketInstance, {
     setupHandler(CHAT.MESSAGE_TASK_DONE, (message) => {
         const p = message.payload || {};
         const threadId = normalizeIncomingThreadId(p.threadId);
-        clearActiveChatTask && clearActiveChatTask(threadId);
+        if (p.taskId) clearActiveChatTask && clearActiveChatTask(threadId, p.taskId);
         DEBUG_MODE && console.log(
             `MESSAGE_TASK_DONE: thread=${threadId} task=${p.taskId} status=${p.status}`,
         );

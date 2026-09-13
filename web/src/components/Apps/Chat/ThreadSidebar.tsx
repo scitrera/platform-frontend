@@ -1,7 +1,8 @@
+import WorkProfileSelect from '@/components/Chat/WorkProfileSelect';
 import React, {useState} from 'react';
 import {Search, Plus, MessageCircle, CornerDownRight, Trash2, ChevronLeft, ChevronRight} from 'lucide-react';
 import {timestampToString} from '../../../lib/utils';
-import {DEFAULT_THREAD_ID, type ChatThread} from '@/types/chat';
+import {DEFAULT_THREAD_ID, type ChatThread, type WorkProfileOption} from '@/types/chat';
 
 export interface ThreadSidebarProps {
     isOpen: boolean;
@@ -13,6 +14,9 @@ export interface ThreadSidebarProps {
     activeParentThreadId?: string | null;
     onThreadSelect: (id: string) => void;
     onThreadCreate: (name: string) => void;
+    workProfiles?: WorkProfileOption[];
+    newWorkProfile?: string;
+    onWorkProfileChange?: (value: string) => void;
     onThreadDelete: (id: string) => void;
     onThreadSearch: (term: string) => void;
     uiConfig?: Record<string, unknown>;
@@ -26,6 +30,9 @@ export default function ThreadSidebar({
     activeParentThreadId = null,
     onThreadSelect,
     onThreadCreate,
+    workProfiles = [],
+    newWorkProfile = '',
+    onWorkProfileChange = () => {},
     onThreadDelete,
     onThreadSearch,
 }: ThreadSidebarProps) {
@@ -84,6 +91,7 @@ export default function ThreadSidebar({
                     </div>
 
                     {/* New Thread Button */}
+                    <WorkProfileSelect profiles={workProfiles} value={newWorkProfile} onChange={onWorkProfileChange}/>
                     <button
                         onClick={handleCreateThread}
                         className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors duration-200"

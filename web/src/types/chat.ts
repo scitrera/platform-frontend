@@ -76,7 +76,14 @@ export interface DynamicContentBlock {
  */
 export const DEFAULT_THREAD_ID = '_default';
 
+export interface WorkProfileOption {
+    id: string;
+    name: string;
+}
+
 export interface ChatThread {
+    /** Profile bound when this conversation was created; empty means personal. */
+    workProfile?: string;
     // Never null: the default thread uses ``DEFAULT_THREAD_ID`` as its id.
     id: string;
     name: string;

@@ -92,6 +92,8 @@ const DEFAULT_UI_CONFIG: Record<string, unknown> = {
   showChatByDefault: true,
   enableDefaultThreads: true,
   enableThreads: true,
+  // Tenant opt-in: expose profile selection in the New Thread controls.
+  enableWorkProfileSelection: false,
   // "Workspace as thread": hide the thread selector and pin the active chat
   // thread to the current workspace (thread_id === workspace id) — one implicit
   // thread per workspace. Global default here; a workspace can force it on via
@@ -125,12 +127,12 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   // ── Actions ────────────────────────────────────────────────────────────
   setUserProfile: (profile) =>
-    set((state) => {
+    set(() => {
       const { uiConfig: profileUiConfig, ...userInfoWithoutUiConfig } = profile;
       return {
         tenantId: profile.tenant,
         userInfo: userInfoWithoutUiConfig as UserProfile,
-        uiConfig: { ...state.uiConfig, ...profileUiConfig },
+        uiConfig: { ...DEFAULT_UI_CONFIG, ...profileUiConfig },
       };
     }),
 

@@ -66,7 +66,7 @@ export interface ChatStateValue {
     // chat_message task state
     activeTaskByThread: ActiveTaskByThread;
     setActiveChatTask: (threadId: string, info: ActiveTaskInfo) => void;
-    clearActiveChatTask: (threadId: string) => void;
+    clearActiveChatTask: (threadId: string, taskId?: string) => void;
     setActiveChatTasksMap: (map: ActiveTaskByThread | null | undefined) => void;
     getActiveChatTaskForThread: (threadId: string) => ActiveTaskInfo | null;
     // ── Universal messaging-spec stream state (Phase 4 — source of truth) ──
@@ -85,6 +85,7 @@ export interface ChatStateValue {
     clearSpecMessages: () => void;
     upsertSpecMessage: (msg: SpecChatMessage) => void;
     setSpecMessagesList: (msgs: SpecChatMessage[]) => void;
+    beginSpecHistoryLoad: () => void;
     /** Replace the text content of the first ``text`` part on a spec msg. */
     editSpecMessageText: (msgId: string, newText: string) => void;
     /** Drop every spec message strictly after ``msgId``. Inclusive=false. */
@@ -144,6 +145,7 @@ const DEFAULT_CONTEXT: ChatStateValue = {
     clearSpecMessages: NOOP,
     upsertSpecMessage: NOOP,
     setSpecMessagesList: NOOP,
+    beginSpecHistoryLoad: NOOP,
     editSpecMessageText: NOOP,
     truncateSpecMessagesAfter: NOOP,
     dropSpecMessageAndAfter: () => '',
@@ -191,6 +193,10 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
     // ``upsertSpecMessage`` / ``setSpecMessagesList`` (which run the
     // payload through ``legacyMessageToSpec``).
     const [specMessages, setSpecMessages] = useState<SpecMessageState>({});
+    // A history response is a snapshot taken before later stream events.
+    // Keep messages changed after its request; reset the boundary on refresh
+    // so authoritative history can replace state left behind by a disconnect.
+    const liveSinceHistoryRequest = React.useRef(new Set<string>());
 
     // Live-transcript ordering. created_at can't be the sort key on the live
     // path: the optimistic user message is stamped with the CLIENT clock while
@@ -272,12 +278,16 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
     // ``threadId`` is always canonical (``DEFAULT_THREAD_ID`` for the default
     // thread), matching the backend, so it's used directly as the map key.
     const setActiveChatTask: ChatStateValue['setActiveChatTask'] = (threadId, info) => {
-        setActiveTaskByThread(prev => ({...prev, [threadId]: info}));
+        setActiveTaskByThread(prev => {
+            const previous = prev[threadId];
+            if (previous?.startedAt && info.startedAt && previous.startedAt > info.startedAt) return prev;
+            return {...prev, [threadId]: info};
+        });
     };
 
-    const clearActiveChatTask: ChatStateValue['clearActiveChatTask'] = (threadId) => {
+    const clearActiveChatTask: ChatStateValue['clearActiveChatTask'] = (threadId, taskId) => {
         setActiveTaskByThread(prev => {
-            if (!(threadId in prev)) return prev;
+            if (!(threadId in prev) || (taskId && prev[threadId].taskId !== taskId)) return prev;
             const {[threadId]: _drop, ...rest} = prev;
             return rest;
         });
@@ -297,26 +307,42 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
     // silently no-op'd by the reducer (forward-compat).
     const dispatchSpecEvent: ChatStateValue['dispatchSpecEvent'] = (event) => {
         if (!event || typeof event !== 'object') return;
+        const messageId = 'message' in event ? event.message.id
+            : 'message_id' in event ? event.message_id : null;
+        if (messageId) liveSinceHistoryRequest.current.add(messageId);
         setSpecMessages(prev => applyEvent(prev, event));
         setLatestProgress(null);
     };
 
     const clearSpecMessages: ChatStateValue['clearSpecMessages'] = () => {
+        liveSinceHistoryRequest.current.clear();
         setSpecMessages({});
     };
 
     const upsertSpecMessage: ChatStateValue['upsertSpecMessage'] = (msg) => {
         if (!msg || !msg.id) return;
+        liveSinceHistoryRequest.current.add(msg.id);
         setSpecMessages(prev => ({...prev, [msg.id]: msg}));
         setLatestProgress(null);
     };
 
+    const beginSpecHistoryLoad = () => {
+        liveSinceHistoryRequest.current.clear();
+    };
+
     const setSpecMessagesList: ChatStateValue['setSpecMessagesList'] = (msgs) => {
-        const next: Record<string, SpecChatMessage> = {};
+        const snapshot: Record<string, SpecChatMessage> = {};
         for (const m of msgs) {
-            if (m?.id) next[m.id] = m;
+            if (m?.id) snapshot[m.id] = m;
         }
-        setSpecMessages(next);
+        const liveIds = new Set(liveSinceHistoryRequest.current);
+        setSpecMessages(prev => {
+            const next = {...snapshot};
+            for (const id of liveIds) {
+                if (prev[id]) next[id] = prev[id];
+            }
+            return next;
+        });
     };
 
     const editSpecMessageText: ChatStateValue['editSpecMessageText'] = (msgId, newText) => {
@@ -422,7 +448,7 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
             // and React warns on the duplicate key.
             const serverDefault = incoming.find(t => t.id === DEFAULT_THREAD_ID);
             const pinnedDefault: ChatThread = serverDefault
-                ? {...DEFAULT_THREAD, lastActivity: serverDefault.lastActivity ?? DEFAULT_THREAD.lastActivity}
+                ? {...DEFAULT_THREAD, workProfile: serverDefault.workProfile, lastActivity: serverDefault.lastActivity ?? DEFAULT_THREAD.lastActivity}
                 : DEFAULT_THREAD;
             const rest = incoming.filter(t => t.id !== DEFAULT_THREAD_ID);
             return [pinnedDefault, ...rest, ...keptChildren];
@@ -432,6 +458,7 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
     const createThread: ChatStateValue['createThread'] = (def) => {
         DEBUG_MODE && console.log(`createThread(${JSON.stringify(def)})`);
         const newThread: ChatThread = {
+            workProfile: def.workProfile,
             id: def.id,
             name: def.name,
             lastActivity: def.lastActivity ?? null,
@@ -536,6 +563,7 @@ export function ChatStateProvider({children}: ChatStateProviderProps) {
         clearSpecMessages,
         upsertSpecMessage,
         setSpecMessagesList,
+        beginSpecHistoryLoad,
         editSpecMessageText,
         truncateSpecMessagesAfter,
         dropSpecMessageAndAfter,

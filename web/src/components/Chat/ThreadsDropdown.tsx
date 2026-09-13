@@ -1,7 +1,8 @@
+import WorkProfileSelect from '@/components/Chat/WorkProfileSelect';
 import React, {useEffect, useRef, useState} from 'react';
 import {Search, Plus, MessageCircle, CornerDownRight, Trash2} from 'lucide-react';
 import {cn, timestampToString} from '@/lib/utils';
-import {DEFAULT_THREAD_ID, type ChatThread} from '@/types/chat';
+import {DEFAULT_THREAD_ID, type ChatThread, type WorkProfileOption} from '@/types/chat';
 
 export interface ThreadsDropdownProps {
     open: boolean;
@@ -13,6 +14,9 @@ export interface ThreadsDropdownProps {
     activeParentThreadId?: string | null;
     onThreadSelect: (id: string) => void;
     onThreadCreate: (name: string) => void;
+    workProfiles?: WorkProfileOption[];
+    newWorkProfile?: string;
+    onWorkProfileChange?: (value: string) => void;
     onThreadDelete: (id: string) => void;
     onThreadSearch: (term: string) => void;
 }
@@ -31,6 +35,9 @@ export default function ThreadsDropdown({
     activeParentThreadId = null,
     onThreadSelect,
     onThreadCreate,
+    workProfiles = [],
+    newWorkProfile = '',
+    onWorkProfileChange = () => {},
     onThreadDelete,
     onThreadSearch,
 }: ThreadsDropdownProps) {
@@ -98,6 +105,7 @@ export default function ThreadsDropdown({
                             className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                         />
                     </div>
+                    <WorkProfileSelect profiles={workProfiles} value={newWorkProfile} onChange={onWorkProfileChange}/>
                     <button
                         type="button"
                         onClick={handleCreateThread}
