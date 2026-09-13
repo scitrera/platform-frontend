@@ -65,6 +65,7 @@ export interface DynamicJSXComponents {
   Select: React.ComponentType<Record<string, unknown>>;
 
   // Domain Widgets
+  AnnotatedMarkdown: React.ComponentType<import("../components/Widgets/AnnotatedMarkdown").AnnotatedMarkdownProps>;
   GenericTable: React.ComponentType<Record<string, unknown>>;
   Spreadsheet: React.ComponentType<Record<string, unknown>>;
   DocumentImageViewer: React.ComponentType<Record<string, unknown>>;

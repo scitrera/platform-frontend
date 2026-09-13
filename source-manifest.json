@@ -169,6 +169,10 @@
       "sha256": "34e399dd38b26bff0bf6b6960d6d7759095a3dd391d2baa50e3f23f43d076548"
     },
     {
+      "path": "docs/markdown-annotations.md",
+      "sha256": "be90beb4b7f63b214f5de7782e88154769e6e15274370bf213fad28bd225a9f1"
+    },
+    {
       "path": "docs/verification.md",
       "sha256": "4861e7cc1cf264a4fa24e3d6c9fad10c33187f6dcd77e38d912f3d183fe81239"
     },
@@ -762,7 +766,7 @@
     },
     {
       "path": "web/src/App.css",
-      "sha256": "6531ac97d205ab9c8bab2ab953660827b758e4119cde6714de2e50281def9410"
+      "sha256": "f0cedee1a0f5ee05e94f3857a65c66e80981e864feefb44d5eacd5d4b98dd16f"
     },
     {
       "path": "web/src/App.jsx",
@@ -1050,7 +1054,7 @@
     },
     {
       "path": "web/src/components/Apps/DynamicJSXRenderer.jsx",
-      "sha256": "c83da5a76e1ada26d7b42e49ed6480885abbfb8aab0502c19ab45c873ce229e3"
+      "sha256": "52ecfbfe0203bf850ea579d3ed99dabb81bc9cb0bfe219a2069a03208c8b92e4"
     },
     {
       "path": "web/src/components/Apps/Knowledgebase/ArticleMeta.tsx",
@@ -1211,6 +1215,26 @@
     {
       "path": "web/src/components/UI/Toast.jsx",
       "sha256": "077085d01e76a7bfc59aae92766079edc3f6ad022c6b0f6eec0cf6ded2bf1fee"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/AnnotatedMarkdown.test.tsx",
+      "sha256": "c384bf8642db535e1cb341e936c1a3bebd8c9bef4458cfcf4edbc61e1939d419"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
+      "sha256": "31d71000d6d06dcc5b9606479725c32ef53980234801530db8095a33286b0346"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.ts",
+      "sha256": "99c01dfb2414903896eba2fec696735671810d2fa6b0ad2ff19f4a6be514bd9d"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
+      "sha256": "4da1ce86cdd7a2c60c746217b63984f8696736c9a235936d282e59fecd4ecc86"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
+      "sha256": "c32eae63b226623286419c095ec67aff2bd749c0f73573702ad3f0a929bf4f83"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",
@@ -1526,7 +1550,7 @@
     },
     {
       "path": "web/src/types/dynamic-jsx.ts",
-      "sha256": "cd38920ff867dfdc568ea52297df4d840b32b9148622b0e1283ac285272d5df3"
+      "sha256": "fc7e8337150f2def23212092a349e5f76408583c820e3f51739d292c4df99273"
     },
     {
       "path": "web/src/types/knowledgebase.ts",
