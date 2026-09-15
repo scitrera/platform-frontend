@@ -41,7 +41,8 @@ import {
     LineElement,
     Title as ChartJsTitle
 } from 'chart.js';
-import {DEBUG_MODE, DEFAULT_APPS, UI_CONSTANTS} from "../../constants/AppConstants";
+import {DEBUG_MODE} from "../../constants/AppConstants";
+import {resolveAppPanel} from '@/utils/appPanels';
 import {ErrorBoundary} from "react-error-boundary";
 import AppsIconGrid from "./AppsIconGrid.jsx";
 import AppsList from "./AppsList.jsx";
@@ -246,20 +247,19 @@ const DynamicJSXRenderer = ({componentId}) => {
         return useWorkspaceStore.getState().setCurrentWorkspace(workspaceId);
     }, []) // <- no deps, identity never changes
 
-    const switchApplication = useCallback((appId) => {
-        return useAppPanelStore.getState().loadApp({
-            id: appId, type: appId, title: "scitrera.ai",
-        });
+    const switchApplication = useCallback((appId, options) => {
+        return useAppPanelStore.getState().loadApp(
+            resolveAppPanel(appId, useWorkspaceStore.getState().availableApps, options),
+        );
     }, []) // <- no deps, identity never changes
 
-    const switchApplication2 = useCallback((appId) => {
+    const switchApplication2 = useCallback((appId, options) => {
         if (appId === null) {
             return useAppPanelStore.getState().closeApp2();
         }
-        const payload = appId === UI_CONSTANTS.APP_ID_CHAT
-            ? DEFAULT_APPS.DEFAULT_CHAT_APP
-            : {id: appId, type: appId, title: "scitrera.ai"};
-        return useAppPanelStore.getState().loadApp2(payload);
+        return useAppPanelStore.getState().loadApp2(
+            resolveAppPanel(appId, useWorkspaceStore.getState().availableApps, options),
+        );
     }, []) // <- no deps, identity never changes
 
     const setSidebarCollapsedState = useCallback((sidebarState) => {
@@ -402,8 +402,8 @@ const DynamicJSXRenderer = ({componentId}) => {
             uploadFile: uploadFileStable, // file upload (pre-signed URL + XHR)
             configureWorkspace, // dispatch workspace w/ custom definition
             switchWorkspace, // dispatch workspace by id
-            switchApplication, // set main application (by id)
-            switchApplication2, // set 2nd application (by id), chat expected for now
+            switchApplication, // set main application (id, optional panel settings)
+            switchApplication2, // set secondary application (id, optional panel settings)
             refreshContent, // request dynamic JSX update
             setSidebarCollapsedState, // set (or toggle) sidebar state
             registerAppListener: registerAppListenerStable, // register listener for routing messages to the app

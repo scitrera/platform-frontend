@@ -89,6 +89,8 @@ export interface DynamicJSXScope extends DynamicJSXComponents {
   context: DynamicJSXContext;
 
   // RPC and navigation
+  switchApplication: (appId: string | null, options?: import('../utils/appPanels').AppPanelOptions) => void;
+  switchApplication2: (appId: string | null, options?: import('../utils/appPanels').AppPanelOptions) => void;
   rpcToolCall: RpcToolCall;
   navigation: NavigationTools;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {beforeEach, describe, expect, it, vi} from 'vitest';
 import AppArea from './AppArea';
 
@@ -13,7 +13,11 @@ vi.mock('./Knowledgebase/KnowledgebaseApp', () => ({default: () => null}));
 vi.mock('./Library/LibraryApp', () => ({default: () => null}));
 vi.mock('./Sharing/SharingApp', () => ({default: () => null}));
 vi.mock('./DocViewer/DocumentViewerApp', () => ({default: () => null}));
-vi.mock('./DynamicAppPlaceholder.jsx', () => ({default: () => <p>Selected application</p>}));
+vi.mock('./DynamicAppPlaceholder.jsx', () => ({default: ({appName, showCloseButton, onClose}) =>
+    <section aria-label={appName || 'Selected application'}>
+        <p>Selected application</p>
+        {showCloseButton && <button onClick={onClose}>Close {appName || 'App'}</button>}
+    </section>}));
 vi.mock('../Workspaces/SelectWorkspacePrompt.jsx', () => ({default: () => <p>Select workspace</p>}));
 vi.mock('../Auth/UnauthenticatedPlaceholder.jsx', () => ({default: () => <p>Sign in</p>}));
 vi.mock('./SelectApplicationPrompt.jsx', () => ({default: ({dynamicLoad}) =>
@@ -48,5 +52,55 @@ describe('empty application area', () => {
         state.panels.main = null;
         rerender(<AppArea/>);
         expect(screen.getByText('Tenant app-selection prompt')).toBeVisible();
+    });
+});
+
+
+describe('app pane header policy', () => {
+    beforeEach(() => {
+        state.workspace.availableApps = [{id: 'review', name: 'Review'}, {id: 'other', name: 'Other'}];
+        state.panels.main = {id: 'review'};
+        state.panels.secondary = {id: '_preview', title: 'Preview'};
+        state.panels.closeMainApp = vi.fn();
+        state.panels.closeApp2 = vi.fn();
+    });
+
+    it('labels an internal preview and hides only its close control when disabled', () => {
+        state.panels.secondary.closeable = false;
+        render(<AppArea/>);
+        expect(screen.getByRole('region', {name: 'Preview'})).toBeVisible();
+        expect(screen.queryByRole('button', {name: 'Close Preview'})).not.toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', {name: 'Close Review'}));
+        expect(state.panels.closeMainApp).toHaveBeenCalledOnce();
+    });
+
+    it('keeps independent secondary panes closeable by default', () => {
+        render(<AppArea/>);
+        fireEvent.click(screen.getByRole('button', {name: 'Close Preview'}));
+        expect(state.panels.closeApp2).toHaveBeenCalledOnce();
+    });
+
+    it.each([
+        ['ordinary app', {}, 2, undefined, true],
+        ['single app', {}, 1, undefined, false],
+        ['default app', {default_app: 'review'}, 2, undefined, false],
+        ['app-only workspace', {mode: 'app-only'}, 2, undefined, false],
+        ['no-chat workspace', {mode: 'no-chat'}, 2, undefined, false],
+        ['explicit disable', {}, 2, false, false],
+        ['explicit enable', {mode: 'app-only'}, 1, true, true],
+    ])('%s uses the expected main-pane close policy', (_label, workspace, count, closeable, expected) => {
+        state.workspace.currentWorkspaceInfo = workspace;
+        state.workspace.availableApps = state.workspace.availableApps.slice(0, count);
+        state.panels.main.closeable = closeable;
+        render(<AppArea/>);
+        expect(Boolean(screen.queryByRole('button', {name: 'Close Review'}))).toBe(expected);
+    });
+
+    it('uses explicit pane titles and still resolves legacy placeholders through the catalog', () => {
+        state.panels.main.title = 'scitrera.ai';
+        state.panels.secondary = {id: 'other', title: 'Custom title'};
+        render(<AppArea/>);
+        expect(screen.getByRole('region', {name: 'Review'})).toBeVisible();
+        expect(screen.getByRole('region', {name: 'Custom title'})).toBeVisible();
     });
 });

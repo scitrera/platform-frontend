@@ -14,6 +14,7 @@ import {UI_CONSTANTS} from "../../constants/AppConstants";
 import {useAuthStore} from '@/stores/authStore';
 import {useWorkspaceStore} from '@/stores/workspaceStore';
 import {useAppPanelStore} from '@/stores/appPanelStore';
+import {isAppPanelCloseable} from '@/utils/appPanels';
 
 // Main content area that holds one or two application panels.
 const AppArea = () => {
@@ -113,18 +114,9 @@ const AppArea = () => {
 
             if (!panelConfig) return null;
 
-            const showCloseButton = (
-                isMainPanel &&
-                panelConfig.id !== UI_CONSTANTS.APP_ID_SELECT_WORKSPACE_PROMPT &&
-
-                // and add the requirement that we're not showing the default_app if there is 1 and only 1 available app (special scenario)
-                (availableApps.length !== 1 && panelConfig.id !== currentWorkspaceInfo?.default_app) &&
-
-                // do not show close button if we're in 'app only' mode (which means do not show chat!)
-                (currentWorkspaceInfo?.mode !== "app-only" &&
-                    // or for main panel in no-chat mode (since app is primary and secondary uses are app-controlled)
-                    currentWorkspaceInfo?.mode !== 'no-chat')
-            ) || (!isMainPanel || panelConfig.closeable); // NOTE: so we can manually have secondary apps that are closeable
+            const showCloseButton = isAppPanelCloseable(
+                panelConfig, isMainPanel, currentWorkspaceInfo, availableApps.length,
+            );
 
             const closeFunction = () => {
                 if (isMainPanel) {
@@ -162,13 +154,16 @@ const AppArea = () => {
                     // if we have a placeholder application title/name, then we should try to get it from availableApps
                     const appData = availableApps.find(app => app.id === panelConfig.id);
                     const appIcon = appData?.icon;
-                    const appTitle = appData?.name || panelConfig.title;
+                    // Older navigation paths use a brand placeholder until the catalog arrives.
+                    const appTitle = panelConfig.title === 'scitrera.ai'
+                        ? (appData?.name || panelConfig.title)
+                        : (panelConfig.title || appData?.name || panelConfig.name);
                     return (<DynamicAppPlaceholder
                         appName={appTitle || panelConfig.title}
                         appIcon={appIcon}
                         workspaceId={currentWorkspaceId}
                         panelConfig={panelConfig}
-                        // Show a close button on the main panel only if it's not chat or the initial prompt
+                        // The same policy applies to main and secondary app headers.
                         showCloseButton={showCloseButton}
                         onClose={closeFunction}
                     />);

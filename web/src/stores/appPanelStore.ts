@@ -79,7 +79,7 @@ interface AppPanelStore {
   /** Load an application into the secondary panel. */
   loadApp2: (app: AppInfo | null) => void;
 
-  /** Close the main panel and reset split to 100. */
+  /** Close the main panel and its owned secondary pane; reset split to 100. */
   closeMainApp: () => void;
 
   /** Close the secondary panel and reset split to 100. */
@@ -141,6 +141,8 @@ export const useAppPanelStore = create<AppPanelStore>((set) => ({
   loadApp: (app, opts = {}) => {
     set((state) => ({
       main: app,
+      secondary: state.secondary?.ownerAppId && state.secondary.ownerAppId !== app?.id
+        ? null : state.secondary,
       latestAppStatus: null,
       appQueryParams: opts.queryParams !== undefined ? opts.queryParams : state.appQueryParams,
       appHash: opts.hashParams !== undefined ? opts.hashParams : state.appHash,
@@ -152,19 +154,21 @@ export const useAppPanelStore = create<AppPanelStore>((set) => ({
   },
 
   loadApp2: (app) => {
-    set({
-      secondary: app,
-      appSplit: readPersistedSplit(),
+    set((state) => {
+      // A pending app RPC may finish after its parent has been closed/replaced.
+      if (app?.ownerAppId && app.ownerAppId !== state.main?.id) return state;
+      return {secondary: app, appSplit: readPersistedSplit()};
     });
     useUIStore.getState().closeAllDropdowns();
   },
 
   closeMainApp: () =>
-    set({
+    set((state) => ({
       main: null,
+      secondary: state.secondary?.ownerAppId ? null : state.secondary,
       latestAppStatus: null,
       appSplit: 100,
-    }),
+    })),
 
   closeApp2: () =>
     set({

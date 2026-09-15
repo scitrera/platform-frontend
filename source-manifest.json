@@ -161,6 +161,10 @@
       "sha256": "34b2c31a8f4a12f2ac23b35f2f81b3a852cca3318a226024f821f8019303b5a6"
     },
     {
+      "path": "docs/application-panes.md",
+      "sha256": "5c1b6918377df073a7aaef29a8c55059c49be81f7b0e4e442d3dcfb04bebee30"
+    },
+    {
       "path": "docs/client-contracts.md",
       "sha256": "0c74c718fefae3629770a4aeede7b19f8677e0be215417ce9be77486d20da8b3"
     },
@@ -910,11 +914,11 @@
     },
     {
       "path": "web/src/components/Apps/AppArea.jsx",
-      "sha256": "fef2a1c4b9961f3992c305b4b0f0beeb0fdf9e31a6963cbc2912290f31ceb9b6"
+      "sha256": "e1624e60268588f063e81889bf7739fae199284c762fa78ebac3d023fffca458"
     },
     {
       "path": "web/src/components/Apps/AppArea.test.jsx",
-      "sha256": "c9ee9ce0a397a104bbb86e60b3a5734a5561759a0c88d20a5827f465765902a7"
+      "sha256": "41b518f6f9ca5cc6b9a8a4ece30fb052441225fa906eba2a1d617614da264ad0"
     },
     {
       "path": "web/src/components/Apps/AppCloseButton.tsx",
@@ -1058,7 +1062,7 @@
     },
     {
       "path": "web/src/components/Apps/DynamicJSXRenderer.jsx",
-      "sha256": "52ecfbfe0203bf850ea579d3ed99dabb81bc9cb0bfe219a2069a03208c8b92e4"
+      "sha256": "8ed3c0c5c0781f2e132584963fb69fdcdf3cefe31d6f90bbef7af6d8e9294508"
     },
     {
       "path": "web/src/components/Apps/Knowledgebase/ArticleMeta.tsx",
@@ -1525,8 +1529,12 @@
       "sha256": "d094d019d1bcf600bd2f58b39160ea4152da41c03906139cefe9fbd1af38b992"
     },
     {
+      "path": "web/src/stores/appPanelStore.test.ts",
+      "sha256": "7bd3d1915fa193e0409d7c3cbdcbe53f87005f1670d13e19188a78093194933f"
+    },
+    {
       "path": "web/src/stores/appPanelStore.ts",
-      "sha256": "d5790c9450017af2b3480551b164ea736c293348ab3fb1b2304e9a17a68544e8"
+      "sha256": "e5cf5ed658759b8d7f1022ba9b2fb608550ceff05f086204f00742360b12df25"
     },
     {
       "path": "web/src/stores/authStore.test.ts",
@@ -1558,7 +1566,7 @@
     },
     {
       "path": "web/src/types/dynamic-jsx.ts",
-      "sha256": "fc7e8337150f2def23212092a349e5f76408583c820e3f51739d292c4df99273"
+      "sha256": "c1056dc6e9bcc85e106ebe91f99797961954ff01d1ffd707d0da3e3404a166c5"
     },
     {
       "path": "web/src/types/knowledgebase.ts",
@@ -1574,7 +1582,7 @@
     },
     {
       "path": "web/src/types/state.ts",
-      "sha256": "406e7e59ee1c5ab75b2e23aeae4eb519e7d65dd2bcc3bd248164ff11bc3fa72c"
+      "sha256": "d2425e681cda360b1bfa31f56501fd4c08973d48b15a35881f365badb77e3f72"
     },
     {
       "path": "web/src/types/websocket.ts",
@@ -1603,6 +1611,14 @@
     {
       "path": "web/src/utils/agentToolRegistry.ts",
       "sha256": "0b106f6fb9df73fc97fd07e771585ef8a891ac504403715b70e9b6e7021d9a68"
+    },
+    {
+      "path": "web/src/utils/appPanels.test.ts",
+      "sha256": "463db6d057188bf455f498dc580678ff243ac5d5cbe8fee0471442cc5455547e"
+    },
+    {
+      "path": "web/src/utils/appPanels.ts",
+      "sha256": "cfe34c4ed4800f9aebc2b93680f4fb17fe17485335626e064c9c411a1007302f"
     },
     {
       "path": "web/src/utils/artifactExtractor.ts",

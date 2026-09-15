@@ -52,7 +52,10 @@ export interface AppInfo {
   mode?: string | null;
   iframe?: string | null;
   type?: string;
+  /** Explicit header X visibility; omitted uses workspace/panel defaults. */
   closeable?: boolean;
+  /** Secondary pane belongs to this main app and is removed when it leaves. */
+  ownerAppId?: string;
   onClose?: () => void;
 }
 
