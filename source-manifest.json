@@ -914,11 +914,11 @@
     },
     {
       "path": "web/src/components/Apps/AppArea.jsx",
-      "sha256": "e1624e60268588f063e81889bf7739fae199284c762fa78ebac3d023fffca458"
+      "sha256": "863c9ec268334b291fb381ecf508df4cee07f0b49a1e291db5caec16d3594737"
     },
     {
       "path": "web/src/components/Apps/AppArea.test.jsx",
-      "sha256": "41b518f6f9ca5cc6b9a8a4ece30fb052441225fa906eba2a1d617614da264ad0"
+      "sha256": "64b98af25a7774c4f579cbc835b56c7fc09ee0575ff0b401f80046d29b2947b5"
     },
     {
       "path": "web/src/components/Apps/AppCloseButton.tsx",

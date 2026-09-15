@@ -155,7 +155,7 @@ const AppArea = () => {
                     const appData = availableApps.find(app => app.id === panelConfig.id);
                     const appIcon = appData?.icon;
                     // Older navigation paths use a brand placeholder until the catalog arrives.
-                    const appTitle = panelConfig.title === 'scitrera.ai'
+                    const appTitle = panelConfig.title === 'scitrera.ai' || panelConfig.title === panelConfig.id
                         ? (appData?.name || panelConfig.title)
                         : (panelConfig.title || appData?.name || panelConfig.name);
                     return (<DynamicAppPlaceholder

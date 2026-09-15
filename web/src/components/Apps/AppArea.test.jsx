@@ -96,8 +96,8 @@ describe('app pane header policy', () => {
         expect(Boolean(screen.queryByRole('button', {name: 'Close Review'}))).toBe(expected);
     });
 
-    it('uses explicit pane titles and still resolves legacy placeholders through the catalog', () => {
-        state.panels.main.title = 'scitrera.ai';
+    it.each(['scitrera.ai', 'review'])('resolves legacy placeholder %s while preserving explicit titles', (placeholder) => {
+        state.panels.main.title = placeholder;
         state.panels.secondary = {id: 'other', title: 'Custom title'};
         render(<AppArea/>);
         expect(screen.getByRole('region', {name: 'Review'})).toBeVisible();
