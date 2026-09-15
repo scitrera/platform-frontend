@@ -169,6 +169,10 @@
       "sha256": "34e399dd38b26bff0bf6b6960d6d7759095a3dd391d2baa50e3f23f43d076548"
     },
     {
+      "path": "docs/markdown-annotations.md",
+      "sha256": "bffa10342c0b672adedfc824608512ef7e5a6bf3c9d66911f6b0516242f6f550"
+    },
+    {
       "path": "docs/verification.md",
       "sha256": "4861e7cc1cf264a4fa24e3d6c9fad10c33187f6dcd77e38d912f3d183fe81239"
     },
@@ -762,7 +766,7 @@
     },
     {
       "path": "web/src/App.css",
-      "sha256": "6531ac97d205ab9c8bab2ab953660827b758e4119cde6714de2e50281def9410"
+      "sha256": "f0cedee1a0f5ee05e94f3857a65c66e80981e864feefb44d5eacd5d4b98dd16f"
     },
     {
       "path": "web/src/App.jsx",
@@ -906,7 +910,11 @@
     },
     {
       "path": "web/src/components/Apps/AppArea.jsx",
-      "sha256": "6b85c5aa155d903153ef1b98131a87616d0b5d9819e3e639235571b82791d499"
+      "sha256": "fef2a1c4b9961f3992c305b4b0f0beeb0fdf9e31a6963cbc2912290f31ceb9b6"
+    },
+    {
+      "path": "web/src/components/Apps/AppArea.test.jsx",
+      "sha256": "c9ee9ce0a397a104bbb86e60b3a5734a5561759a0c88d20a5827f465765902a7"
     },
     {
       "path": "web/src/components/Apps/AppCloseButton.tsx",
@@ -1050,7 +1058,7 @@
     },
     {
       "path": "web/src/components/Apps/DynamicJSXRenderer.jsx",
-      "sha256": "c83da5a76e1ada26d7b42e49ed6480885abbfb8aab0502c19ab45c873ce229e3"
+      "sha256": "52ecfbfe0203bf850ea579d3ed99dabb81bc9cb0bfe219a2069a03208c8b92e4"
     },
     {
       "path": "web/src/components/Apps/Knowledgebase/ArticleMeta.tsx",
@@ -1213,6 +1221,26 @@
       "sha256": "077085d01e76a7bfc59aae92766079edc3f6ad022c6b0f6eec0cf6ded2bf1fee"
     },
     {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/AnnotatedMarkdown.test.tsx",
+      "sha256": "396a6a0bd542b392a0e79ea7c3a2191fbf4674f9ac68634a5a4866206fbe9b47"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
+      "sha256": "9e3853f80ce44c28875bd621cc2805409682ea04ebff73d1b09770a5da4565ca"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.ts",
+      "sha256": "4f829faaeb9716e6e17ea73f8befeccfc1397ed910731c424b0a06ba8a578c9f"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
+      "sha256": "852b17099d02c20008f7f7d240e67a661862bee127f0dc32bc52dc6da09e01c3"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
+      "sha256": "e02e62479c0549fe3abfd507e10a9049818b0f8496edc29e4da4ac26a7cf6ac9"
+    },
+    {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",
       "sha256": "6ecab8186df4cf94f97ee403893d87c12f02b6a72457d6307c6936584c279d83"
     },
@@ -1290,11 +1318,15 @@
     },
     {
       "path": "web/src/components/Workspaces/CreateWorkspaceDialog.jsx",
-      "sha256": "a20f99acb530224dc99f41ba7bb4a1e97fd0df5d99753a6107390809e098b700"
+      "sha256": "1b820a6eb2979c1e7934f7df9501e1e236d86600936749c414886a6ba3efc909"
     },
     {
       "path": "web/src/components/Workspaces/SelectWorkspacePrompt.jsx",
-      "sha256": "53a27a1a2c9c057f0f74d2485819bcb3462f326fe760ffedffad9d96012455d7"
+      "sha256": "6c10c5c3021bdb3e527ba3c0831776bfc1cb263964cec68d137bd8bf172ac1b2"
+    },
+    {
+      "path": "web/src/components/Workspaces/SelectWorkspacePrompt.test.jsx",
+      "sha256": "2cdb8d6f52257d89abbcc242305eb94766d3f1873e2a0ccb31e4c2704c306c99"
     },
     {
       "path": "web/src/components/Workspaces/WorkspaceSharing.jsx",
@@ -1302,7 +1334,7 @@
     },
     {
       "path": "web/src/components/Workspaces/WorkspacesSidebar.jsx",
-      "sha256": "3030656e2bd34029ef50f9c3288505f7d056edc6501ade9fced8736a062c4cb0"
+      "sha256": "91e7d6c6208a58af6b4f75630f136e26075452d086a178e320f7e7a22811005f"
     },
     {
       "path": "web/src/components/ui/badge.tsx",
@@ -1406,7 +1438,7 @@
     },
     {
       "path": "web/src/hooks/useAppEffects.jsx",
-      "sha256": "69f48473ef798ff3a2f90dc9e3f19346142e2159b448c18d0c000176205246fd"
+      "sha256": "cd31fba0b11496a44014d38d60d3634996b4514ecbb8b13b2cb61a02fbc54b34"
     },
     {
       "path": "web/src/hooks/useChatState.test.tsx",
@@ -1502,7 +1534,7 @@
     },
     {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "a184fb9fa12a9de9ff9b01448f4958c3cc0c442f4fb3da4873cd5c80ec65003d"
+      "sha256": "ee12db54b33aa8da878b903d1d74f45ffb6215a0201d6836e985c04635ebd96b"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",
@@ -1514,7 +1546,7 @@
     },
     {
       "path": "web/src/stores/workspaceStore.ts",
-      "sha256": "f51fcf17c5d5c696d667e0e5419218ab0a1246b3e1e2346fb77f1d57b4dbc9de"
+      "sha256": "b004780284ba8a71229f6b1df6ab7c72599e3cc7e7d833cdfd47da7f97d88735"
     },
     {
       "path": "web/src/test/setup.ts",
@@ -1526,7 +1558,7 @@
     },
     {
       "path": "web/src/types/dynamic-jsx.ts",
-      "sha256": "cd38920ff867dfdc568ea52297df4d840b32b9148622b0e1283ac285272d5df3"
+      "sha256": "fc7e8337150f2def23212092a349e5f76408583c820e3f51739d292c4df99273"
     },
     {
       "path": "web/src/types/knowledgebase.ts",
@@ -1575,6 +1607,14 @@
     {
       "path": "web/src/utils/artifactExtractor.ts",
       "sha256": "744c3a9bd3afb3f278827fa80d4ead34f17fe1355d6de87f81872947044968e3"
+    },
+    {
+      "path": "web/src/utils/defaultWorkspace.test.ts",
+      "sha256": "10d1378b8c9c2acfeef2835ce1b08a625521b4faf6dec6f2f4085c6027fb0e79"
+    },
+    {
+      "path": "web/src/utils/defaultWorkspace.ts",
+      "sha256": "78df47dc14bb08510645c6ddc6c23d14569f56bab4bdd9993c67306304fb002c"
     },
     {
       "path": "web/src/utils/docViewer.ts",

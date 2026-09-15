@@ -53,7 +53,7 @@ const WorkspacesSidebar = () => {
             templateId,
         });
         // Update workspace in UI
-        setCurrentWorkspaceCustom(response);
+        setCurrentWorkspaceCustom(response.workspaceData ?? response);
         // request that the server update our workspace list -- which should happen in the background
         sendWsMessage(WORKSPACE.GET_WORKSPACES, null);
         return response;
@@ -103,7 +103,7 @@ const WorkspacesSidebar = () => {
             </div>
 
             <div className="px-4 pt-4 pb-0 border-t border-gray-300 flex-shrink-0 flex justify-evenly">
-                {tenantDefaultWorkspace && (<button onClick={() => setCurrentWorkspace(null)}
+                {(tenantDefaultWorkspace || uiConfig.autoSelectWorkspace === false) && (<button onClick={() => setCurrentWorkspace(null)}
                                                       className="flex items-center px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                     <Home size={16} className="mr-1.5"/> Home
                 </button>)}

@@ -17,6 +17,7 @@ import DataProviderManager from "./DataProvidersManager.jsx";
 import WorkspaceSharing from "../Workspaces/WorkspaceSharing.jsx";
 import {FileUpload} from "../Widgets/FileUpload.jsx";
 import {FileDownload} from "../Widgets/FileDownload.jsx";
+import {AnnotatedMarkdown} from "../Widgets/AnnotatedMarkdown";
 import {SciMarkdown} from "./Chat/SciMarkdown.tsx";
 import {TaskStatusCard} from "../Widgets/TaskStatusCard.jsx";
 import {Button} from "../UI/Button.jsx";
@@ -133,6 +134,7 @@ const components = {
     LazyLucideIcon,
     GenericTable,
     Markdown: SciMarkdown,
+    AnnotatedMarkdown,
     TaskStatusCard,
     Button,
     Card,

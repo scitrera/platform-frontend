@@ -18,6 +18,7 @@ import {useAppPanelStore} from '@/stores/appPanelStore';
 // Main content area that holds one or two application panels.
 const AppArea = () => {
         const isAuthenticated = useAuthStore(s => s.isAuthenticated);
+        const chatEnabled = useAuthStore(s => s.uiConfig.chatEnabled !== false);
         const currentWorkspaceId = useWorkspaceStore(s => s.currentWorkspaceId);
         const currentWorkspaceInfo = useWorkspaceStore(s => s.currentWorkspaceInfo);
         const availableApps = useWorkspaceStore(s => s.availableApps);
@@ -32,8 +33,8 @@ const AppArea = () => {
         // Create a chat panel config if it doesn't exist in the app state
         const panel2Config = secondaryPanelConfig?.id ? secondaryPanelConfig : null;
 
-        // Determine if we should show the main panel (only if it exists and is not a chat app)
-        const showMainPanel = mainPanelConfig || (currentWorkspaceInfo?.mode === 'app-only' || currentWorkspaceInfo?.mode === 'no-chat');
+        // Without chat, an empty workspace still needs its app-selection prompt.
+        const showMainPanel = mainPanelConfig || !chatEnabled || (currentWorkspaceInfo?.mode === 'app-only' || currentWorkspaceInfo?.mode === 'no-chat');
         const showMainOnly = (mainPanelConfig && mainPanelConfig.id === UI_CONSTANTS.APP_ID_SELECT_WORKSPACE_PROMPT) ||
             (currentWorkspaceInfo?.mode === 'app-only' || mainPanelConfig?.mode === 'app-only') || (panel2Config == null);
 
@@ -101,7 +102,7 @@ const AppArea = () => {
 
             // if no workspace, but trying to render something other than prompt, then show prompt instead!
             if (!currentWorkspaceId && panelConfig?.id !== UI_CONSTANTS.APP_ID_SELECT_WORKSPACE_PROMPT) {
-                return <SelectWorkspacePrompt message="Error: A workspace must be selected to view this content."/>;
+                return <SelectWorkspacePrompt/>;
             }
 
             if (isMainPanel && (!panelConfig || panelConfig.id === null)) {

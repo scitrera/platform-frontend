@@ -4,7 +4,8 @@ import {USER, WORKSPACE} from '../constants/WebSocketConstants.jsx';
 import {UI_CONSTANTS, DEBUG_MODE} from '../constants/AppConstants';
 import {parseUrlPath} from '../utils/urlUtils.js';
 import {useAuthStore} from '@/stores/authStore';
-import {useWorkspaceStore, findWorkspace} from '@/stores/workspaceStore';
+import {useWorkspaceStore} from '@/stores/workspaceStore';
+import {defaultWorkspace} from '@/utils/defaultWorkspace';
 import {useAppPanelStore} from '@/stores/appPanelStore';
 
 /**
@@ -27,6 +28,8 @@ export default function useAppEffects() {
     const userInfo = useAuthStore(s => s.userInfo);
     const tenantId = useAuthStore(s => s.tenantId);
     const currentTenant = useAuthStore(s => s.currentTenant);
+    const autoSelectWorkspace = useAuthStore(s => s.uiConfig.autoSelectWorkspace !== false);
+    const showPrivateWorkspace = useAuthStore(s => s.uiConfig.showPrivateWorkspace !== false);
 
     // Workspace slice
     const workspaces = useWorkspaceStore(s => s.workspaces);
@@ -80,23 +83,16 @@ export default function useAppEffects() {
         }
     }, [currentWorkspaceId, sendWsMessage, isConnected]);
 
-    // Pick the initial workspace once connected with none selected. Honor the tenant's
-    // configured default_workspace only when it's a real, accessible workspace; otherwise
-    // fall back to the per-user private home `_private` (always present — the backend
-    // auto-creates + injects it). This also recovers from a stale/invalid default such as
-    // the legacy `_default` sentinel that used to loop.
+    // Honor the tenant default, or choose an accessible home/project. A disabled
+    // personal home also redirects old bookmarks after navigation has loaded.
     useEffect(() => {
-        if (!isConnected || currentWorkspaceId) return;
-        // Wait until GET_WORKSPACES has populated the list (it always contains `_private`)
-        // so we can validate the configured default before deciding.
-        const loaded = !!(workspaces.private?.length || workspaces.shared?.length
-            || workspaces.hidden?.length || workspaces.templates?.length);
-        if (!loaded) return;
-        const configured = currentTenant?.default_workspace;
-        const target = (configured && findWorkspace(workspaces, configured)) ? configured : '_private';
-        DEBUG_MODE && console.log(`effect: default workspace -> ${target} (configured=${configured})`);
-        setCurrentWorkspace(target);
-    }, [currentWorkspaceId, currentTenant, isConnected, workspaces, setCurrentWorkspace]);
+        if (!isConnected) return;
+        const hiddenHome = !showPrivateWorkspace && (currentWorkspaceId === '_private'
+            || currentWorkspaceId?.startsWith('_private-user-'));
+        if (currentWorkspaceId && !hiddenHome) return;
+        const target = defaultWorkspace(workspaces, currentTenant?.default_workspace, showPrivateWorkspace, autoSelectWorkspace);
+        if (target || hiddenHome) setCurrentWorkspace(target);
+    }, [currentWorkspaceId, currentTenant, isConnected, workspaces, showPrivateWorkspace, autoSelectWorkspace, setCurrentWorkspace]);
 
     // Initial configuration of appSplit from local storage (once at load time)
     useEffect(() => {

@@ -1,0 +1,57 @@
+.annotated-markdown { --annotation-ink: var(--theme-page-text, #243247); --annotation-muted: var(--theme-page-text-secondary, #697587); --annotation-line: var(--theme-card-border, #dce2e9); --annotation-accent: var(--theme-accent, #2563eb); color: var(--annotation-ink); display:flex; flex-direction:column; min-height:0; height:100%; container-type:inline-size; background:var(--theme-page-bg, #f5f7fa); }
+.annotation-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--annotation-line); background:var(--theme-card-bg, #fff); }
+.annotation-instructions {display:flex;align-items:center;gap:8px;font-size:12px;color:var(--annotation-muted);flex:1 1 180px;}
+.annotation-button {display:inline-flex;justify-content:center;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--annotation-line);border-radius:6px;background:var(--theme-card-bg, white);color:var(--annotation-ink);font:inherit;font-size:12px;font-weight:550;cursor:pointer;}
+.annotation-button:hover:not(:disabled) {background:#f0f5ff;border-color:#b1c4e8;}
+.annotation-button.annotation-primary {background:var(--annotation-accent);border-color:var(--annotation-accent);color:white;}
+.annotation-button.annotation-primary:hover:not(:disabled) {background:#1d4ed8;}
+.annotation-button:disabled,.annotation-icon-button:disabled {opacity:.45;cursor:not-allowed;}
+.annotation-button:focus-visible,.annotation-icon-button:focus-visible,.annotation-quote:focus-visible,.annotation-text:focus-visible {outline:2px solid var(--annotation-accent);outline-offset:3px;}
+.annotation-notice {padding:10px 16px;background:#fff7df;color:#664b17;font-size:13px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0;border-bottom:1px solid #f0ddb2;}
+.annotation-error {background:#fff0f0;color:#a12626;}
+.annotation-scroll {flex:1;min-height:0;overflow:auto;}
+.annotation-body {position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:18px;align-items:start;}
+.annotation-document {background:var(--theme-card-bg, white);border:1px solid var(--annotation-line);border-radius:3px;box-shadow:0 2px 5px #1f293707;min-width:0;padding:24px;}
+.annotation-text {position:relative;z-index:2;overflow-wrap:anywhere;font-size:14px;line-height:1.7;}
+.annotation-text ::selection {background:#bfdbfe;}
+.annotation-text .prose {font-size:inherit;line-height:inherit;}
+.annotation-highlights {position:absolute;inset:0;pointer-events:none;z-index:3;mix-blend-mode:multiply;}
+.annotation-highlight {position:absolute;background:#ffdf6780;border-bottom:1px solid #e5b92b;}
+.annotation-highlight.active {background:#ffcb478c;border-bottom-color:#ce9200;}
+.annotation-rail {position:relative;display:flex;flex-direction:column;gap:12px;min-width:0;}
+.annotation-empty {display:flex;flex-direction:column;gap:10px;color:var(--annotation-muted);font-size:13px;padding:14px 4px;line-height:1.55;}
+.annotation-empty strong {font-weight:600;color:var(--annotation-ink);}
+.annotation-empty p {margin:0;}
+.annotation-card {background:var(--theme-card-bg, #fff);border:1px solid var(--annotation-line);border-left:3px solid #e8bd42;border-radius:7px;padding:12px;box-shadow:0 2px 5px #1f29370a;min-width:0;}
+.annotation-card.active {border-color:#8bb2f2;border-left-color:var(--annotation-accent);box-shadow:0 0 0 2px #dce9ff;outline:none;}
+.annotation-card-heading {display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:11px;font-weight:650;margin-bottom:10px;}
+.annotation-document-label {color:var(--annotation-muted);text-transform:capitalize;font-weight:400;}
+.annotation-quote {display:block;width:100%;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.5;background:#fff8df;border:0;border-left:2px solid #e8bd42;padding:7px 9px;color:#665420;max-height:120px;overflow:auto;cursor:pointer;}
+.annotation-comment-text {font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;margin:12px 0;}
+.annotation-editor-label {display:block;margin:12px 0 6px;font-size:12px;font-weight:550;}
+.annotation-card textarea {display:block;box-sizing:border-box;width:100%;font:inherit;font-size:13px;line-height:1.5;padding:9px;border:1px solid #b9c8de;border-radius:5px;resize:vertical;background:var(--theme-card-bg, #fff);color:var(--annotation-ink);}
+.annotation-card textarea:focus {outline:2px solid #a4c7ff;outline-offset:1px;}
+.annotation-card-actions {display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-top:10px;}
+.annotation-icon-button {display:inline-flex;align-items:center;justify-content:center;padding:6px;background:transparent;border:0;border-radius:4px;color:var(--annotation-muted);cursor:pointer;}
+.annotation-icon-button:hover:not(:disabled) {background:#eef3fa;color:var(--annotation-ink);}
+.annotation-saved {margin-right:auto;color:var(--annotation-muted);font-size:10px;}
+.annotation-anchor-note {font-size:11px;color:#946b13;margin:6px 0;}
+@container (min-width: 640px) {
+ .annotation-body {grid-template-columns:minmax(0,1fr) 236px;gap:20px;min-height:var(--comment-height);}
+ .annotation-rail {display:block;min-height:var(--comment-height);}
+ .annotation-card {position:absolute;top:var(--comment-top);left:0;right:0;}
+}
+@container (max-width: 639px) {
+ .annotation-document {padding:18px;}
+ .annotation-body {padding:12px;}
+ .annotation-instructions {flex-basis:100%;}
+ .annotation-rail {border-top:1px solid var(--annotation-line);padding-top:12px;}
+}
+
+.annotation-dialog {position:fixed;inset:0;margin:auto;padding:0;border:1px solid var(--theme-card-border, #dce2e9);border-radius:8px;width:min(1280px, calc(100vw - 32px));height:calc(100dvh - 48px);max-width:none;max-height:none;overflow:hidden;}
+.annotation-dialog::backdrop {background:#18253866;}
+.annotation-dialog .annotation-body {grid-template-columns:minmax(0, 1fr);}
+@container (min-width: 640px) {
+ .annotation-dialog .annotation-body {grid-template-columns:minmax(0, 1fr) 280px;gap:28px;padding:28px;}
+ .annotation-dialog .annotation-document {padding:36px;}
+}
