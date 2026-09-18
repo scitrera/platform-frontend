@@ -91,10 +91,31 @@ describe('Auth production routing', () => {
         expect(getLogoutUrl()).toBe('/api/auth/auth/logout');
     });
 
-    it('uses the same-origin auth proxy for login redirects', () => {
+    it('passes the tenant branding hint without changing the login return URL', () => {
         expect(getLoginRedirectUrl('https://app.example.test/acme/workspace?x=1&y=2#section')).toBe(
-            '/api/auth/login?rd=' + encodeURIComponent('https://app.example.test/acme/workspace?x=1&y=2#section'),
+            '/api/auth/login?rd=' + encodeURIComponent('https://app.example.test/acme/workspace?x=1&y=2#section') + '&tenant=acme',
         );
+    });
+});
+
+describe('login branding boundaries', () => {
+    afterEach(() => vi.unstubAllEnvs());
+
+    it('omits the hint at the tenant picker so auth-go can use its configured default', () => {
+        const target = 'https://app.example.test/?tenant=other#section';
+        const login = new URL(getLoginRedirectUrl(target), window.location.origin);
+        expect(login.searchParams.has('tenant')).toBe(false);
+        expect(login.searchParams.get('rd')).toBe(target);
+    });
+
+    it('uses the routed tenant with a separate auth origin and keeps return query values isolated', () => {
+        vi.stubEnv('VITE_AUTH_ORIGIN', 'https://auth.example.test');
+        const target = 'https://app.example.test/acme/workspace?tenant=other&rd=/elsewhere#section';
+        const login = new URL(getLoginRedirectUrl(target));
+        expect(login.origin).toBe('https://auth.example.test');
+        expect(login.pathname).toBe('/login');
+        expect(login.searchParams.getAll('tenant')).toEqual(['acme']);
+        expect(login.searchParams.get('rd')).toBe(target);
     });
 });
 

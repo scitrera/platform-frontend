@@ -166,11 +166,11 @@
     },
     {
       "path": "docs/client-contracts.md",
-      "sha256": "0c74c718fefae3629770a4aeede7b19f8677e0be215417ce9be77486d20da8b3"
+      "sha256": "1ee4c306569cea32dda9fe110b2927c53df8ebd4b8cab4894d523c5dd6b16ecb"
     },
     {
       "path": "docs/development.md",
-      "sha256": "34e399dd38b26bff0bf6b6960d6d7759095a3dd391d2baa50e3f23f43d076548"
+      "sha256": "9be0c980d1a832aa07216d4f6d41c039f9bf76bab6d9e438fc2309327c0e7b4f"
     },
     {
       "path": "docs/markdown-annotations.md",
@@ -698,7 +698,7 @@
     },
     {
       "path": "versions.yaml",
-      "sha256": "2d5b499d75b380d195743688f6ee4260ecb8fbb3750c5f325b518bbb9cb62195"
+      "sha256": "677774b42fdb86c557c36be3bfbe37b3cd8921b34d8a6a00c1bfb8e0f3210e7f"
     },
     {
       "path": "web/.env.example",
@@ -706,7 +706,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "614b38308dd80c74de1cc9a9f06aaee4778b164d1421c06c9cb4a34365974a92"
+      "sha256": "6fe1ed706459c95e9fe8ebdc74962be735c3eaf5c88551162c1d570f10b63627"
     },
     {
       "path": "web/components.json",
@@ -714,7 +714,7 @@
     },
     {
       "path": "web/e2e/platform.spec.ts",
-      "sha256": "73bc050b49d1c2bae90b754ea75dcc0e297495d3636cce4136a5c153ef087f20"
+      "sha256": "c9755363995eb303b619b5f4383783e4bf119da0e013a87bb4e6c395fe7387bd"
     },
     {
       "path": "web/eslint.config.js",
@@ -1206,7 +1206,7 @@
     },
     {
       "path": "web/src/components/UI/PoweredByScitrera.jsx",
-      "sha256": "b10a187ce1530f1c9d644b04316374341ddedd58fc1361ab2d9537023da7fc02"
+      "sha256": "549b2e5ff4ba85ba3d8945c9b33268c245d68645aaf18161c867a1661bbe8ae9"
     },
     {
       "path": "web/src/components/UI/RefreshButton.jsx",
@@ -1678,11 +1678,11 @@
     },
     {
       "path": "web/src/utils/wsConfig.js",
-      "sha256": "bccba19c505d61e796006d5cff720ba0011ad65df942fcd3c99a3dc3a153c7f9"
+      "sha256": "4b60fbe305af571add32816dacb18508a53f47eaad21a86d0d5c386f8aa181b3"
     },
     {
       "path": "web/src/utils/wsConfig.test.js",
-      "sha256": "050db79c8cde66fe362ef622c77cb4a50b2b364e63c42b14bb67f537b735d111"
+      "sha256": "c6c3d2e90054dfcf94e67338b9b07ef9b16ef6cc3bf977a12dd7c15627d68087"
     },
     {
       "path": "web/src/utils/wsMessageHandlers.js",

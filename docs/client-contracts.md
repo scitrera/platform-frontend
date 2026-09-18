@@ -1,15 +1,16 @@
 # Client contracts and compatibility
 
-Source contract review targets: platform-backend 0.1.0 candidate, auth-go 0.1.1
-candidate, and messaging-spec 1.3.0 at the exact revision in versions.yaml. These
+Source contract review targets: platform-backend 0.1.0 candidate, auth-go 0.1.3
+(tag v0.1.3, revision in versions.yaml), and messaging-spec 1.3.0 at its recorded
+revision. The auth-go update was reviewed on 2026-09-15. These
 are compatibility inputs, not a claim that the whole deployment or every package
 is publicly published. The clients consume services; backend/auth source is not
 copied here. Public installation composition remains separate.
 
 | Boundary | Required behavior |
 | --- | --- |
-| Auth | GET /checkz with browser credentials; successful session body provides tenants. Login `/login?rd=<encoded full return URL>`; POST `/auth/logout`. Same-origin frontend prefix mapping is documented in web/README.md. |
-| Access refusal | Valid session plus no tenants or explicit `authorized:false` renders denial without re-login. Absent `authorized` remains undetermined, not automatic denial. The current auth service does not guarantee that field. |
+| Auth | GET /checkz with browser credentials; successful session body provides tenants. Login `/login?rd=<encoded full return URL>` adds `tenant=<routed slug>` for branding when the application URL contains a tenant; POST `/auth/logout`. Same-origin frontend prefix mapping is documented in web/README.md. |
+| Access refusal | Valid session plus no tenants or explicit `authorized:false` renders denial without re-login. Absent `authorized` remains undetermined, not automatic denial. auth-go 0.1.3 does not emit that field. |
 | Native WebSocket | `/rfe1-ws/v2` behind optional tenant prefix, tenant/windowId query. CONNECTION_READY signals registration; CONNECTION_REFUSED contains diagnostic code. Upgrade success alone is insufficient. |
 | Socket.IO compatibility | `/rfe1-ws`, websocket transport, tenant/windowId handshake auth. Same identity boundary and message envelopes. |
 | RPC | Outbound `{id,type,payload,windowId}`; responses use event `RPC`, echo id and semantic type; failures carry type `RPX` and message. Retain event/type distinction. |
@@ -19,6 +20,18 @@ copied here. Public installation composition remains separate.
 | Embedded Admin | ADMIN_RPC_CALL `{op,args}` returns `{ok,result,error}` with per-operation backend authority checks. The UI is not an authorization enforcement boundary. |
 | Office | tools-wss `/v1/connect`, delegated Entra bearer authentication, tool catalog and workspace/execution-view protocol. The pane and auth dialog must share an origin. |
 | Local-agent | Real Aether transport is not implemented; do not configure it as a working execution host. MCP pieces can be tested independently. |
+
+auth-go 0.1.3's tenant hint changes login presentation only; it does not choose an
+authorized tenant or alter OAuth providers or `rd`. A tenantless application URL
+omits the hint, allowing auth-go's optional default login tenant or global branding.
+The `/checkz` tenant shape and POST logout contract are unchanged from 0.1.1.
+
+Browser-session inventory/revocation introduced in auth-go 0.1.2 belongs to its
+private operator dashboard/API. Redis/Valkey-backed revocation takes effect on the
+next session check; existing WebSockets are not automatically terminated by it.
+A revoked session returns 401 from `/checkz`, using the frontend's existing login
+redirect. JWT mode has no server-side inventory/revocation. Shared session-store
+configuration and live revocation verification belong to the integration project.
 
 The retained embedded Admin covers MemoryLayer workspace/document/dataset/job/audit
 views, Aether connections/audit, and billing usage/history. More privileged catalog,

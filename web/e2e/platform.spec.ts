@@ -52,14 +52,21 @@ test('authenticated denial has no login loop and signs out with POST', async ({p
   expect(logoutMethod).toBe('POST'); expect(f.external).toEqual([]); expect(f.errors).toEqual([]);
 });
 
-test('expired session preserves query and fragment through login return', async ({page}) => {
+test('expired session carries tenant branding and preserves the full login return', async ({page}) => {
   await fixture(page);
   await page.route('**/api/auth/checkz', route => route.fulfill({status: 401, json: {auth: 'invalid'}}));
   let returnUrl = '';
-  await page.route('**/api/auth/login?*', route => {returnUrl = new URL(route.request().url()).searchParams.get('rd')!; return route.fulfill({contentType: 'text/html', body: '<p>Synthetic identity provider</p>'});});
+  let tenantHint: string | null = null;
+  await page.route('**/api/auth/login?*', route => {
+    const params = new URL(route.request().url()).searchParams;
+    returnUrl = params.get('rd')!;
+    tenantHint = params.get('tenant');
+    return route.fulfill({contentType: 'text/html', body: '<p>Synthetic identity provider</p>'});
+  });
   await page.goto('/demo/project?x=1&y=2#section');
   await expect(page.getByText('Synthetic identity provider')).toBeVisible();
   expect(returnUrl).toBe('http://127.0.0.1:4178/demo/project?x=1&y=2#section');
+  expect(tenantHint).toBe('demo');
 });
 
 test('tenant selection and mobile empty state stay on the local origin', async ({page}) => {

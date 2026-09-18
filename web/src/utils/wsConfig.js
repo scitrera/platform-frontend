@@ -27,7 +27,13 @@ export const getAuthUrl = (path) => {
     return `${origin || '/api/auth'}${path}`;
 };
 
-export const getLoginRedirectUrl = (returnUrl) => `${getAuthUrl('/login')}?rd=${encodeURIComponent(returnUrl)}`;
+export const getLoginRedirectUrl = (returnUrl) => {
+    // The first application path segment is the tenant slug. auth-go uses this
+    // hint only for login branding; admission and the return destination are separate.
+    const tenant = new URL(returnUrl, window.location.origin).pathname.split('/').find(Boolean);
+    const loginUrl = `${getAuthUrl('/login')}?rd=${encodeURIComponent(returnUrl)}`;
+    return tenant ? `${loginUrl}&tenant=${encodeURIComponent(tenant)}` : loginUrl;
+};
 export const getLogoutUrl = () => getAuthUrl('/auth/logout');
 export const getRawSocketPath = (tenantId) => `${getSocketPath(tenantId)}/v2`;
 

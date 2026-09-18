@@ -37,8 +37,9 @@
       "compatibility": "source contract review; full deployment acceptance pending"
     },
     "auth-go": {
-      "version": "0.1.1 candidate",
-      "compatibility": "external login/checkz/logout contract reviewed; integrated identity deployment pending"
+      "version": "0.1.3",
+      "revision": "a0e6259e56bf022f04f81236de4585fdf3fd6c57",
+      "compatibility": "login tenant-branding hint and existing checkz/POST logout contracts reviewed; integrated identity deployment pending"
     }
   }
 }

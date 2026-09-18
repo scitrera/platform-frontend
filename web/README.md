@@ -2,7 +2,8 @@
 
 The primary platform client, preserving the existing React application and design.
 It supports native WebSocket by default and selectable Socket.IO compatibility.
-Authentication uses auth-go; opening a socket does not grant application access.
+Authentication uses auth-go (reviewed through 0.1.3); opening a socket does not
+grant application access.
 
 Requires Node **24.13.0** (see ../.nvmrc). From the repository root:
 
@@ -17,7 +18,7 @@ npm run build --prefix web
 npm run test:e2e --prefix web
 ```
 
-The full lint command currently reports pre-existing errors; see verification.md.
+The full lint command retains existing warnings; see ../docs/verification.md.
 Vite compilation and the separate TypeScript check are reported independently.
 Browser tests use Chromium (`cd web && npx playwright install chromium`).
 
@@ -45,6 +46,15 @@ origins/return URLs and gateway origins to match the browser origin including it
 port. No certificate or cookie is supplied. Never connect a public dev proxy to an
 unprotected backend that trusts user-controlled identity headers.
 
+Login redirects from `/{tenant}/...` include `tenant=<slug>` for auth-go 0.1.3's
+login branding while preserving the full `rd` return URL. The hint is presentation
+only; auth-go checks tenant validity and falls back to global branding if needed.
+At `/`, the hint is omitted so auth-go can use `SCITRERA_AUTH_LOGIN_DEFAULT_TENANT`
+when configured. Set tenant names/logos in auth-go's Tenant profile; global
+`SCITRERA_AUTH_BRAND_*` settings also belong to auth-go, not the frontend build.
+Browser-session management remains in auth-go's operator dashboard. See
+[client contracts](../docs/client-contracts.md) for revocation behavior.
+
 Serve `dist/` at the root of an origin. Reserve `/api/auth/*` for auth-go's external
 plane and strip that prefix: `/api/auth/checkz` -> `/checkz`,
 `/api/auth/login` -> `/login`, `/api/auth/auth/logout` -> `/auth/logout` (POST).
@@ -63,6 +73,7 @@ embedded into JS. Never put tokens, private keys, or privileged headers there.
 
 Use `python3 scripts/artifacts.py web` from the repository root after building to
 create an asset archive, matching source archive and dependency notices. The
-version dialog links `/source.tar.gz`; serve the packaged archive beside the app.
+version dialog links to https://scitrera.ai. Serve the packaged source archive and
+notices beside the app.
 Dynamic JSX executes trusted application code in the browser and is not an
 untrusted-code sandbox; backend catalog and authorization policy must control it.

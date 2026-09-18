@@ -41,7 +41,7 @@ python3 scripts/artifacts.py local-agent
 Artifacts go to ignored `dist/`. Each component's source archive contains the full
 reviewed monorepo source and build instructions. JavaScript asset archives include
 matching `/source.tar.gz`, license map and dependency notices. Serve all these
-files together; the web version dialog offers the source download. Local-agent
+files together; the web version dialog links to https://scitrera.ai. Local-agent
 currently has a source artifact; its checked debug binaries are not distributed.
 Artifacts have SHA-256 sidecars. No artifact command contacts deployment services.
 

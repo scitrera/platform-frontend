@@ -14,7 +14,7 @@ const VersionDialog = ({isOpen, onClose}) => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-lg">
                 <div className="flex justify-between items-center mb-4">
-                    <a href="https://scitrera.ai" target="_blank"><img src="/logo2.png" className="h-10 w-auto"/></a>
+                    <a href="https://scitrera.ai" target="_blank" rel="noopener noreferrer"><img src="/logo2.png" alt="Scitrera" className="h-10 w-auto"/></a>
                     <h2 className="text-xl font-semibold">Version Information</h2>
                     <button
                         onClick={onClose}
@@ -26,7 +26,7 @@ const VersionDialog = ({isOpen, onClose}) => {
                 <div className="space-y-2">
                     <p><strong>Frontend Build:</strong> {frontendVersion}</p>
                     <p><strong>Backend Build:</strong> {backendVersion}</p>
-                    <p><a href="/source.tar.gz" className="underline">Source code and licenses</a></p>
+                    <p><a href="https://scitrera.ai" target="_blank" rel="noopener noreferrer" className="underline">scitrera.ai</a></p>
                 </div>
                 <div className="mt-6 flex justify-end">
                     <button
