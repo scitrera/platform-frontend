@@ -706,7 +706,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "726f7beec7c020d10d1d17aada8446d752417c4b85b94458ba52b81a498a8858"
+      "sha256": "76336f83f6ea86a84dc84c8f9f28c63cd4d1dc1fccf64baadeee203a721ede2b"
     },
     {
       "path": "web/components.json",
@@ -1234,11 +1234,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "918795010dc77e35c66779f920715e29f89bc91b51736112dee5da7c4a0873c3"
+      "sha256": "b89d3356eb8d9238078803b869bb83b670d7a51aa8f0921ebafaa361b627a692"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "8dc44843b3555924c077b0c5f5bb957aad2e60394949354a69d11ffb464648f0"
+      "sha256": "b0ceee9f3bade75fbfcd72a999791b306ad206f87822351c46c5662a72608a5a"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1254,7 +1254,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "6d28c7accb3060dba08db50fd75749dff59384a41fa77f1eb65ecb8b5d729705"
+      "sha256": "dd20aca1ff209d5c3d06338e8ce3f6feacf831f694dea86412daf039973e11de"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",

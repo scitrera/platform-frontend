@@ -93,6 +93,29 @@ describe('expanded source review', () => {
     resolve({...evidence,available:false,message:'Stale response'});
     await waitFor(()=>expect(screen.queryByText('Stale response')).not.toBeInTheDocument());
   });
+  it('draws only regions for the selected evidence and matching page image', async () => {
+    const hash = 'a'.repeat(64);
+    const point = {...evidence.documents!.summary.points[0], references: [
+      {...refs[0], regions: [{region_id:'box',image_sha256:hash,bbox:[.1,.2,.8,.4],origin:'ocr' as const}]}, refs[1]]};
+    const loadPage = vi.fn(async (document_id: string,page_number: number) => ({document_id,page_number,
+      text:'Source passage 1',image_url:'/storage/tenant/blob/page.png?cap=ticket',image_sha256:hash}));
+    const {rerender} = render(<SourceEvidencePane evidence={evidence} point={point} loadPage={loadPage} error="" loading={false}/>);
+    const box = await screen.findByRole('img',{name:'Supporting OCR block'});
+    expect(box).toHaveStyle({left:'10%',top:'20%',height:'20%'});
+    expect(parseFloat(box.style.width)).toBeCloseTo(70);
+    fireEvent.change(screen.getByRole('combobox',{name:'Source zoom'}),{target:{value:'150'}});
+    expect(box.closest('[data-source-page]')).toHaveStyle({width:'150%'});
+    expect(box).toHaveStyle({left:'10%',top:'20%'});
+    fireEvent.click(screen.getByRole('button',{name:/2\. Proposal.pdf/}));
+    expect(screen.queryByRole('img',{name:'Supporting OCR block'})).not.toBeInTheDocument();
+    for (const region of [
+      {region_id:'box',image_sha256:'b'.repeat(64),bbox:[.1,.2,.8,.4],origin:'ocr' as const},
+      {region_id:'box',image_sha256:hash,bbox:[0,0,2,1],origin:'ocr' as const},
+    ]) {
+      rerender(<SourceEvidencePane evidence={evidence} point={{...point,references:[{...refs[0],regions:[region]}]}} loadPage={loadPage} error="" loading={false}/>);
+      await waitFor(()=>expect(screen.queryByRole('img',{name:'Supporting OCR block'})).not.toBeInTheDocument());
+    }
+  });
   it('highlights a unique exact normalized quote without interpreting markup', () => {
     const {container,rerender}=render(<HighlightedTranscript text={'A  source\npassage <script>.'} quote="source passage"/>);
     expect(container.querySelector('mark')).toHaveTextContent('source passage');

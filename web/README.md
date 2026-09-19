@@ -90,3 +90,11 @@ for use when the policy is removed or a different tenant is selected.
 
 Dynamic JSX executes trusted application code in the browser and is not an
 untrusted-code sandbox; backend catalog and authorization policy must control it.
+
+Expanded source review accepts optional `regions` on each source reference.
+Each contains `region_id`, `image_sha256`, `bbox: [x0,y0,x1,y1]` in normalized
+page coordinates, and `origin: "ocr" | "review_crop"`. The page loader returns
+`image_sha256` alongside `image_url`. Overlays appear only for the selected
+reference and a matching image hash; missing or invalid geometry keeps the
+ordinary page preview. Relative coordinates follow image resizing and zoom.
+The producer must validate passage/region provenance before publishing evidence.
