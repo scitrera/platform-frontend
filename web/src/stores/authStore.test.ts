@@ -17,6 +17,17 @@ describe('tenant UI configuration', () => {
         expect(useAuthStore.getState().uiConfig.enableWorkProfileSelection).toBe(true);
     });
 
+    it('resets a fixed theme and hidden toggle when the tenant policy is removed', () => {
+        const {setUserProfile} = useAuthStore.getState();
+        setUserProfile(profile('alpha', {forcedTheme: 'light', showThemeToggle: false}));
+        expect(useAuthStore.getState().uiConfig).toMatchObject({forcedTheme: 'light', showThemeToggle: false});
+        setUserProfile(profile('beta'));
+        expect(useAuthStore.getState().uiConfig).toMatchObject({forcedTheme: null, showThemeToggle: true});
+        setUserProfile(profile('beta', {forcedTheme: 'dark', showThemeToggle: false}));
+        setUserProfile(profile('beta'));
+        expect(useAuthStore.getState().uiConfig).toMatchObject({forcedTheme: null, showThemeToggle: true});
+    });
+
     it('does not carry a tenant opt-in into another tenant or retain a removed override', () => {
         const {setUserProfile} = useAuthStore.getState();
         setUserProfile(profile('alpha', {enableWorkProfileSelection: true, workspaceHomedThreads: true}));

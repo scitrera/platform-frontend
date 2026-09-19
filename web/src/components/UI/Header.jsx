@@ -38,7 +38,7 @@ const Header = () => {
                     </>
                 )}
                 <ConnectionStatusIcon/>
-                <ThemeToggle/>
+                {uiConfig.showThemeToggle !== false && <ThemeToggle/>}
                 {/* Only show AvatarMenu when authenticated */}
                 {isAuthenticated && <AvatarMenu/>}
             </div>

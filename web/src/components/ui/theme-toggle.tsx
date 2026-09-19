@@ -1,7 +1,8 @@
 import { useTheme } from "./theme-provider"
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { theme, forcedTheme, setTheme } = useTheme()
+  if (forcedTheme) return null
 
   const cycleTheme = () => {
     const next = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"

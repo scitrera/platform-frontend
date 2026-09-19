@@ -706,7 +706,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "6fe1ed706459c95e9fe8ebdc74962be735c3eaf5c88551162c1d570f10b63627"
+      "sha256": "726f7beec7c020d10d1d17aada8446d752417c4b85b94458ba52b81a498a8858"
     },
     {
       "path": "web/components.json",
@@ -774,7 +774,7 @@
     },
     {
       "path": "web/src/App.jsx",
-      "sha256": "2cd9acbe3ba3fd28d51c934034ef4e70ea4560d19119acbbbe3c1da1aeefdebe"
+      "sha256": "186ee853b7c9a516e519695ec26f381ffe25d5e5d054aabc8d441fc4fbbe5264"
     },
     {
       "path": "web/src/components/Apps/Admin/AdminDashboardApp.tsx",
@@ -1194,7 +1194,7 @@
     },
     {
       "path": "web/src/components/UI/Header.jsx",
-      "sha256": "1f34bddc668e15234bff1163170b9999c462b4827e0461901c1bda6b5d4362f5"
+      "sha256": "6aea0d512c886e86835d353b529693352e73790ead40df2f45a17562068d577f"
     },
     {
       "path": "web/src/components/UI/Layout.jsx",
@@ -1401,12 +1401,16 @@
       "sha256": "2a56759aa5573c65ad058e06800c22b80b4890bc51728d584fd711a2e3ddb06c"
     },
     {
+      "path": "web/src/components/ui/theme-provider.test.tsx",
+      "sha256": "d19191b673f5ae59aab1a60039160e9ded9106936ef123a7a3de85261bac2a74"
+    },
+    {
       "path": "web/src/components/ui/theme-provider.tsx",
-      "sha256": "f85cb1cd7b84d319de2938eb62b30f447e71b7d2e24ad0d00311ff89759dbe5b"
+      "sha256": "3077d6de0d7b45b2a30bc0f21bd5396108d35dc573c0d93e79a616e9bccfe0a2"
     },
     {
       "path": "web/src/components/ui/theme-toggle.tsx",
-      "sha256": "8db2f6393badd3ecc2f266812355169d895fa33bd7b707b1de0204ce262aed7a"
+      "sha256": "4974a17f3cc075779bb35adfdaa941aaca0c68434beb6c986c61edc08b3261e8"
     },
     {
       "path": "web/src/components/ui/tooltip.tsx",
@@ -1550,11 +1554,11 @@
     },
     {
       "path": "web/src/stores/authStore.test.ts",
-      "sha256": "57c110986d8a1a87d4687ee63884044b56db181c4a86f3607a78bdef9a0e6106"
+      "sha256": "ef85b8adbcfea8697b3cd6f16bd77db538f26f9dabe7f79adbc9c83277554d82"
     },
     {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "ee12db54b33aa8da878b903d1d74f45ffb6215a0201d6836e985c04635ebd96b"
+      "sha256": "e5824a6a74b7c5312d90ac9d36556d51f0e182488fe740a81b4bb2a5bd2b1ee7"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",

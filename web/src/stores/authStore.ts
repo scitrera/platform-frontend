@@ -81,6 +81,9 @@ const DEFAULT_UI_CONFIG: Record<string, unknown> = {
   showWorkspacesSidebar: true,
   showAppsLauncher: true,
   showBackgroundTasks: true,
+  showThemeToggle: true,
+  // null follows the browser preference; a fixed theme also hides its toggle.
+  forcedTheme: null,
   showWorkspaceTemplateSelection: true,
   showPrivateWorkspace: true,
   autoSelectWorkspace: true,

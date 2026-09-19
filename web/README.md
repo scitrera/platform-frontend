@@ -75,5 +75,18 @@ Use `python3 scripts/artifacts.py web` from the repository root after building t
 create an asset archive, matching source archive and dependency notices. The
 version dialog links to https://scitrera.ai. Serve the packaged source archive and
 notices beside the app.
+Tenant appearance is configured through the authenticated profile's `uiConfig`
+(operator API: `TenantInterface2.set_ui_config_variables`). No image rebuild is
+needed to change these values; reload the client to fetch an updated profile.
+
+| UI setting | Default | Behavior |
+| --- | --- | --- |
+| `forcedTheme` | `null` | `"light"` or `"dark"` fixes the theme and hides the theme toggle. `null` (or an unrecognized value) restores the saved browser/system preference. |
+| `showThemeToggle` | `true` | `false` hides the header toggle without changing the selected theme. Use `forcedTheme` when the theme must also be fixed. |
+
+A fixed tenant theme overrides saved preferences and OS theme changes, and
+ignores programmatic theme switches. It preserves the browser's saved preference
+for use when the policy is removed or a different tenant is selected.
+
 Dynamic JSX executes trusted application code in the browser and is not an
 untrusted-code sandbox; backend catalog and authorization policy must control it.

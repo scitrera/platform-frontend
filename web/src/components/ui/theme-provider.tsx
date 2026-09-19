@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react"
 
 type Theme = "dark" | "light" | "system"
 
@@ -6,11 +6,13 @@ interface ThemeProviderProps {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
+  forcedTheme?: "dark" | "light"
 }
 
 interface ThemeProviderState {
   theme: Theme
   resolvedTheme: "dark" | "light"
+  forcedTheme?: "dark" | "light"
   setTheme: (theme: Theme) => void
 }
 
@@ -24,16 +26,26 @@ function getSystemTheme(): "dark" | "light" {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 }
 
+function subscribeToSystemTheme(onChange: () => void) {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+  mediaQuery.addEventListener("change", onChange)
+  return () => mediaQuery.removeEventListener("change", onChange)
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
   storageKey = "scitrera-ui-theme",
+  forcedTheme,
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
-
-  const resolvedTheme = theme === "system" ? getSystemTheme() : theme
+  const [preferredTheme, setThemeState] = useState<Theme>(() => {
+    const saved = localStorage.getItem(storageKey)
+    return saved === "light" || saved === "dark" || saved === "system" ? saved : defaultTheme
+  })
+  const systemTheme = useSyncExternalStore(subscribeToSystemTheme, getSystemTheme)
+  // A tenant policy takes precedence without overwriting the user's preference.
+  const theme = forcedTheme ?? preferredTheme
+  const resolvedTheme = theme === "system" ? systemTheme : theme
 
   useEffect(() => {
     const root = window.document.documentElement
@@ -41,27 +53,14 @@ export function ThemeProvider({
     root.classList.add(resolvedTheme)
   }, [resolvedTheme])
 
-  // Listen for system theme changes when in "system" mode
-  useEffect(() => {
-    if (theme !== "system") return
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const handler = () => {
-      const root = window.document.documentElement
-      root.classList.remove("light", "dark")
-      root.classList.add(getSystemTheme())
-    }
-    mediaQuery.addEventListener("change", handler)
-    return () => mediaQuery.removeEventListener("change", handler)
-  }, [theme])
-
   const setTheme = (newTheme: Theme) => {
+    if (forcedTheme) return
     localStorage.setItem(storageKey, newTheme)
     setThemeState(newTheme)
   }
 
   return (
-    <ThemeProviderContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+    <ThemeProviderContext.Provider value={{ theme, resolvedTheme, forcedTheme, setTheme }}>
       {children}
     </ThemeProviderContext.Provider>
   )

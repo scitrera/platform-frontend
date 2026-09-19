@@ -8,6 +8,7 @@ import {LibraryProvider} from './contexts/LibraryContext';
 import {ThemeProvider} from './contexts/ThemeContext.jsx';
 import {ThemeProvider as ShadcnThemeProvider} from './components/ui/theme-provider';
 import Layout from './components/UI/Layout.jsx';
+import {useAuthStore} from './stores/authStore';
 import '@fontsource-variable/geist';
 import './App.css';
 
@@ -29,9 +30,11 @@ function GlobalErrorFallback({error, resetErrorBoundary}) {
 }
 
 function App() {
+    const configuredTheme = useAuthStore(s => s.uiConfig.forcedTheme);
+    const forcedTheme = configuredTheme === 'light' || configuredTheme === 'dark' ? configuredTheme : undefined;
     return (
         <ErrorBoundary FallbackComponent={GlobalErrorFallback} onReset={() => window.location.reload()}>
-            <ShadcnThemeProvider defaultTheme="system" storageKey="scitrera-ui-theme">
+            <ShadcnThemeProvider defaultTheme="system" storageKey="scitrera-ui-theme" forcedTheme={forcedTheme}>
                 <ThemeProvider>
                     <ChatStateProvider>
                         <WebSocketProvider>
