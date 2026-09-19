@@ -24,7 +24,7 @@ const evidence: ReviewEvidence = {available:true,revision:'r1',documents:{summar
   {id:'point',index:0,section:'Terms',text:'Service is optional.',references:refs}]}},
   sources:[{document_id:'proposal',name:'Proposal.pdf'}],pages:Array.from({length:80},(_,i)=>({document_id:'proposal',page_number:i+1}))};
 const props = () => ({children:'* Service is optional.',documentId:'summary',documentVersion:'v1',annotations:[],
-  onChange:vi.fn().mockResolvedValue(undefined),onSubmit:vi.fn().mockResolvedValue(undefined),expandedOnly:true,
+  onChange:vi.fn().mockResolvedValue(undefined),onSubmit:vi.fn().mockResolvedValue(undefined),expandedOnly:true,expandLabel:'Analysis Mode',
   loadEvidence:vi.fn().mockResolvedValue(evidence),loadSourcePage:vi.fn().mockImplementation(async (document_id,page_number)=>({document_id,page_number,text:'Source passage 1',image_url:'/storage/tenant/blob/page.png?cap=ticket'})),
   toolbarActions:<button>Regenerate from sources</button>});
 
@@ -35,7 +35,7 @@ describe('expanded source review', () => {
     expect(screen.queryByLabelText('Margin comments')).not.toBeInTheDocument();
     expect(screen.getByRole('button',{name:'Regenerate from sources'})).toBeVisible();
     expect(p.loadEvidence).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    fireEvent.click(screen.getByRole('button',{name:'Analysis Mode'}));
     await waitFor(()=>expect(p.loadEvidence).toHaveBeenCalledOnce());
     expect(screen.getByRole('button',{name:'Add comment'})).toBeVisible();
     const sources=screen.getByRole('complementary',{name:'Source evidence'});
@@ -56,7 +56,7 @@ describe('expanded source review', () => {
   });
   it('preserves an unsaved margin comment and blocks regeneration after closing', async () => {
     const p=props();render(<AnnotatedMarkdown {...p}/>);
-    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    fireEvent.click(screen.getByRole('button',{name:'Analysis Mode'}));
     const root=screen.getByLabelText('summary document');
     const range=document.createRange();range.selectNodeContents(root.querySelector('li')!);
     window.getSelection()!.removeAllRanges();window.getSelection()!.addRange(range);
@@ -65,7 +65,7 @@ describe('expanded source review', () => {
     fireEvent.click(screen.getByRole('button',{name:'Close review'}));
     expect(screen.getByRole('button',{name:'Regenerate from sources'})).toBeDisabled();
     expect(screen.queryByLabelText('Your comment')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    fireEvent.click(screen.getByRole('button',{name:'Analysis Mode'}));
     expect(screen.getByLabelText('Your comment')).toHaveValue('Check the optional term.');
     fireEvent.click(screen.getByRole('button',{name:'Save comment'}));
     await waitFor(()=>expect(p.onChange).toHaveBeenCalledWith([expect.objectContaining({comment:'Check the optional term.',document:'summary'})]));
@@ -79,7 +79,7 @@ describe('expanded source review', () => {
   });
   it('does not show evidence from a different rendered revision', async () => {
     const p=props();render(<AnnotatedMarkdown {...p} documentVersion="new-version"/>);
-    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    fireEvent.click(screen.getByRole('button',{name:'Analysis Mode'}));
     await waitFor(()=>expect(p.loadEvidence).toHaveBeenCalledOnce());
     expect(screen.queryByRole('button',{name:/Show evidence:/})).not.toBeInTheDocument();
   });
@@ -87,7 +87,7 @@ describe('expanded source review', () => {
     const p=props();let resolve!: (v:ReviewEvidence)=>void;
     p.loadEvidence.mockImplementationOnce(()=>new Promise(r=>{resolve=r;}));
     const {rerender}=render(<AnnotatedMarkdown {...p}/>);
-    fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
+    fireEvent.click(screen.getByRole('button',{name:'Analysis Mode'}));
     rerender(<AnnotatedMarkdown {...p} documentVersion="new"/>);
     await waitFor(()=>expect(p.loadEvidence).toHaveBeenCalledTimes(2));
     resolve({...evidence,available:false,message:'Stale response'});

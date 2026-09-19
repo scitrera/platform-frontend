@@ -1238,7 +1238,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "194916740e82366982da2b4a7f1ba26a706301b748e194986e399974983ed91e"
+      "sha256": "8dc44843b3555924c077b0c5f5bb957aad2e60394949354a69d11ffb464648f0"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1250,11 +1250,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "5a5a197e841556bd4d57cfa3072728f35197b618c5d244f8e311cac9e98b44db"
+      "sha256": "5b4948f61697f43d738b17c8bce012cbebc25cb050319fe4141554706685c6e9"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "3df19a0df1e6d62d5a20037842dd0d8f1c0d56e9bd229ff34ffc0f9e75ea4eff"
+      "sha256": "6d28c7accb3060dba08db50fd75749dff59384a41fa77f1eb65ecb8b5d729705"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",

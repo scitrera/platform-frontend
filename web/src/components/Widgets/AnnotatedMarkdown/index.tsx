@@ -16,6 +16,7 @@ export interface AnnotatedMarkdownProps {
   stale?: boolean;
   submitLabel?: string;
   expandedOnly?: boolean;
+  expandLabel?: string;
   allowComments?: boolean;
   title?: string;
   toolbarActions?: React.ReactNode;
@@ -29,7 +30,7 @@ type Placement = {id: string; top: number; rects: {top: number; left: number; wi
 
 /** Text-anchored, controlled feedback. Persistence and submission belong to the host app. */
 export function AnnotatedMarkdown({children, documentId, documentVersion, annotations, onChange, onSubmit,
-  disabled = false, stale = false, submitLabel = 'Submit comments', expandedOnly = false, allowComments = true, title = '',
+  disabled = false, stale = false, submitLabel = 'Submit comments', expandedOnly = false, expandLabel = 'Expand', allowComments = true, title = '',
   toolbarActions, expandedTabs, loadEvidence, loadSourcePage}: AnnotatedMarkdownProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [expanded, setExpanded] = useState(false);
@@ -180,12 +181,17 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const last = placements.at(-1);
   const height = last ? last.top + (findCard(last.id)?.offsetHeight || 180) + 24 : 0;
 
+  const trailingExpand = expandedOnly && !expanded;
+  const expandTitle = expanded ? 'Close expanded view' : expandLabel === 'Expand' ? 'Expand document' : expandLabel;
+  const expandButton = !(expanded && expandedOnly && loadSourcePage) && <button type="button"
+    className={`annotation-button${trailingExpand ? ' annotation-expand-end' : ''}`} onClick={() => setExpanded(!expanded)}
+    aria-label={expandTitle} title={expandTitle}>
+    {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : `${expandLabel}${expandedOnly && editor ? ' (unsaved comment)' : expandedOnly && annotations.length ? ` (${annotations.length} comments)` : ''}`}</span>
+  </button>;
+
   const content = <section className={`annotated-markdown ${commentsVisible ? '' : 'annotation-compact'}`} aria-label="Document review">
     <div className="annotation-toolbar">
-      {!(expanded && expandedOnly && loadSourcePage) && <button type="button" className="annotation-button" onClick={() => setExpanded(!expanded)}
-        aria-label={expanded ? 'Close expanded view' : 'Expand document'} title={expanded ? 'Close expanded view' : 'Expand document'}>
-        {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : `Expand${expandedOnly && editor ? ' (unsaved comment)' : expandedOnly && annotations.length ? ` (${annotations.length} comments)` : ''}`}</span>
-      </button>}
+      {!trailingExpand && expandButton}
       {commentsVisible ? <>
       <div className="annotation-instructions"><MessageSquare size={17} aria-hidden="true"/>
         <span>Select a passage to add a comment</span>
@@ -197,7 +203,8 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
         <Send size={15} aria-hidden="true"/>{busy ? 'Saving…' : `${submitLabel}${annotations.length ? ` (${annotations.length})` : ''}`}
       </button>
       </> : <div className="annotation-toolbar-actions"><fieldset disabled={!!editor || busy} style={{border: 0, padding: 0, margin: 0}}>{toolbarActions}</fieldset>
-        {editor && <span className="annotation-unsaved">Expand to save or cancel your open comment.</span>}</div>}
+        {editor && <span className="annotation-unsaved">{expandLabel === 'Expand' ? 'Expand' : `Open ${expandLabel}`} to save or cancel your open comment.</span>}</div>}
+      {trailingExpand && expandButton}
     </div>
     {commentsVisible && error && <p className="annotation-notice annotation-error" role="alert">{error}</p>}
     {commentsVisible && stale && <div className="annotation-notice" role="status">
