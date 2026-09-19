@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {MessageSquarePlus, MessageSquare, Pencil, Trash2, Send, X, Maximize2, Minimize2} from 'lucide-react';
 import {SciMarkdown} from '../../Apps/Chat/SciMarkdown';
+import {SourceEvidencePane, type ReviewEvidence, type SourcePageLoader} from './SourceEvidencePane';
 import {locateAnchor, selectedAnchor, type TextAnnotation} from './anchors';
 
 export type {TextAnnotation} from './anchors';
@@ -14,6 +15,13 @@ export interface AnnotatedMarkdownProps {
   disabled?: boolean;
   stale?: boolean;
   submitLabel?: string;
+  expandedOnly?: boolean;
+  allowComments?: boolean;
+  title?: string;
+  toolbarActions?: React.ReactNode;
+  expandedTabs?: React.ReactNode;
+  loadEvidence?: () => Promise<ReviewEvidence>;
+  loadSourcePage?: SourcePageLoader;
 }
 
 type Anchor = NonNullable<ReturnType<typeof selectedAnchor>>;
@@ -21,9 +29,37 @@ type Placement = {id: string; top: number; rects: {top: number; left: number; wi
 
 /** Text-anchored, controlled feedback. Persistence and submission belong to the host app. */
 export function AnnotatedMarkdown({children, documentId, documentVersion, annotations, onChange, onSubmit,
-  disabled = false, stale = false, submitLabel = 'Submit comments'}: AnnotatedMarkdownProps) {
+  disabled = false, stale = false, submitLabel = 'Submit comments', expandedOnly = false, allowComments = true, title = '',
+  toolbarActions, expandedTabs, loadEvidence, loadSourcePage}: AnnotatedMarkdownProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [expanded, setExpanded] = useState(false);
+  const scroll = useRef<HTMLDivElement>(null);
+  const scrollPositions = useRef<Record<string, number>>({});
+  useLayoutEffect(() => {
+    if (scroll.current) scroll.current.scrollTop = scrollPositions.current[documentId] || 0;
+  }, [expanded, documentId]);
+  const commentsVisible = allowComments && (!expandedOnly || expanded);
+  const loaders = useRef({loadEvidence, loadSourcePage}); loaders.current = {loadEvidence, loadSourcePage};
+  const [evidence, setEvidence] = useState<ReviewEvidence | null>(null);
+  const [evidenceError, setEvidenceError] = useState('');
+  const [evidenceLoading, setEvidenceLoading] = useState(false);
+  const [selectedPoint, setSelectedPoint] = useState<string>('');
+  const [leftWidth, setLeftWidth] = useState(60);
+  const [mobilePane, setMobilePane] = useState('document');
+  const workspace = useRef<HTMLDivElement>(null);
+  const points = evidence?.documents?.[documentId]?.document_version === documentVersion
+    ? evidence.documents[documentId].points : [];
+  const point = points.find(p => p.id === selectedPoint) || null;
+  useEffect(() => {
+    let active = true;
+    setEvidence(null);setEvidenceError('');setSelectedPoint('');
+    if (!expanded || !loaders.current.loadEvidence) return;
+    setEvidenceLoading(true);
+    loaders.current.loadEvidence().then(value => {if (active) setEvidence(value);})
+      .catch(e => {if (active) setEvidenceError(e instanceof Error ? e.message : 'Unable to load evidence.');})
+      .finally(() => {if (active) setEvidenceLoading(false);});
+    return () => {active = false;};
+  }, [expanded, documentId, documentVersion]);
   const article = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
   const rail = useRef<HTMLElement>(null);
@@ -35,7 +71,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const [error, setError] = useState('');
   const [placements, setPlacements] = useState<Placement[]>([]);
   const visible = useMemo(() => annotations.filter(a => a.document === documentId), [annotations, documentId]);
-  const editable = !disabled && !stale && !busy;
+  const editable = commentsVisible && !disabled && !stale && !busy;
 
   const findCard = (id: string) => Array.from(rail.current?.querySelectorAll<HTMLElement>('[data-comment-id]') || [])
     .find(card => card.dataset.commentId === id);
@@ -68,6 +104,24 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
     return () => observer.disconnect();
   }, [measure]);
   useEffect(() => { setSelection(null); }, [documentId, documentVersion]);
+  useLayoutEffect(() => {
+    if (!expanded || !article.current) return;
+    const bullets = Array.from(article.current.querySelectorAll<HTMLElement>('li')).filter(li => !li.parentElement?.closest('li'));
+    if (points.length !== bullets.length) return;
+    bullets.forEach((li, index) => {
+      li.dataset.evidencePoint = points[index].id;
+      li.tabIndex = 0; li.setAttribute('role', 'button');
+      li.setAttribute('aria-label', `Show evidence: ${li.textContent?.slice(0, 130)}`);
+      li.classList.toggle('evidence-point-active', points[index].id === selectedPoint);
+    });
+    return () => bullets.forEach(li => {
+      delete li.dataset.evidencePoint;li.removeAttribute('tabindex');li.removeAttribute('role');li.removeAttribute('aria-label');li.classList.remove('evidence-point-active');
+    });
+  }, [expanded, points, selectedPoint, children]);
+  const selectPoint = (target: EventTarget | null) => {
+    const node = target instanceof Element ? target.closest<HTMLElement>('[data-evidence-point]') : null;
+    if (node && article.current?.contains(node)) {setSelectedPoint(node.dataset.evidencePoint || '');setMobilePane('sources');}
+  };
   useEffect(() => {
     if (expanded) dialog.current?.showModal();
     else dialog.current?.close();
@@ -125,12 +179,13 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const last = placements.at(-1);
   const height = last ? last.top + (findCard(last.id)?.offsetHeight || 180) + 24 : 0;
 
-  const content = <section className="annotated-markdown" aria-label="Document review">
+  const content = <section className={`annotated-markdown ${commentsVisible ? '' : 'annotation-compact'}`} aria-label="Document review">
     <div className="annotation-toolbar">
       <button type="button" className="annotation-button" onClick={() => setExpanded(!expanded)}
         aria-label={expanded ? 'Close expanded view' : 'Expand document'} title={expanded ? 'Close expanded view' : 'Expand document'}>
-        {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : 'Expand'}</span>
+        {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : `Expand${expandedOnly && editor ? ' (unsaved comment)' : expandedOnly && annotations.length ? ` (${annotations.length} comments)` : ''}`}</span>
       </button>
+      {commentsVisible ? <>
       <div className="annotation-instructions"><MessageSquare size={17} aria-hidden="true"/>
         <span>Select a passage to add a comment</span>
       </div>
@@ -140,9 +195,11 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
         disabled={!annotations.length || !editable || !!editor}>
         <Send size={15} aria-hidden="true"/>{busy ? 'Saving…' : `${submitLabel}${annotations.length ? ` (${annotations.length})` : ''}`}
       </button>
+      </> : <div className="annotation-toolbar-actions"><fieldset disabled={!!editor || busy} style={{border: 0, padding: 0, margin: 0}}>{toolbarActions}</fieldset>
+        {editor && <span className="annotation-unsaved">Expand to save or cancel your open comment.</span>}</div>}
     </div>
-    {error && <p className="annotation-notice annotation-error" role="alert">{error}</p>}
-    {stale && <div className="annotation-notice" role="status">
+    {commentsVisible && error && <p className="annotation-notice annotation-error" role="alert">{error}</p>}
+    {commentsVisible && stale && <div className="annotation-notice" role="status">
       These comments refer to an earlier revision. Their quoted passages are retained below.
       <button type="button" className="annotation-button" disabled={busy || disabled} onClick={async () => {
         if (!window.confirm('Clear these earlier comments and start commenting on the current revision?')) return;
@@ -152,8 +209,8 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
         finally { setBusy(false); }
       }}>Start comments on this revision</button>
     </div>}
-    {disabled && <p className="annotation-notice" role="status">A review is in progress. Your saved comments are retained.</p>}
-    <div className="annotation-scroll">
+    {commentsVisible && disabled && <p className="annotation-notice" role="status">A review is in progress. Your saved comments are retained.</p>}
+    <div className="annotation-scroll" ref={scroll} onScroll={e => {scrollPositions.current[documentId] = e.currentTarget.scrollTop;}}>
       <div className="annotation-body" ref={body} style={{'--comment-height': `${height}px`} as React.CSSProperties}>
         <div className="annotation-document" onPointerUp={captureSelection} onKeyUp={captureSelection}>
           <div className="annotation-text" ref={article} tabIndex={0} aria-label={`${documentId} document`}
@@ -162,10 +219,15 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
               const bounds = body.current!.getBoundingClientRect();
               const x = event.clientX - bounds.left, y = event.clientY - bounds.top;
               const hit = placements.find(p => p.rects.some(r => x >= r.left && x <= r.left + r.width && y >= r.top && y <= r.top + r.height));
-              if (hit) focusComment(hit.id);
+              if (hit && commentsVisible) focusComment(hit.id);
+              if (expanded) selectPoint(event.target);
+            }} onKeyDown={event => {
+              if (expanded && (event.key === 'Enter' || event.key === ' ') && event.target instanceof HTMLElement && event.target.dataset.evidencePoint) {
+                event.preventDefault();selectPoint(event.target);
+              }
             }}><SciMarkdown>{children}</SciMarkdown></div>
         </div>
-        <div className="annotation-highlights" aria-hidden="true">
+        {commentsVisible && <><div className="annotation-highlights" aria-hidden="true">
           {placements.flatMap(p => p.rects.map((r, index) => <span key={`${p.id}-${index}`}
             className={p.id === active ? 'annotation-highlight active' : 'annotation-highlight'} style={r}/>))}
         </div>
@@ -203,7 +265,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
               </>}
             </article>;
           })}
-        </aside>
+        </aside></>}
       </div>
     </div>
   </section>;
@@ -211,7 +273,26 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
     {!expanded && content}
     <dialog className="annotation-dialog" ref={dialog} aria-label="Expanded document review"
       onCancel={() => setExpanded(false)} onClose={() => setExpanded(false)}>
-      {expanded && content}
+      {expanded && (expandedOnly && loadSourcePage ? <div className="expanded-review-shell">
+        <header className="expanded-review-header"><strong>{title || 'Document review'}</strong>{expandedTabs}
+          <div className="review-mobile-switch"><button className="annotation-button" onClick={() => setMobilePane('document')}>Document</button>
+            <button className="annotation-button" onClick={() => setMobilePane('sources')}>Sources</button></div>
+          <button className="annotation-button" aria-label="Close review" onClick={() => setExpanded(false)}><X size={16}/>Close</button>
+        </header>
+        <div ref={workspace} className={`expanded-review-workspace mobile-${mobilePane}`}
+          style={{'--review-left': `${leftWidth}fr`, '--review-right': `${100 - leftWidth}fr`} as React.CSSProperties}>
+          <div className="expanded-review-document">{content}</div>
+          <div className="review-divider" role="separator" aria-label="Resize document and sources" aria-orientation="vertical"
+            tabIndex={0} aria-valuenow={leftWidth} aria-valuemin={40} aria-valuemax={75}
+            onKeyDown={e => {if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {e.preventDefault();setLeftWidth(n => Math.max(40, Math.min(75, n + (e.key === 'ArrowRight' ? 2 : -2))));}}}
+            onPointerDown={e => {e.currentTarget.setPointerCapture(e.pointerId);}}
+            onPointerMove={e => {if (!e.currentTarget.hasPointerCapture(e.pointerId) || !workspace.current) return;
+              const box = workspace.current.getBoundingClientRect();setLeftWidth(Math.max(40, Math.min(75, (e.clientX - box.left) * 100 / box.width)));}}
+            onPointerUp={e => {if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);}}/>
+          <SourceEvidencePane evidence={evidence} point={point} loading={evidenceLoading} error={evidenceError}
+            loadPage={(doc, page) => loaders.current.loadSourcePage!(doc, page)}/>
+        </div>
+      </div> : content)}
     </dialog>
   </>;
 }

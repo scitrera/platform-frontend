@@ -1229,6 +1229,18 @@
       "sha256": "396a6a0bd542b392a0e79ea7c3a2191fbf4674f9ac68634a5a4866206fbe9b47"
     },
     {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/README.md",
+      "sha256": "4467c779b6cea8a095d4b94daccc5062ace58579dc89522a6b07f4caf5eea3f2"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
+      "sha256": "0a6d8f3afe094ad04ef5019f9f297406acbd6e93048d6f8c17b77c7957043efd"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
+      "sha256": "bf9bc3708d64589b19dd642dea2b2a15237536db177f70de9fda4dd55f2c676b"
+    },
+    {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
       "sha256": "9e3853f80ce44c28875bd621cc2805409682ea04ebff73d1b09770a5da4565ca"
     },
@@ -1238,11 +1250,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "852b17099d02c20008f7f7d240e67a661862bee127f0dc32bc52dc6da09e01c3"
+      "sha256": "dfab1529e750684f08c1c21111797b6b161f208167653aa7e585d65425559182"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "e02e62479c0549fe3abfd507e10a9049818b0f8496edc29e4da4ac26a7cf6ac9"
+      "sha256": "8101391bd2e7e1c7cab9edfcbd9d3adcd2a30aab1d306c35827d2443eef74b2e"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",
