@@ -74,9 +74,9 @@ function LazyPage({document, page, loader, scrollRoot, quote, onVisible, zoom}: 
   </article>;
 }
 
-export function SourceEvidencePane({evidence, point, loadPage, error, loading}: {
+export function SourceEvidencePane({evidence, point, loadPage, error, loading, divider, onPreview}: {
   evidence: ReviewEvidence | null; point: EvidencePoint | null; loadPage: SourcePageLoader;
-  error: string; loading: boolean;
+  error: string; loading: boolean; divider?: React.ReactNode; onPreview?: () => void;
 }) {
   const [document, setDocument] = useState('');
   const [active, setActive] = useState('');
@@ -115,25 +115,30 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading}: 
       return refs.find(ref => ref.document_id === document && ref.page_number === number)?.id || '';
     });
   }
-  return <aside className="source-evidence-pane" aria-label="Source evidence">
-    <header className="source-heading"><strong>Sources</strong><span>Read-only original documents</span></header>
-    {loading ? <p role="status" className="source-empty">Loading supporting evidence…</p>
-      : error ? <p role="alert" className="source-empty">{error}</p>
-      : !evidence?.available ? <p className="source-empty">{evidence?.message || 'Detailed evidence is unavailable for this revision.'}</p>
-      : <>
-        <div className="source-evidence-list" aria-label="Supporting passages">
+  return <>
+    <aside className="source-evidence-pane" aria-label="Source evidence">
+      <header className="source-heading"><strong>Sources</strong><span>Supporting passages</span></header>
+      {loading ? <p role="status" className="source-empty">Loading supporting evidence…</p>
+        : error ? <p role="alert" className="source-empty">{error}</p>
+        : !evidence?.available ? <p className="source-empty">{evidence?.message || 'Detailed evidence is unavailable for this revision.'}</p>
+        : <div className="source-evidence-list" aria-label="Supporting passages">
           <p className="source-selection-label">{point ? `${refs.length} supporting passage${refs.length === 1 ? '' : 's'} · ${point.section}` : 'Click a point in the document to see its evidence.'}</p>
           {refs.map((ref, i) => <button key={ref.id} className={`source-evidence-item ${ref.id === active ? 'active' : ''}`}
-            aria-current={ref.id === active ? 'true' : undefined} onClick={() => {setActive(ref.id);jump(ref.document_id, ref.page_number);}}>
-            <strong>{i + 1}. {ref.document_name} · p. {ref.page_number}</strong><span>{ref.quote}</span>
-            {!!ref.via?.length && <small>Via verified analysis</small>}
+            aria-current={ref.id === active ? 'true' : undefined}
+            onClick={() => {setActive(ref.id);jump(ref.document_id, ref.page_number);onPreview?.();}}>
+            <strong>{i + 1}. {ref.document_name} · p. {ref.page_number}</strong>
+            <span className="source-card-quote">{ref.quote}</span>
+            {ref.locator && <span className="source-card-location"><b>Location</b>{ref.locator}</span>}
+            {!!ref.via?.length && <span className="source-card-analysis"><b>Via verified analysis</b>
+              {ref.via.map((via, index) => <span key={index}><em>{via.section}</em>{via.quote}</span>)}
+            </span>}
           </button>)}
-        </div>
-        {activeRef && <details className="source-proof" key={activeRef.id}>
-          <summary>Supporting quote and location</summary><blockquote>{activeRef.quote}</blockquote>
-          {activeRef.locator && <p>{activeRef.locator}</p>}
-          {activeRef.via?.map((via, i) => <p key={i}><strong>Analysis · {via.section}: </strong>{via.quote}</p>)}
-        </details>}
+        </div>}
+    </aside>
+    {divider}
+    <aside className="source-preview-pane" aria-label="Source preview">
+      <header className="source-heading"><strong>Preview</strong><span>Read-only original document</span></header>
+      {evidence?.available && !error && !loading ? <>
         <div className="source-navigation">
           <select aria-label="Source document" value={document} onChange={e => {setActive('');jump(e.target.value,
             evidence.pages?.find(p => p.document_id === e.target.value)?.page_number || 1);}}>
@@ -154,6 +159,7 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading}: 
             loader={loadPage} scrollRoot={scroll} onVisible={visible} zoom={zoom}
             quote={activeRef?.page_number === p.page_number ? activeRef.quote : ''}/>)}
         </div>
-      </>}
-  </aside>;
+      </> : <p className="source-empty">Original pages appear here when source evidence is available.</p>}
+    </aside>
+  </>;
 }

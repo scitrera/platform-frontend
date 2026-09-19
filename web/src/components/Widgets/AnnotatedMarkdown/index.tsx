@@ -44,7 +44,8 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   const [evidenceError, setEvidenceError] = useState('');
   const [evidenceLoading, setEvidenceLoading] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<string>('');
-  const [leftWidth, setLeftWidth] = useState(60);
+  const [leftWidth, setLeftWidth] = useState(47);
+  const [sourceWidth, setSourceWidth] = useState(19);
   const [mobilePane, setMobilePane] = useState('document');
   const workspace = useRef<HTMLDivElement>(null);
   const points = evidence?.documents?.[documentId]?.document_version === documentVersion
@@ -276,20 +277,29 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
       {expanded && (expandedOnly && loadSourcePage ? <div className="expanded-review-shell">
         <header className="expanded-review-header"><strong>{title || 'Document review'}</strong>{expandedTabs}
           <div className="review-mobile-switch"><button className="annotation-button" onClick={() => setMobilePane('document')}>Document</button>
-            <button className="annotation-button" onClick={() => setMobilePane('sources')}>Sources</button></div>
+            <button className="annotation-button" onClick={() => setMobilePane('sources')}>Sources</button>
+            <button className="annotation-button" onClick={() => setMobilePane('preview')}>Preview</button></div>
           <button className="annotation-button" aria-label="Close review" onClick={() => setExpanded(false)}><X size={16}/>Close</button>
         </header>
         <div ref={workspace} className={`expanded-review-workspace mobile-${mobilePane}`}
-          style={{'--review-left': `${leftWidth}fr`, '--review-right': `${100 - leftWidth}fr`} as React.CSSProperties}>
+          style={{'--review-left': `${leftWidth}fr`, '--review-sources': `${sourceWidth}fr`, '--review-right': `${100 - leftWidth - sourceWidth}fr`} as React.CSSProperties}>
           <div className="expanded-review-document">{content}</div>
           <div className="review-divider" role="separator" aria-label="Resize document and sources" aria-orientation="vertical"
-            tabIndex={0} aria-valuenow={leftWidth} aria-valuemin={40} aria-valuemax={75}
-            onKeyDown={e => {if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {e.preventDefault();setLeftWidth(n => Math.max(40, Math.min(75, n + (e.key === 'ArrowRight' ? 2 : -2))));}}}
+            tabIndex={0} aria-valuenow={leftWidth} aria-valuemin={35} aria-valuemax={Math.min(60, 75 - sourceWidth)}
+            onKeyDown={e => {if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {e.preventDefault();setLeftWidth(n => Math.max(35, Math.min(60, 75 - sourceWidth, n + (e.key === 'ArrowRight' ? 2 : -2))));}}}
             onPointerDown={e => {e.currentTarget.setPointerCapture(e.pointerId);}}
             onPointerMove={e => {if (!e.currentTarget.hasPointerCapture(e.pointerId) || !workspace.current) return;
-              const box = workspace.current.getBoundingClientRect();setLeftWidth(Math.max(40, Math.min(75, (e.clientX - box.left) * 100 / box.width)));}}
+              const box = workspace.current.getBoundingClientRect();setLeftWidth(Math.max(35, Math.min(60, 75 - sourceWidth, (e.clientX - box.left) * 100 / box.width)));}}
             onPointerUp={e => {if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);}}/>
           <SourceEvidencePane evidence={evidence} point={point} loading={evidenceLoading} error={evidenceError}
+            onPreview={() => setMobilePane('preview')}
+            divider={<div className="review-divider" role="separator" aria-label="Resize sources and preview" aria-orientation="vertical"
+              tabIndex={0} aria-valuenow={sourceWidth} aria-valuemin={15} aria-valuemax={Math.min(30, 75 - leftWidth)}
+              onKeyDown={e => {if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {e.preventDefault();setSourceWidth(n => Math.max(15, Math.min(30, 75 - leftWidth, n + (e.key === 'ArrowRight' ? 2 : -2))));}}}
+              onPointerDown={e => {e.currentTarget.setPointerCapture(e.pointerId);}}
+              onPointerMove={e => {if (!e.currentTarget.hasPointerCapture(e.pointerId) || !workspace.current) return;
+                const box = workspace.current.getBoundingClientRect();setSourceWidth(Math.max(15, Math.min(30, 75 - leftWidth, (e.clientX - box.left) * 100 / box.width - leftWidth)));}}
+              onPointerUp={e => {if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);}}/>}
             loadPage={(doc, page) => loaders.current.loadSourcePage!(doc, page)}/>
         </div>
       </div> : content)}

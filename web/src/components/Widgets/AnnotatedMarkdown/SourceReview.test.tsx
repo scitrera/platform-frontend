@@ -1,5 +1,5 @@
 import React from 'react';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor, within} from '@testing-library/react';
 import {beforeAll, describe, expect, it, vi} from 'vitest';
 import {AnnotatedMarkdown} from './index';
 import {HighlightedTranscript, SourceEvidencePane, type ReviewEvidence} from './SourceEvidencePane';
@@ -19,7 +19,7 @@ beforeAll(() => {
     disconnect() {}
   });
 });
-const refs = [1, 2].map(n => ({id:`r${n}`,document_id:'proposal',document_name:'Proposal.pdf',page_number:n,quote:`Source passage ${n}`,evidence_type:'transcript'}));
+const refs = [1, 2].map(n => ({id:`r${n}`,document_id:'proposal',document_name:'Proposal.pdf',page_number:n,quote:`Source passage ${n}`,evidence_type:'transcript',locator:'Terms table, final row'}));
 const evidence: ReviewEvidence = {available:true,revision:'r1',documents:{summary:{document_version:'v1',points:[
   {id:'point',index:0,section:'Terms',text:'Service is optional.',references:refs}]}},
   sources:[{document_id:'proposal',name:'Proposal.pdf'}],pages:Array.from({length:80},(_,i)=>({document_id:'proposal',page_number:i+1}))};
@@ -38,10 +38,17 @@ describe('expanded source review', () => {
     fireEvent.click(screen.getByRole('button',{name:'Expand document'}));
     await waitFor(()=>expect(p.loadEvidence).toHaveBeenCalledOnce());
     expect(screen.getByRole('button',{name:'Add comment'})).toBeVisible();
-    expect(screen.getByRole('complementary',{name:'Source evidence'})).toBeVisible();
+    const sources=screen.getByRole('complementary',{name:'Source evidence'});
+    const preview=screen.getByRole('complementary',{name:'Source preview'});
+    expect(sources).toBeVisible();
+    expect(preview).toBeVisible();
+    expect(screen.getAllByRole('separator')).toHaveLength(2);
     const point=await screen.findByRole('button',{name:'Show evidence: Service is optional.'});
     fireEvent.keyDown(point,{key:'Enter'});
     expect(await screen.findByRole('button',{name:/1\. Proposal.pdf/})).toHaveAttribute('aria-current','true');
+    expect(within(sources).getAllByText('Terms table, final row')).toHaveLength(2);
+    expect(sources.querySelector('details')).toBeNull();
+    expect(within(preview).queryByText('Terms table, final row')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button',{name:/2\. Proposal.pdf/}));
     expect(screen.getByRole('button',{name:/2\. Proposal.pdf/})).toHaveAttribute('aria-current','true');
     fireEvent.click(screen.getByRole('button',{name:'Close review'}));

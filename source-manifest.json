@@ -1234,11 +1234,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "158e2527793950665f9a81c22c116022a3e94633fccb90cc1a89a8b78fc8bee5"
+      "sha256": "918795010dc77e35c66779f920715e29f89bc91b51736112dee5da7c4a0873c3"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "507e17a53a76e3af27de5fda6f5bf0cb6330b01b2708225b7f08e12645cda86d"
+      "sha256": "194916740e82366982da2b4a7f1ba26a706301b748e194986e399974983ed91e"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1250,11 +1250,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "bb5f81b40383dad27cff9a51ac0c85eb6693d05b4438a1f603b5fcede3dda52d"
+      "sha256": "5a5a197e841556bd4d57cfa3072728f35197b618c5d244f8e311cac9e98b44db"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "8101391bd2e7e1c7cab9edfcbd9d3adcd2a30aab1d306c35827d2443eef74b2e"
+      "sha256": "3df19a0df1e6d62d5a20037842dd0d8f1c0d56e9bd229ff34ffc0f9e75ea4eff"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",
