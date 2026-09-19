@@ -90,6 +90,7 @@ describe('expanded source review', () => {
     const {container,rerender}=render(<HighlightedTranscript text={'A  source\npassage <script>.'} quote="source passage"/>);
     expect(container.querySelector('mark')).toHaveTextContent('source passage');
     expect(container.querySelector('script')).toBeNull();
+    expect(container.textContent).toBe('A  source\npassage <script>.');
     rerender(<HighlightedTranscript text="Same. Same." quote="Same."/>);
     expect(container.querySelector('mark')).toBeNull();
   });

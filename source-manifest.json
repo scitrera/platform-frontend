@@ -1234,11 +1234,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "0a6d8f3afe094ad04ef5019f9f297406acbd6e93048d6f8c17b77c7957043efd"
+      "sha256": "158e2527793950665f9a81c22c116022a3e94633fccb90cc1a89a8b78fc8bee5"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "bf9bc3708d64589b19dd642dea2b2a15237536db177f70de9fda4dd55f2c676b"
+      "sha256": "507e17a53a76e3af27de5fda6f5bf0cb6330b01b2708225b7f08e12645cda86d"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1250,7 +1250,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "dfab1529e750684f08c1c21111797b6b161f208167653aa7e585d65425559182"
+      "sha256": "bb5f81b40383dad27cff9a51ac0c85eb6693d05b4438a1f603b5fcede3dda52d"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",

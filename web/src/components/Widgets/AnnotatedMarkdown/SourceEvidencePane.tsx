@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 
 export interface SourceReference {
   id: string; document_id: string; document_name: string; page_number: number;
@@ -17,12 +17,14 @@ export type SourcePageLoader = (document: string, page: number) => Promise<Sourc
 
 /** Whitespace-normalized, unambiguous transcript highlighting; never inject HTML. */
 export function HighlightedTranscript({text, quote}: {text: string; quote: string}) {
-  const compact = (value: string) => value.replace(/\s+/g, ' ').trim();
-  const needle = compact(quote);
-  const haystack = compact(text);
-  const start = needle ? haystack.indexOf(needle) : -1;
-  if (start < 0 || haystack.indexOf(needle, start + needle.length) >= 0) return <>{text}</>;
-  return <>{haystack.slice(0, start)}<mark>{haystack.slice(start, start + needle.length)}</mark>{haystack.slice(start + needle.length)}</>;
+  const words = quote.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return <>{text}</>;
+  const pattern = new RegExp(words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+'), 'g');
+  const match = pattern.exec(text);
+  if (!match) return <>{text}</>;
+  pattern.lastIndex = match.index + 1;
+  if (pattern.exec(text)) return <>{text}</>;
+  return <>{text.slice(0, match.index)}<mark>{match[0]}</mark>{text.slice(match.index + match[0].length)}</>;
 }
 
 function LazyPage({document, page, loader, scrollRoot, quote, onVisible, zoom}: {
@@ -99,12 +101,12 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading}: 
     if (evidence?.sources?.length && !evidence.sources.some(s => s.document_id === document)) jump(evidence.sources[0].document_id,
       evidence.pages?.find(p => p.document_id === evidence.sources![0].document_id)?.page_number || 1);
   }, [evidence, document]);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (jumpTarget.current != null) {
       scroll.current?.querySelector(`[data-source-page="${jumpTarget.current}"]`)?.scrollIntoView({block: 'start'});
       jumpTarget.current = null;
     }
-  }, [document, page]);
+  }, [document, page, zoom]);
   function visible(number: number) {
     setPage(number);
     setActive(current => {
@@ -143,7 +145,7 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading}: 
             {pages.map(p => <option key={p.page_number} value={p.page_number}>{p.page_number}</option>)}</select></label>
           <button className="annotation-button" aria-label="Next source page" disabled={page >= (pages.at(-1)?.page_number || 1)}
             onClick={() => jump(document, page + 1)}>›</button>
-          <select aria-label="Source zoom" value={zoom} onChange={e => setZoom(Number(e.target.value))}>
+          <select aria-label="Source zoom" value={zoom} onChange={e => {jumpTarget.current = page;setZoom(Number(e.target.value));}}>
             {[100,125,150,200].map(n => <option key={n} value={n}>{n === 100 ? 'Fit width' : `${n}%`}</option>)}
           </select>
         </div>

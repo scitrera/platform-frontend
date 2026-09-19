@@ -181,10 +181,10 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
 
   const content = <section className={`annotated-markdown ${commentsVisible ? '' : 'annotation-compact'}`} aria-label="Document review">
     <div className="annotation-toolbar">
-      <button type="button" className="annotation-button" onClick={() => setExpanded(!expanded)}
+      {!(expanded && expandedOnly && loadSourcePage) && <button type="button" className="annotation-button" onClick={() => setExpanded(!expanded)}
         aria-label={expanded ? 'Close expanded view' : 'Expand document'} title={expanded ? 'Close expanded view' : 'Expand document'}>
         {expanded ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}<span>{expanded ? 'Close' : `Expand${expandedOnly && editor ? ' (unsaved comment)' : expandedOnly && annotations.length ? ` (${annotations.length} comments)` : ''}`}</span>
-      </button>
+      </button>}
       {commentsVisible ? <>
       <div className="annotation-instructions"><MessageSquare size={17} aria-hidden="true"/>
         <span>Select a passage to add a comment</span>
