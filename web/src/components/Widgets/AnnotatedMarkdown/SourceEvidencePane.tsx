@@ -1,4 +1,5 @@
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {useSourcePageNavigation} from './useSourcePageNavigation';
 
 export interface SourceRegion {region_id: string; image_sha256: string; bbox: number[]; origin: 'ocr' | 'review_crop'}
 export interface SourceReference {
@@ -73,7 +74,7 @@ function LazyPage({document, page, loader, scrollRoot, quote, regions, onVisible
       {!near ? null : error ? <div role="alert" className="source-page-message">{error}<button className="annotation-button" onClick={() => setRetry(r => r + 1)}>Retry page</button></div>
         : !value ? <p className="source-page-message" role="status">Loading page {page}…</p>
         : transcript || !value.image_url ? <div className="source-transcript"><p>{value.image_error}</p><HighlightedTranscript text={value.text} quote={quote}/></div>
-        : <div className="source-page-image"><img src={value.image_url} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
+        : <div className="source-page-image" title={zoom > 100 ? "Ctrl+scroll to zoom; drag to pan" : "Ctrl+scroll to zoom"}><img draggable={false} src={value.image_url} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
           onError={() => setError('The page image could not be loaded. Retry for a fresh link, or use the transcript.')} />
           {highlights.map(region => <div key={region.region_id} className="source-image-region" role="img"
             aria-label={region.origin === 'ocr' ? 'Supporting OCR block' : 'Reviewed source crop'}
@@ -95,6 +96,8 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading, d
   const [zoom, setZoom] = useState(100);
   const scroll = useRef<HTMLDivElement>(null);
   const jumpTarget = useRef<number | null>(null);
+  useSourcePageNavigation(scroll, zoom, setZoom, !!evidence?.available && !error && !loading, document);
+  const zoomOptions = [...new Set([100, 125, 150, 200, 300, 400, zoom])].sort((a, b) => a - b);
   const refs = point?.references || [];
   const activeRef = refs.find(ref => ref.id === active);
   const pages = (evidence?.pages || []).filter(p => p.document_id === document);
@@ -162,10 +165,10 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading, d
           <button className="annotation-button" aria-label="Next source page" disabled={page >= (pages.at(-1)?.page_number || 1)}
             onClick={() => jump(document, page + 1)}>›</button>
           <select aria-label="Source zoom" value={zoom} onChange={e => {jumpTarget.current = page;setZoom(Number(e.target.value));}}>
-            {[100,125,150,200].map(n => <option key={n} value={n}>{n === 100 ? 'Fit width' : `${n}%`}</option>)}
+            {zoomOptions.map(n => <option key={n} value={n}>{n === 100 ? 'Fit width' : `${n}%`}</option>)}
           </select>
         </div>
-        <div className="source-pages-scroll" ref={scroll}>
+        <div className="source-pages-scroll" ref={scroll} data-zoomed={zoom > 100}>
           {pages.map(p => <LazyPage key={`${document}:${p.page_number}`} document={document} page={p.page_number}
             loader={loadPage} scrollRoot={scroll} onVisible={visible} zoom={zoom}
             regions={activeRef?.document_id === document && activeRef.page_number === p.page_number ? activeRef.regions || [] : []}

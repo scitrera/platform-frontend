@@ -98,3 +98,10 @@ page coordinates, and `origin: "ocr" | "review_crop"`. The page loader returns
 reference and a matching image hash; missing or invalid geometry keeps the
 ordinary page preview. Relative coordinates follow image resizing and zoom.
 The producer must validate passage/region provenance before publishing evidence.
+
+Over a source page image, Ctrl+wheel zooms between fit width and 400%, keeping
+its point under the cursor stable. Above fit width, primary mouse drag pans the
+preview (including when the pointer leaves the image). The zoom selector still
+works; ordinary scrolling and transcript text selection keep their usual behavior.
+The comment margin occupies space only while it contains saved comments or an
+open comment editor. The Add comment toolbar action remains available when empty.

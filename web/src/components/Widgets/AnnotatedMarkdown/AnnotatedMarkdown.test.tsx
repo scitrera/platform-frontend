@@ -21,6 +21,25 @@ function selectPassage() {
 function props() {return {documentId:'summary',documentVersion:'v1',annotations:[] as TextAnnotation[],onChange:vi.fn().mockResolvedValue(undefined),onSubmit:vi.fn().mockResolvedValue(undefined),children:'A five-year term.'};}
 
 describe('margin comments', () => {
+  it('reclaims the empty margin and restores it for a draft or saved comment', async () => {
+    const p=props();const {rerender}=render(<AnnotatedMarkdown {...p}/>);
+    expect(screen.queryByLabelText('Margin comments')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('summary document').closest('.annotation-body')).toHaveClass('annotation-no-comments');
+    selectPassage();fireEvent.click(screen.getByRole('button',{name:'Add comment'}));
+    expect(screen.getByLabelText('Margin comments')).toBeVisible();
+    expect(screen.getByLabelText('Your comment')).toHaveValue('');
+    expect(screen.getByLabelText('summary document').closest('.annotation-body')).not.toHaveClass('annotation-no-comments');
+    fireEvent.click(screen.getByRole('button',{name:'Cancel'}));
+    expect(screen.queryByLabelText('Margin comments')).not.toBeInTheDocument();
+    rerender(<AnnotatedMarkdown {...p} annotations={[note]}/>);
+    expect(screen.getByLabelText('Margin comments')).toBeVisible();
+    fireEvent.click(screen.getByRole('button',{name:'Delete comment 1'}));
+    await waitFor(()=>expect(p.onChange).toHaveBeenCalledWith([]));
+    rerender(<AnnotatedMarkdown {...p} annotations={[]}/>);
+    expect(screen.queryByLabelText('Margin comments')).not.toBeInTheDocument();
+    rerender(<AnnotatedMarkdown {...p} annotations={[{...note,document:'analysis'}]}/>);
+    expect(screen.queryByLabelText('Margin comments')).not.toBeInTheDocument();
+  });
   it('saves a text-anchored comment and preserves other document comments', async () => {
     const p=props();p.annotations=[{...note,id:'analysis-note',document:'analysis'}];
     render(<AnnotatedMarkdown {...p}/>);selectPassage();fireEvent.click(screen.getByRole('button',{name:'Add comment'}));

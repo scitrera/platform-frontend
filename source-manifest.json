@@ -706,7 +706,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "76336f83f6ea86a84dc84c8f9f28c63cd4d1dc1fccf64baadeee203a721ede2b"
+      "sha256": "6aa031ba6cea5866c63840e138481b9755db48e93ad92046946964353ba364ef"
     },
     {
       "path": "web/components.json",
@@ -1226,7 +1226,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/AnnotatedMarkdown.test.tsx",
-      "sha256": "396a6a0bd542b392a0e79ea7c3a2191fbf4674f9ac68634a5a4866206fbe9b47"
+      "sha256": "b221c742f9ec06d87906e80fd65585fd42e3d01cc12e3ae88b4a6d786919bf66"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/README.md",
@@ -1234,11 +1234,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "b89d3356eb8d9238078803b869bb83b670d7a51aa8f0921ebafaa361b627a692"
+      "sha256": "8b87939ed7849afcd5a57aa0502d92834cc47f3a4ba45f9402a608e307dcb093"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "b0ceee9f3bade75fbfcd72a999791b306ad206f87822351c46c5662a72608a5a"
+      "sha256": "76052f9852fb337547f9f67b290053b1207e9d0cf5bde9dbdbcfb2015535ada5"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1250,11 +1250,15 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/index.tsx",
-      "sha256": "5b4948f61697f43d738b17c8bce012cbebc25cb050319fe4141554706685c6e9"
+      "sha256": "8c6d184de2add7ee1c8c85a8f0dbc657035a11d230cd5a6ff42eddb1bd88baee"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "dd20aca1ff209d5c3d06338e8ce3f6feacf831f694dea86412daf039973e11de"
+      "sha256": "8e652f203ef5ba7e1f376f83cd6a0319223f587687a802a03efd092921135d93"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/useSourcePageNavigation.ts",
+      "sha256": "3cbe82bcfa4f4d8c2e840f8eca9d429cf579c0694b32521195d48eefa3ff8507"
     },
     {
       "path": "web/src/components/Widgets/AreaLoadingSpinner.jsx",

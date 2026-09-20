@@ -178,6 +178,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
   };
   const cardTop = (id: string) => placements.find(p => p.id === id)?.top || 0;
   const cards = [...visible, ...(editor && !visible.some(a => a.id === editor.id) ? [editor] : [])];
+  const showRail = commentsVisible && cards.length > 0;
   const last = placements.at(-1);
   const height = last ? last.top + (findCard(last.id)?.offsetHeight || 180) + 24 : 0;
 
@@ -219,7 +220,7 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
     </div>}
     {commentsVisible && disabled && <p className="annotation-notice" role="status">A review is in progress. Your saved comments are retained.</p>}
     <div className="annotation-scroll" ref={scroll} onScroll={e => {scrollPositions.current[documentId] = e.currentTarget.scrollTop;}}>
-      <div className="annotation-body" ref={body} style={{'--comment-height': `${height}px`} as React.CSSProperties}>
+      <div className={`annotation-body${showRail ? "" : " annotation-no-comments"}`} ref={body} style={{'--comment-height': `${height}px`} as React.CSSProperties}>
         <div className="annotation-document" onPointerUp={captureSelection} onKeyUp={captureSelection}>
           <div className="annotation-text" ref={article} tabIndex={0} aria-label={`${documentId} document`}
             onClick={event => {
@@ -235,15 +236,11 @@ export function AnnotatedMarkdown({children, documentId, documentVersion, annota
               }
             }}><SciMarkdown>{children}</SciMarkdown></div>
         </div>
-        {commentsVisible && <><div className="annotation-highlights" aria-hidden="true">
+        {showRail && <><div className="annotation-highlights" aria-hidden="true">
           {placements.flatMap(p => p.rects.map((r, index) => <span key={`${p.id}-${index}`}
             className={p.id === active ? 'annotation-highlight active' : 'annotation-highlight'} style={r}/>))}
         </div>
         <aside className="annotation-rail" ref={rail} aria-label="Margin comments">
-          {!cards.length && <div className="annotation-empty"><MessageSquarePlus size={25} aria-hidden="true"/>
-            <strong>Review in the margin</strong><p>Highlight text, add your feedback, and save each comment. Submit them together when you’re ready.</p>
-            {!!annotations.length && <p>{annotations.length} saved comment(s) on another document tab.</p>}
-          </div>}
           {cards.map((comment, index) => {
             const editing = editor?.id === comment.id;
             const missing = placements.find(p => p.id === comment.id)?.missing;

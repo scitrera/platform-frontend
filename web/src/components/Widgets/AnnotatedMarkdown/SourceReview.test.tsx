@@ -116,6 +116,66 @@ describe('expanded source review', () => {
       await waitFor(()=>expect(screen.queryByRole('img',{name:'Supporting OCR block'})).not.toBeInTheDocument());
     }
   });
+  it('handles Ctrl+wheel only on page images, anchors zoom and clamps its range', async () => {
+    const p=props();render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
+    const img=await screen.findByRole('img',{name:'Original source, page 1'});
+    const image=img.parentElement!, article=image.closest<HTMLElement>('[data-source-page]')!;
+    const scroll=image.closest<HTMLElement>('.source-pages-scroll')!;
+    image.getBoundingClientRect=()=>({left:10-scroll.scrollLeft,top:20-scroll.scrollTop,
+      width:500*parseFloat(article.style.width)/100,height:700*parseFloat(article.style.width)/100} as DOMRect);
+    const wheel=(target:Element, deltaY:number, ctrlKey=true, deltaMode=0)=>{
+      const event=new WheelEvent('wheel',{bubbles:true,cancelable:true,ctrlKey,deltaY,deltaMode,clientX:210,clientY:300});
+      fireEvent(target,event);return event;
+    };
+    expect(wheel(img,-120,false).defaultPrevented).toBe(false);
+    expect(screen.getByRole('combobox',{name:'Source zoom'})).toHaveValue('100');
+    expect(wheel(img,-120).defaultPrevented).toBe(true);
+    expect(Number((screen.getByRole('combobox',{name:'Source zoom'}) as HTMLSelectElement).value)).toBeGreaterThan(100);
+    const box=image.getBoundingClientRect();
+    expect(box.left+box.width*.4).toBeCloseTo(210);
+    expect(box.top+box.height*.4).toBeCloseTo(300);
+    for(let i=0;i<10;i++) wheel(img,-50,true,1);
+    expect(screen.getByRole('combobox',{name:'Source zoom'})).toHaveValue('400');
+    expect(wheel(img,-120).defaultPrevented).toBe(true);
+    for(let i=0;i<10;i++) wheel(img,200);
+    expect(screen.getByRole('combobox',{name:'Source zoom'})).toHaveValue('100');
+    expect(scroll.scrollLeft).toBe(0);
+    expect(wheel(img,120).defaultPrevented).toBe(true);
+    fireEvent.click(within(article).getByRole('button',{name:'Show transcript'}));
+    expect(wheel(article.querySelector('.source-transcript')!,-120).defaultPrevented).toBe(false);
+    expect(wheel(screen.getByRole('combobox',{name:'Source zoom'}),-120).defaultPrevented).toBe(false);
+    expect(screen.getByRole('combobox',{name:'Source zoom'})).toHaveValue('100');
+  });
+  it('pans zoomed images with the primary mouse and releases capture on cancellation or unmount', async () => {
+    const p=props();const {unmount}=render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
+    const img=await screen.findByRole('img',{name:'Original source, page 1'});
+    const scroll=img.closest<HTMLElement>('.source-pages-scroll')!;
+    const held=new Set<number>();
+    scroll.setPointerCapture=vi.fn(id=>held.add(id));
+    scroll.hasPointerCapture=id=>held.has(id);
+    scroll.releasePointerCapture=vi.fn(id=>held.delete(id));
+    const pointer=(type:string,target:Element=img, init:MouseEventInit={},pointerType='mouse')=>{
+      const event=new MouseEvent(type,{bubbles:true,cancelable:true,clientX:200,clientY:200,buttons:1,...init});
+      Object.defineProperties(event,{pointerId:{value:7},pointerType:{value:pointerType}});
+      fireEvent(target,event);return event;
+    };
+    pointer('pointerdown');expect(held.size).toBe(0);
+    fireEvent.change(screen.getByRole('combobox',{name:'Source zoom'}),{target:{value:'150'}});
+    pointer('pointerdown',img,{},'touch');expect(held.size).toBe(0);
+    pointer('pointerdown',img,{button:2});expect(held.size).toBe(0);
+    scroll.scrollTop=300;scroll.scrollLeft=100;
+    expect(pointer('pointerdown').defaultPrevented).toBe(true);
+    expect(held.has(7)).toBe(true);expect(scroll).toHaveClass('source-pages-panning');
+    pointer('pointermove',scroll,{clientX:150,clientY:170});
+    expect(scroll.scrollLeft).toBe(150);expect(scroll.scrollTop).toBe(330);
+    pointer('pointercancel',scroll);expect(held.size).toBe(0);expect(scroll).not.toHaveClass('source-pages-panning');
+    pointer('pointerdown');fireEvent(window,new Event('blur'));expect(held.size).toBe(0);
+    pointer('pointerdown');pointer('lostpointercapture',scroll);expect(held.size).toBe(0);
+    pointer('pointerdown');fireEvent.change(screen.getByRole('combobox',{name:'Source zoom'}),{target:{value:'100'}});
+    expect(held.size).toBe(0);expect(scroll.scrollLeft).toBe(0);
+    fireEvent.change(screen.getByRole('combobox',{name:'Source zoom'}),{target:{value:'150'}});
+    pointer('pointerdown');unmount();expect(held.size).toBe(0);
+  });
   it('highlights a unique exact normalized quote without interpreting markup', () => {
     const {container,rerender}=render(<HighlightedTranscript text={'A  source\npassage <script>.'} quote="source passage"/>);
     expect(container.querySelector('mark')).toHaveTextContent('source passage');
