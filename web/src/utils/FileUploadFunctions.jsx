@@ -40,7 +40,7 @@ export function useFileUploader(workspaceId) {
         });
     }, [sendMessage, workspaceId]);
 
-    const uploadFile = useCallback(async ({file, threadId = null, sourcePath = null, ingestFlags = null, signal, onStart, onProgress, onFinish}) => {
+    const uploadFile = useCallback(async ({file, threadId = null, sourcePath = null, ingestFlags = null, signal, onStart, onPrepared, onProgress, onFinish}) => {
         if (!file) return;
         let key = null;
         let settled = false;
@@ -67,6 +67,7 @@ export function useFileUploader(workspaceId) {
                 finish(new Error('Upload cancelled.'));
                 return;
             }
+            onPrepared?.(key);
             const xhr = new XMLHttpRequest();
             xhr.upload.onprogress = (event) => {
                 if (!settled && event.lengthComputable) {

@@ -83,6 +83,7 @@ export default function FileBrowser({
     // a failed delete just restores the row on the next listing.
     const [pendingDeletes, setPendingDeletes] = useState(() => new Set());
     const [failedUploadKeys, setFailedUploadKeys] = useState(() => new Set());
+    const [deleteError, setDeleteError] = useState('');
     const {addDocument, clearDocuments} = useChatState();  // addAttachment
     const {uploadFile, notifyUploadComplete} = useFileUploader(workspaceId);
     const {sendRpcRequest, registerAppListener} = useWebSocketApi();
@@ -206,8 +207,15 @@ export default function FileBrowser({
     // a file has to drop the VFS entry as well as the document.
     const rowKey = (f) => f?.vfs_ref || f?.doc_id;
 
-    // multi-select logic
-    const allKeys = sortedFiles.map(rowKey).filter(Boolean);
+    // A server placeholder only proves finalization has not happened. It does
+    // not prove a transfer is still running (especially after a page reload).
+    const activeUploadKeys = new Set(uploads.filter(upload =>
+        upload.workspaceId === workspaceId && upload.status === 'uploading'
+    ).map(upload => upload.key).filter(Boolean));
+    const canSelect = item => !pendingDeletes.has(rowKey(item)) && !activeUploadKeys.has(rowKey(item));
+
+    // Keep local transfers out of bulk deletion too; cancel them in the tray.
+    const allKeys = sortedFiles.filter(canSelect).map(rowKey).filter(Boolean);
     const allSelected = allKeys.length > 0 && allKeys.every(k => selectedKeys.has(k));
     // const someSelected = selectedKeys.size > 0 && !allSelected;
 
@@ -226,7 +234,7 @@ export default function FileBrowser({
         if (e.shiftKey && lastSelectedIndex !== null) {
             const start = Math.min(lastSelectedIndex, idx);
             const end = Math.max(lastSelectedIndex, idx);
-            const rangeKeys = sortedFiles.slice(start, end + 1).map(rowKey).filter(Boolean);
+            const rangeKeys = sortedFiles.slice(start, end + 1).filter(canSelect).map(rowKey).filter(Boolean);
             const s = new Set(selectedKeys);
             rangeKeys.forEach(k => s.add(k));
             setSelectedKeys(s);
@@ -290,6 +298,7 @@ export default function FileBrowser({
                 onStart: () => {
                     updateUpload(entry.id, {status: 'uploading'});
                 },
+                onPrepared: key => updateUpload(entry.id, {key}),
                 onProgress: (_, pct) => {
                     updateUpload(entry.id, {progress: pct});
                 },
@@ -385,11 +394,13 @@ export default function FileBrowser({
     // manually refreshed, which reads as a failed delete.
     const handleDelete = useCallback(async (keys) => {
         if (!keys?.length || !onDelete) return;
+        setDeleteError('');
         setPendingDeletes((prev) => new Set([...prev, ...keys]));
         setSelectedKeys(new Set());
         try {
             await onDelete(keys);
         } catch (err) {
+            setDeleteError('Could not delete the selected files. Please try again.');
             DEBUG_MODE && console.error('delete failed', err);
         } finally {
             // Release the hold regardless. If the delete actually failed the
@@ -485,6 +496,7 @@ export default function FileBrowser({
     // ~~~ TMP: path testing stuff! ~~~
 
     return (<div className="bg-white rounded-lg shadow p-4 flex flex-col space-y-4">
+        {deleteError && <div role="alert" className="text-sm text-red-700">{deleteError}</div>}
         {/* Toolbar */}
         <div className="flex items-center justify-between">
             <input
@@ -512,7 +524,7 @@ export default function FileBrowser({
                     <button
                         onClick={() => handleDelete(Array.from(selectedKeys))}
                         className={`text-sm px-3 py-1 bg-gray-100 rounded-md disabled:opacity-50 ${selectedKeys.size > 0 ? 'hover:bg-gray-200' : ''}`}
-                        disabled={selectedKeys.size === 0}
+                        disabled={selectedKeys.size === 0 || [...selectedKeys].some(key => activeUploadKeys.has(key) || pendingDeletes.has(key))}
                     >Delete Files
                     </button>
                 )}
@@ -781,16 +793,15 @@ export default function FileBrowser({
 
                 {/* files */}
                 {sortedFiles.map((item, idx) => {
-                    // Upload state comes from the server's own record of the
-                    // file (no content hash yet => bytes still arriving).
-                    const uploadFailed = Boolean(item.uploading) && failedUploadKeys.has(rowKey(item));
-                    const isUploading = Boolean(item.uploading) && !uploadFailed;
+                    const incomplete = Boolean(item.uploading);
+                    const uploadFailed = incomplete && failedUploadKeys.has(rowKey(item));
+                    const isUploading = incomplete && !uploadFailed && activeUploadKeys.has(rowKey(item));
                     const isDeleting = pendingDeletes.has(rowKey(item));
                     const isPending = isUploading || isDeleting;
                     const isSelected = !isPending && selectedKeys.has(rowKey(item));
                     return (<tr
                         key={rowKey(item)}
-                        className={`${isDeleting ? 'opacity-40 line-through' : isUploading ? 'bg-yellow-50 opacity-70' : uploadFailed ? 'bg-red-50' : `cursor-pointer ${isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'}`}`}
+                        className={`${isDeleting ? 'opacity-40 line-through' : isUploading ? 'bg-yellow-50 opacity-70' : `cursor-pointer ${isSelected ? 'bg-blue-50' : uploadFailed ? 'bg-red-50' : 'hover:bg-gray-50'}`}`}
                         onClick={e => !isPending && onRowClick(e, rowKey(item), idx)}
                     >
                         <td className="px-2 py-2">
@@ -818,12 +829,20 @@ export default function FileBrowser({
                             ) : isUploading ? (
                                 <span
                                     className="ml-1 inline-flex items-center text-xs font-medium text-yellow-700 bg-yellow-100 px-1.5 py-0.5 rounded">Uploading...</span>
-                            ) : uploadFailed ? <span className="ml-1 text-xs text-red-700">Upload failed</span> : null}
+                            ) : uploadFailed ? <span className="ml-1 text-xs text-red-700">Upload failed</span>
+                                : incomplete ? <span className="ml-1 text-xs text-yellow-700"
+                                    title="This upload has not completed. Remove it if it failed or was abandoned.">Upload unfinished</span> : null}
+                            {incomplete && !isPending && onDelete && <button type="button"
+                                className="ml-1 text-xs text-red-700 underline"
+                                aria-label={`Remove unfinished upload ${item.name}`}
+                                onClick={event => { event.stopPropagation(); handleDelete([rowKey(item)]); }}>
+                                Remove
+                            </button>}
                         </td>
-                        <td className="px-4 py-2 text-gray-600">{isUploading || uploadFailed ? '—' : new Intl.DateTimeFormat('en-US', {
+                        <td className="px-4 py-2 text-gray-600">{incomplete ? '—' : new Intl.DateTimeFormat('en-US', {
                             dateStyle: 'short', timeStyle: 'short'
                         }).format(new Date(item.modified))}</td>
-                        <td className="px-4 py-2 text-gray-600">{isUploading || uploadFailed ? '—' : formatFileSize(item.size)}</td>
+                        <td className="px-4 py-2 text-gray-600">{incomplete ? '—' : formatFileSize(item.size)}</td>
                         {showDataSourceColumn &&
                             <td className="px-4 py-2 text-gray-600">{item.provider === '_scitrera' ? "(Scitrera)" : item.provider}</td>}
                     </tr>);

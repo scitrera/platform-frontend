@@ -166,7 +166,7 @@
     },
     {
       "path": "docs/client-contracts.md",
-      "sha256": "2f538e00a82b664c13bcca44dbe9d9e495b3e18998468d5a85c6dec3540f8078"
+      "sha256": "a021235a22f6b0a9a50958217f5983f48118414755e639eee57f4bcbdf2e087f"
     },
     {
       "path": "docs/development.md",
@@ -1110,11 +1110,11 @@
     },
     {
       "path": "web/src/components/Apps/LibraryFileBrowser.jsx",
-      "sha256": "89a761ff4c8b8fa62a4003a934b9db2ac53abd22bc9512a26183733923f28d66"
+      "sha256": "b01d49a5702886131d851787c94b320122d02199db1dedf0f5d713391e91f8f9"
     },
     {
       "path": "web/src/components/Apps/LibraryFileBrowser.test.jsx",
-      "sha256": "c4c6dbaa1bc48a860e3c52c309ceb8d16afc79f9e3b22cfefe6ecb8f5fc7dda0"
+      "sha256": "fa0f1fc42258673cafa4c87a459b0789a9866ee82a06a32868131867d0fb230d"
     },
     {
       "path": "web/src/components/Apps/SelectApplicationPrompt.jsx",
@@ -1618,11 +1618,11 @@
     },
     {
       "path": "web/src/utils/FileUploadFunctions.jsx",
-      "sha256": "56769528c0508d8168eacd1f8750ea977fdb3a8d6051aee8ad99fa983166d610"
+      "sha256": "01d9aad75143b25c4a2ab90cb6fa507e0afc86d86058dff60dee144cd4dd197e"
     },
     {
       "path": "web/src/utils/FileUploadFunctions.test.jsx",
-      "sha256": "88e3f2661a8d3deaa495e5cf5583206055f34a618281c574b41a576b144c86fe"
+      "sha256": "637ad6f8060093d812126ad797fe0a2b71bbb92c05cca3f40c4406817cde5af6"
     },
     {
       "path": "web/src/utils/Naming.jsx",

@@ -69,3 +69,11 @@ it('accepts signed PUT and POST success without reporting a failure', async () =
         expect(finish).toHaveBeenCalledExactlyOnceWith('vfs_success', null);
     }
 });
+
+it('identifies the minted placeholder before starting transfer', async () => {
+    const prepared = vi.fn(() => expect(XHR.instances).toHaveLength(0));
+    const {result} = renderHook(() => useFileUploader('workspace'));
+    await act(async () => result.current.uploadFile({file, onPrepared: prepared}));
+    expect(prepared).toHaveBeenCalledExactlyOnceWith('vfs_new');
+    expect(XHR.instances[0].send).toHaveBeenCalledWith(file);
+});

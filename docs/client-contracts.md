@@ -67,3 +67,11 @@ Retry action for the same workspace and folder. Retrying creates a new upload;
 successful uploads in mixed batches are reported with matching file details.
 Abandoned transfers from a closed page still rely on server-side stale-upload
 expiry/GC; this browser callback cannot execute after the browser exits.
+
+Unfinalized server entries remain visible at every age. After a reload, the files
+widget labels them **Upload unfinished**, with a Remove action and bulk deletion.
+It only shows **Uploading...** for a transfer running in that widget. Local active
+transfers are excluded from selection and bulk deletion; cancel them in the upload
+tray. No upload is silently discarded merely because it is old. Incomplete entries
+remain unavailable for ingestion or chat references. Failed deletion reports an
+error and leaves the entry actionable for retry.
