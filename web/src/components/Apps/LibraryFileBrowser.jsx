@@ -82,6 +82,7 @@ export default function FileBrowser({
     // it for real. Unlike an optimistic ADD, this cannot strand anything —
     // a failed delete just restores the row on the next listing.
     const [pendingDeletes, setPendingDeletes] = useState(() => new Set());
+    const [failedUploadKeys, setFailedUploadKeys] = useState(() => new Set());
     const {addDocument, clearDocuments} = useChatState();  // addAttachment
     const {uploadFile, notifyUploadComplete} = useFileUploader(workspaceId);
     const {sendRpcRequest, registerAppListener} = useWebSocketApi();
@@ -259,6 +260,8 @@ export default function FileBrowser({
             size: file.size,
             progress: 0,
             status: 'pending',
+            path: currentPath,
+            workspaceId,
             cancelFn: null,
             key: null,
         }));
@@ -268,6 +271,7 @@ export default function FileBrowser({
         let completed = 0;
         let failed = 0;
         const keys = [];
+        const successfulFiles = [];
 
         newUploads.forEach(entry => {
             const controller = new AbortController();
@@ -282,20 +286,34 @@ export default function FileBrowser({
                 // per-folder listing cannot be expressed at all.
                 sourcePath: `${currentPath ? '/' + currentPath : ''}/${entry.file.name}`,
                 ingestFlags,
-                signal: controller.signal, // TODO: how is signal used? (uploadFile doesn't have a field/param for it)
+                signal: controller.signal,
                 onStart: () => {
                     updateUpload(entry.id, {status: 'uploading'});
                 },
                 onProgress: (_, pct) => {
                     updateUpload(entry.id, {progress: pct});
                 },
-                onFinish: (key, err) => {
+                onFinish: async (key, err) => {
                     if (err) {
                         failed++;
-                        updateUpload(entry.id, {status: 'error', error: err?.message || String(err)});
+                        const message = err?.message || String(err);
+                        updateUpload(entry.id, {status: 'error', error: message, key});
+                        if (key) {
+                            // Stop the spinner immediately, even when cleanup is
+                            // slow or fails. Retain this state after tray dismissal.
+                            setFailedUploadKeys(previous => new Set([...previous, key]));
+                            if (onDelete) {
+                                try {
+                                    await onDelete([key]);
+                                } catch {
+                                    updateUpload(entry.id, {error: `${message}. Could not remove the unfinished file; select it and use Delete Files to retry cleanup.`});
+                                }
+                            }
+                        }
                     } else {
                         updateUpload(entry.id, {progress: 100, status: 'done', key});
                         keys.push(key);
+                        successfulFiles.push({name: entry.name, size: entry.size});
                     }
                     completed++;
                     if (completed === newUploads.length) {
@@ -303,20 +321,19 @@ export default function FileBrowser({
                         // Clearing unconditionally erased the sole report that
                         // an upload failed — the file never appeared and no
                         // error remained on screen to say why.
-                        if (!failed) setUploads([]);
+                        if (!failed) setUploads(previous => previous.filter(upload => !newUploads.some(item => item.id === upload.id)));
 
                         // Trigger the ingest pipeline (FILE_UPLOAD_COMPLETE).
                         if (keys.length) {
                             notifyUploadComplete(keys, {visibility: 'workspace'});
                         }
 
-                        if (onUploadCompletion) {
-                            const fileDetails = newUploads.map(u => ({name: u.name, size: u.size}));
-                            onUploadCompletion(keys, fileDetails);
+                        if (keys.length && onUploadCompletion) {
+                            onUploadCompletion(keys, successfulFiles);
                         }
                         // onUploadCompletion handles refresh after registering pending state;
                         // call refreshFunction only if no completion handler was provided
-                        if (!onUploadCompletion) {
+                        if (!keys.length || !onUploadCompletion) {
                             refreshFunction && refreshFunction();
                         }
                     } else {
@@ -328,7 +345,7 @@ export default function FileBrowser({
 
             updateUpload(entry.id, {cancelFn: () => controller.abort()});
         });
-    }, [uploadFile, threadId, onUploadCompletion, refreshFunction, notifyUploadComplete, currentPath]);
+    }, [uploadFile, threadId, onUploadCompletion, onDelete, refreshFunction, notifyUploadComplete, currentPath, ingestFlags, workspaceId]);
 
     // Refresh once the ingest pipeline reports done, so a row picks up the
     // doc_id it gains at ingest. Upload state itself is NOT tracked here: it
@@ -418,7 +435,10 @@ export default function FileBrowser({
         }
     };
 
-    const onSelect = (e) => handleFiles(e.target.files);
+    const onSelect = (e) => {
+        handleFiles(e.target.files);
+        e.target.value = ''; // Selecting the same file again must trigger a retry.
+    };
 
     // Create folder functionality
     const handleCreateFolder = async () => {
@@ -513,7 +533,7 @@ export default function FileBrowser({
                 </button>
                 {showReferenceInChat &&
                     <button
-                        disabled={!canIngest(Array.from(selectedKeys))}
+                        disabled={!canIngest(Array.from(selectedKeys)) || sortedFiles.some(item => item.uploading && selectedKeys.has(rowKey(item)))}
                         className="text-sm px-4 py-1 bg-green-800 text-white disabled:opacity-50 rounded-md hover:bg-green-700"
                         onClick={() => {
                             if (clearChatDocumentsOnReference) {
@@ -542,7 +562,7 @@ export default function FileBrowser({
                                     sortedFiles.filter(f => selectedKeys.has(rowKey(f)))
                                     : selectedKeys
                             ))}
-                    disabled={!canIngest(Array.from(selectedKeys))}
+                    disabled={!canIngest(Array.from(selectedKeys)) || sortedFiles.some(item => item.uploading && selectedKeys.has(rowKey(item)))}
                     className="text-sm px-4 py-1 bg-blue-700 text-white disabled:opacity-50 rounded-md hover:bg-blue-600"
                 >{ingestButtonTitle}
                 </button>)}
@@ -562,7 +582,7 @@ export default function FileBrowser({
                 <div className="flex justify-between items-center mb-3">
                     <h3 className="text-lg font-medium">Uploads</h3>
                     <button
-                        onClick={() => setUploads([])}
+                        onClick={() => { uploads.forEach(upload => upload.cancelFn?.()); setUploads([]); }}
                         className="text-gray-500 hover:text-gray-700"
                     >
                         Clear All
@@ -593,17 +613,23 @@ export default function FileBrowser({
                                     <span className="text-xs text-gray-500">{formatFileSize(u.size)}</span>
                                 </div>
                                 <div className="flex items-center space-x-1">
-                                    {u.status === 'error' && <span className="text-xs text-red-500">Error</span>}
-                                    <button onClick={() => removeUpload(u.id)}
+                                    {u.status === 'error' && <>
+                                        <span className="text-xs text-red-600">Upload failed</span>
+                                        {u.workspaceId === workspaceId && u.path === currentPath && <button
+                                            onClick={() => { removeUpload(u.id); handleFiles([u.file]); }}
+                                            className="text-xs text-blue-600 hover:underline"
+                                            aria-label={`Retry upload ${u.name}`}>Retry</button>}
+                                    </>}
+                                    <button onClick={() => removeUpload(u.id)} aria-label={`Dismiss upload ${u.name}`}
                                             className="text-gray-400 hover:text-gray-600 text-xs">×
                                     </button>
                                 </div>
                             </div>
-                            <Progress.Root value={u.progress} max={100}
+                            {u.status === 'error' ? <p role="alert" className="text-xs text-red-700 mt-1">{u.error}</p> : <Progress.Root value={u.progress} max={100}
                                            className="relative w-full h-1 bg-gray-200 rounded overflow-hidden">
                                 <Progress.Indicator className="h-full bg-blue-500 transition-all"
                                                     style={{width: `${u.progress}%`}}/>
-                            </Progress.Root>
+                            </Progress.Root>}
                         </div>
                     ))}
                 </div>
@@ -757,13 +783,14 @@ export default function FileBrowser({
                 {sortedFiles.map((item, idx) => {
                     // Upload state comes from the server's own record of the
                     // file (no content hash yet => bytes still arriving).
-                    const isUploading = Boolean(item.uploading);
+                    const uploadFailed = Boolean(item.uploading) && failedUploadKeys.has(rowKey(item));
+                    const isUploading = Boolean(item.uploading) && !uploadFailed;
                     const isDeleting = pendingDeletes.has(rowKey(item));
                     const isPending = isUploading || isDeleting;
                     const isSelected = !isPending && selectedKeys.has(rowKey(item));
                     return (<tr
                         key={rowKey(item)}
-                        className={`${isDeleting ? 'opacity-40 line-through' : isUploading ? 'bg-yellow-50 opacity-70' : `cursor-pointer ${isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'}`}`}
+                        className={`${isDeleting ? 'opacity-40 line-through' : isUploading ? 'bg-yellow-50 opacity-70' : uploadFailed ? 'bg-red-50' : `cursor-pointer ${isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'}`}`}
                         onClick={e => !isPending && onRowClick(e, rowKey(item), idx)}
                     >
                         <td className="px-2 py-2">
@@ -791,12 +818,12 @@ export default function FileBrowser({
                             ) : isUploading ? (
                                 <span
                                     className="ml-1 inline-flex items-center text-xs font-medium text-yellow-700 bg-yellow-100 px-1.5 py-0.5 rounded">Uploading...</span>
-                            ) : null}
+                            ) : uploadFailed ? <span className="ml-1 text-xs text-red-700">Upload failed</span> : null}
                         </td>
-                        <td className="px-4 py-2 text-gray-600">{isUploading ? '—' : new Intl.DateTimeFormat('en-US', {
+                        <td className="px-4 py-2 text-gray-600">{isUploading || uploadFailed ? '—' : new Intl.DateTimeFormat('en-US', {
                             dateStyle: 'short', timeStyle: 'short'
                         }).format(new Date(item.modified))}</td>
-                        <td className="px-4 py-2 text-gray-600">{isUploading ? '—' : formatFileSize(item.size)}</td>
+                        <td className="px-4 py-2 text-gray-600">{isUploading || uploadFailed ? '—' : formatFileSize(item.size)}</td>
                         {showDataSourceColumn &&
                             <td className="px-4 py-2 text-gray-600">{item.provider === '_scitrera' ? "(Scitrera)" : item.provider}</td>}
                     </tr>);

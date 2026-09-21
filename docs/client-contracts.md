@@ -52,3 +52,18 @@ source contract review, and an actual disposable auth/backend/storage deployment
 Only the first three were available during this preparation. Live cases are
 explicitly deferred to the later integration/installation repository and listed in
 verification.md. No permissive proxy or fake identity was added to the application.
+
+## Failed browser uploads
+
+The shared uploader reports its newly minted VFS reference on every terminal
+failure, including HTTP errors, network errors, cancellation, and request setup
+errors. Terminal callbacks run once. The files widget removes an unfinished
+reference through its existing authorized `onDelete` callback and refreshes the
+listing; failure never triggers ingestion or the successful-upload callback.
+
+If cleanup fails, the row shows `Upload failed`, remains deletable, and cannot be
+used as an ingestion/chat source. The error remains in the upload tray with a
+Retry action for the same workspace and folder. Retrying creates a new upload;
+successful uploads in mixed batches are reported with matching file details.
+Abandoned transfers from a closed page still rely on server-side stale-upload
+expiry/GC; this browser callback cannot execute after the browser exits.

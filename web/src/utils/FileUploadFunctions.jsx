@@ -40,65 +40,65 @@ export function useFileUploader(workspaceId) {
         });
     }, [sendMessage, workspaceId]);
 
-    const uploadFile = useCallback(async ({file, threadId = null, sourcePath = null, ingestFlags = null, onStart, onProgress, onFinish}) => {
+    const uploadFile = useCallback(async ({file, threadId = null, sourcePath = null, ingestFlags = null, signal, onStart, onProgress, onFinish}) => {
         if (!file) return;
+        let key = null;
+        let settled = false;
+        let abortUpload;
+        const finish = (error) => {
+            if (settled) return;
+            settled = true;
+            if (abortUpload) signal?.removeEventListener('abort', abortUpload);
+            onFinish?.(key, error);
+        };
 
         try {
+            if (signal?.aborted) {
+                finish(new Error('Upload cancelled.'));
+                return;
+            }
             onStart?.(file);
-
-            // sourcePath (optional) records a grouping path on the VFS entry
-            // (e.g. `/Bids/${bidderId}/${file.name}`) so the owning app can
-            // list its own files back via a source_path prefix. Distinct from
-            // fileName, which stays the display name.
-            const {method = 'POST', url, fields = {}, headers = {}, key} = await requestWithRetry({
-                file,
-                threadId,
-                sourcePath,
-                ingestFlags,
-                sendRpcRequest,
-                workspaceId: workspaceId,
-            });
-
+            const upload = await requestWithRetry({file, threadId, sourcePath, ingestFlags, sendRpcRequest, workspaceId});
+            const {method = 'POST', url, fields = {}, headers = {}} = upload;
+            key = upload.key;
+            // A cancellation during URL creation still needs to report the newly
+            // minted reference so the caller can remove its unfinished placeholder.
+            if (signal?.aborted) {
+                finish(new Error('Upload cancelled.'));
+                return;
+            }
             const xhr = new XMLHttpRequest();
-
-            xhr.upload.onprogress = (e) => {
-                if (e.lengthComputable) {
-                    const percent = Math.round((e.loaded / e.total) * 100);
-                    onProgress?.(key, percent);
+            xhr.upload.onprogress = (event) => {
+                if (!settled && event.lengthComputable) {
+                    onProgress?.(key, Math.round((event.loaded / event.total) * 100));
                 }
             };
-
-            xhr.onload = () => {
-                // S3 presigned POST returns 204; a presigned PUT (blobgw staging) returns
-                // 200 — accept any 2xx.
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    onFinish?.(key, null); // success
-                } else {
-                    onFinish?.(key, new Error(`Upload failed with status ${xhr.status}`));
-                }
+            xhr.onload = () => finish(xhr.status >= 200 && xhr.status < 300
+                ? null : new Error(`Upload failed with status ${xhr.status}`));
+            xhr.onerror = () => finish(new Error('Upload failed due to a network error.'));
+            xhr.ontimeout = () => finish(new Error('Upload timed out.'));
+            xhr.onabort = () => finish(new Error('Upload cancelled.'));
+            abortUpload = () => {
+                xhr.abort();
+                finish(new Error('Upload cancelled.'));
             };
+            signal?.addEventListener('abort', abortUpload, {once: true});
 
-            xhr.onerror = () => {
-                onFinish?.(key, new Error("Upload failed due to a network error."));
-            };
-
-            // The backend chooses the upload method and a presigned URL is signed for
-            // exactly ONE method — honor it. PUT = raw-bytes presigned PUT (blobgw staging
-            // upload); POST = S3 presigned-POST (policy `fields` + the file as FormData).
+            // Signed PUT sends raw bytes; signed POST sends the supplied form.
             if (String(method).toUpperCase() === 'PUT') {
-                xhr.open("PUT", url);
-                Object.entries(headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
+                xhr.open('PUT', url);
+                Object.entries(headers).forEach(([name, value]) => xhr.setRequestHeader(name, value));
                 xhr.send(file);
             } else {
                 const formData = new FormData();
-                Object.entries(fields).forEach(([k, v]) => formData.append(k, v));
-                formData.append("file", file);
-                xhr.open("POST", url);
+                Object.entries(fields).forEach(([name, value]) => formData.append(name, value));
+                formData.append('file', file);
+                xhr.open('POST', url);
                 xhr.send(formData);
             }
-        } catch (err) {
-            console.error("Upload initiation failed:", err);
-            onFinish?.(null, err);
+        } catch (error) {
+            // Preserve the reference if setup failed AFTER URL creation.
+            finish(error);
         }
     }, [sendRpcRequest, workspaceId]);
 
