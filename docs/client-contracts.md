@@ -75,3 +75,14 @@ transfers are excluded from selection and bulk deletion; cancel them in the uplo
 tray. No upload is silently discarded merely because it is old. Incomplete entries
 remain unavailable for ingestion or chat references. Failed deletion reports an
 error and leaves the entry actionable for retry.
+
+## Build metadata
+
+Backend RPC and ordinary response envelopes retain the full `version` string and
+may include `buildDate`, an ISO-8601 UTC image-build timestamp. Older servers may
+omit it; clients must show the date as unavailable rather than use the current
+time. This optional field applies equally to native WebSocket and Socket.IO.
+The version dialog displays eight hexadecimal commit characters without changing
+the underlying revision identity. Frontend builds embed `BUILD_TIMESTAMP`;
+backend images receive the same variable through their Docker build argument.
+The integration builder records each image’s timestamp in its local image record.

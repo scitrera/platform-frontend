@@ -28,6 +28,9 @@ export default defineConfig(({mode}) => {
         optimizeDeps: {include: ['react', 'react-dom']},
         build: {cssCodeSplit: false, sourcemap: false},
         // Source archives also build: no dependency on a Git checkout or private history.
-        define: {__GIT_COMMIT_HASH__: JSON.stringify(process.env.BUILD_REVISION || 'source')},
+        define: {
+            __GIT_COMMIT_HASH__: JSON.stringify(process.env.BUILD_REVISION || 'source'),
+            __BUILD_TIMESTAMP__: JSON.stringify(process.env.BUILD_TIMESTAMP || new Date().toISOString()),
+        },
     };
 });

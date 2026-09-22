@@ -73,7 +73,8 @@ export const WebSocketProvider = ({children}) => {
     const tenantId = useAuthStore(s => s.tenantId);
 
     const [socket, setSocket] = useState(null);
-    const [backendVersion, setBackendVersion] = useState('unknown')
+    const [backendVersion, setBackendVersion] = useState('unknown');
+    const [backendBuildDate, setBackendBuildDate] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState(null);
     const [dynamicJSXContent, setDynamicJSXContent] = useState({});
@@ -415,6 +416,7 @@ export const WebSocketProvider = ({children}) => {
         setupSocketMessageHandlers(socketInstance, {
             setDynamicJSXContent,
             setBackendVersion,
+            setBackendBuildDate,
             pendingRequests,
             inFlightByType,
             activeThreadIdRef,
@@ -721,7 +723,8 @@ export const WebSocketProvider = ({children}) => {
         isAuthenticated,
         error,
         backendVersion,
-    }), [isConnected, isAuthenticated, error, backendVersion]);
+        backendBuildDate,
+    }), [isConnected, isAuthenticated, error, backendVersion, backendBuildDate]);
 
     const jsx = useMemo(() => ({dynamicJSXContent}), [dynamicJSXContent]);
 

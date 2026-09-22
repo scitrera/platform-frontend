@@ -35,6 +35,7 @@ const normalizeIncomingThreadId = (threadId) =>
 export function setupSocketMessageHandlers(socketInstance, {
     setDynamicJSXContent,
     setBackendVersion,
+    setBackendBuildDate,
     pendingRequests,
     activeThreadIdRef,
     setChatThreads,
@@ -71,7 +72,7 @@ export function setupSocketMessageHandlers(socketInstance, {
     };
 
     // RPC response handler
-    socketInstance.on(CONNECTION.RPC_MESSAGE, ({id, type, payload, version}) => {
+    socketInstance.on(CONNECTION.RPC_MESSAGE, ({id, type, payload, version, buildDate}) => {
         const handlers = pendingRequests.current.get(id);
         if (!handlers) {
             return console.warn(`No pending RPC for id ${id}`);
@@ -81,6 +82,7 @@ export function setupSocketMessageHandlers(socketInstance, {
             console.log(`Websocket RPC message received: ${id}|${type}`, payload));
         if (version) {
             setBackendVersion(version);
+            setBackendBuildDate?.(buildDate || null);
         }
 
         try {
@@ -122,6 +124,7 @@ export function setupSocketMessageHandlers(socketInstance, {
             }
             if (message?.version) {
                 setBackendVersion(message.version);
+                setBackendBuildDate?.(message.buildDate || null);
             }
             handler(message);
         });

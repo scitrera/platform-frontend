@@ -1,14 +1,22 @@
 import React, {useState} from 'react';
 import {useWebSocket} from "../../hooks/useWebSocket.jsx";
 
+const shortRevision = (value) => String(value || 'Unknown').replace(/^([a-f0-9]{8})[a-f0-9]+(?=$|-)/i, '$1');
+const buildDateLabel = (value) => {
+    if (!value || !Number.isFinite(Date.parse(value))) return 'Unavailable';
+    return new Date(value).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+};
+
 const VersionDialog = ({isOpen, onClose}) => {
-    const {backendVersion} = useWebSocket();
+    const {backendVersion, backendBuildDate} = useWebSocket();
 
     if (!isOpen) return null;
 
     const devMode = import.meta.env.MODE === 'development';
     // eslint-disable-next-line no-undef
     const frontendVersion = devMode ? "Development" : __GIT_COMMIT_HASH__;
+    // eslint-disable-next-line no-undef
+    const frontendBuildDate = devMode ? null : __BUILD_TIMESTAMP__;
 
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -24,8 +32,14 @@ const VersionDialog = ({isOpen, onClose}) => {
                     </button>
                 </div>
                 <div className="space-y-2">
-                    <p><strong>Frontend Build:</strong> {frontendVersion}</p>
-                    <p><strong>Backend Build:</strong> {backendVersion}</p>
+                    <div>
+                        <p><strong>Frontend Build:</strong> {shortRevision(frontendVersion)}</p>
+                        <p className="text-sm text-gray-500">Built: {buildDateLabel(frontendBuildDate)}</p>
+                    </div>
+                    <div>
+                        <p><strong>Backend Build:</strong> {shortRevision(backendVersion)}</p>
+                        <p className="text-sm text-gray-500">Built: {buildDateLabel(backendBuildDate)}</p>
+                    </div>
                     <p><a href="https://scitrera.ai" target="_blank" rel="noopener noreferrer" className="underline">scitrera.ai</a></p>
                 </div>
                 <div className="mt-6 flex justify-end">

@@ -166,7 +166,7 @@
     },
     {
       "path": "docs/client-contracts.md",
-      "sha256": "a021235a22f6b0a9a50958217f5983f48118414755e639eee57f4bcbdf2e087f"
+      "sha256": "feaef0db9135860c93664413535b21794a9052a7de0d96ed224493753961dbe0"
     },
     {
       "path": "docs/development.md",
@@ -1210,7 +1210,11 @@
     },
     {
       "path": "web/src/components/UI/PoweredByScitrera.jsx",
-      "sha256": "549b2e5ff4ba85ba3d8945c9b33268c245d68645aaf18161c867a1661bbe8ae9"
+      "sha256": "be86ecbe597eb6999920c12acb7f91f7b5d719be14203014e5d588bfab83284c"
+    },
+    {
+      "path": "web/src/components/UI/PoweredByScitrera.test.jsx",
+      "sha256": "2a1db5049c9b280fb211e4929c7b995c9a1111f591ed2a165b71316888d6f5ec"
     },
     {
       "path": "web/src/components/UI/RefreshButton.jsx",
@@ -1462,7 +1466,7 @@
     },
     {
       "path": "web/src/contexts/WebSocketContext.jsx",
-      "sha256": "235b59e3fe7479f2fb5417ec27b57e33f4346a62fad4b51c6cb6c467cc27c57f"
+      "sha256": "a494b4b53e3593bd06b79bd06b45215f2347a7edcc26567095dc8f6ce9ed236d"
     },
     {
       "path": "web/src/contexts/WebSocketContext.test.jsx",
@@ -1722,7 +1726,7 @@
     },
     {
       "path": "web/src/utils/wsMessageHandlers.js",
-      "sha256": "39fa7aa6029a549860aa9e3f60451d62009372620b43c8f32b60b1263e9944eb"
+      "sha256": "cb738fbf0bcb2e4d20c49623abd022f7af64b1615863d9b58aad676587e93bd6"
     },
     {
       "path": "web/src/utils/wsTransport.js",
@@ -1742,7 +1746,7 @@
     },
     {
       "path": "web/vite.config.js",
-      "sha256": "c3677922368ad42f4eed8a4594ab1ddaa668902406a6d6927aa7e3fd2c05bc29"
+      "sha256": "32c3c5134b1a9e7d20736ae11bc9e0e96846b77d4a8b527a622da1c9d57db215"
     },
     {
       "path": "web/vitest.config.ts",
