@@ -123,3 +123,5 @@
 .annotated-markdown .annotation-body.annotation-no-comments {grid-template-columns:minmax(0,1fr);min-height:0;}
 .source-pages-scroll[data-zoomed="true"] .source-page-image {cursor:grab;user-select:none;}
 .source-pages-scroll.source-pages-panning,.source-pages-scroll.source-pages-panning * {cursor:grabbing;user-select:none;}
+
+.source-region-unavailable {margin:6px 0;color:#667085;font-size:0.75rem;line-height:1.4;}

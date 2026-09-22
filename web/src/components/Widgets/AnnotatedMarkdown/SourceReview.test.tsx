@@ -1,11 +1,19 @@
 import React from 'react';
-import {fireEvent, render, screen, waitFor, within} from '@testing-library/react';
-import {beforeAll, describe, expect, it, vi} from 'vitest';
+import {act, fireEvent, render, screen, waitFor, within} from '@testing-library/react';
+import {beforeAll, beforeEach, describe, expect, it, vi} from 'vitest';
 import {AnnotatedMarkdown} from './index';
 import {HighlightedTranscript, SourceEvidencePane, type ReviewEvidence} from './SourceEvidencePane';
 
 vi.mock('../../Apps/Chat/SciMarkdown', () => ({SciMarkdown: ({children}: {children: string}) =>
   <ul>{children.split('\n').filter(line => line.startsWith('* ')).map((line, i) => <li key={i}>{line.slice(2)}</li>)}</ul>}));
+const nearby = new Map<Element, (visible: boolean) => void>();
+beforeEach(() => {
+  nearby.clear();
+  vi.stubGlobal('fetch', vi.fn(async () => ({ok:true, headers:new Headers(),
+    blob:async () => new Blob(['synthetic'], {type:'image/png'})})));
+  URL.createObjectURL = vi.fn(() => 'blob:synthetic-page');
+  URL.revokeObjectURL = vi.fn();
+});
 beforeAll(() => {
   HTMLDialogElement.prototype.showModal = function () {this.setAttribute('open', '');};
   HTMLDialogElement.prototype.close = function () {this.removeAttribute('open');};
@@ -14,9 +22,15 @@ beforeAll(() => {
   vi.stubGlobal('ResizeObserver', class {observe() {} disconnect() {}});
   vi.stubGlobal('IntersectionObserver', class {
     callback: IntersectionObserverCallback;
-    constructor(callback: IntersectionObserverCallback) {this.callback = callback;}
-    observe(element: HTMLElement) {this.callback([{isIntersecting: element.dataset.sourcePage === '1', target: element}] as unknown as IntersectionObserverEntry[], this as unknown as IntersectionObserver);}
-    disconnect() {}
+    isNearby: boolean;
+    elements = new Set<Element>();
+    constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {this.callback = callback;this.isNearby = options?.rootMargin === '200px';}
+    observe(element: HTMLElement) {
+      const notify = (visible: boolean) => this.callback([{isIntersecting: visible, target: element}] as unknown as IntersectionObserverEntry[], this as unknown as IntersectionObserver);
+      if (this.isNearby) {nearby.set(element, notify);this.elements.add(element);}
+      notify(element.dataset.sourcePage === '1');
+    }
+    disconnect() {this.elements.forEach(element => nearby.delete(element));}
   });
 });
 const refs = [1, 2].map(n => ({id:`r${n}`,document_id:'proposal',document_name:'Proposal.pdf',page_number:n,quote:`Source passage ${n}`,evidence_type:'transcript',locator:'Terms table, final row'}));
@@ -75,7 +89,23 @@ describe('expanded source review', () => {
     const p=props();render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
     await waitFor(()=>expect(p.loadSourcePage).toHaveBeenCalled());
     expect(p.loadSourcePage.mock.calls.every(([, page])=>page===1)).toBe(true);
-    expect(screen.getAllByRole('img')).toHaveLength(1);
+    expect(await screen.findAllByRole('img')).toHaveLength(1);
+  });
+  it('reuses image bytes on scroll-back, resets on revision changes and releases object URLs', async () => {
+    const p=props();const {rerender,unmount}=render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
+    const img=await screen.findByRole('img',{name:'Original source, page 1'});
+    const article=img.closest('[data-source-page]')!;
+    act(()=>nearby.get(article)!(false));
+    expect(screen.queryByRole('img',{name:'Original source, page 1'})).not.toBeInTheDocument();
+    expect(URL.revokeObjectURL).toHaveBeenCalledOnce();
+    act(()=>nearby.get(article)!(true));
+    await screen.findByRole('img',{name:'Original source, page 1'});
+    expect(p.loadSourcePage).toHaveBeenCalledOnce();expect(fetch).toHaveBeenCalledOnce();
+    rerender(<SourceEvidencePane evidence={{...evidence,revision:'r2'}} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
+    await waitFor(()=>expect(p.loadSourcePage).toHaveBeenCalledTimes(2));
+    await screen.findByRole('img',{name:'Original source, page 1'});
+    expect(fetch).toHaveBeenCalledTimes(2);
+    unmount();expect(URL.revokeObjectURL).toHaveBeenCalledTimes(3);
   });
   it('does not show evidence from a different rendered revision', async () => {
     const p=props();render(<AnnotatedMarkdown {...p} documentVersion="new-version"/>);
@@ -115,6 +145,18 @@ describe('expanded source review', () => {
       rerender(<SourceEvidencePane evidence={evidence} point={{...point,references:[{...refs[0],regions:[region]}]}} loadPage={loadPage} error="" loading={false}/>);
       await waitFor(()=>expect(screen.queryByRole('img',{name:'Supporting OCR block'})).not.toBeInTheDocument());
     }
+  });
+  it('uses recovered page regions only for the selected published reference', async () => {
+    const hash = 'a'.repeat(64);
+    const point = evidence.documents!.summary.points[0];
+    const loadPage = vi.fn(async (document_id: string, page_number: number) => ({document_id, page_number,
+      text: 'Source passage 1', image_url: '/storage/tenant/blob/page.png?cap=ticket', image_sha256: hash,
+      reference_regions: {r1: [{region_id:'recovered',image_sha256:hash,bbox:[.1,.2,.8,.4],origin:'ocr' as const}]}}));
+    render(<SourceEvidencePane evidence={evidence} point={point} loadPage={loadPage} error="" loading={false}/>);
+    expect(await screen.findByRole('img',{name:'Supporting OCR block'})).toHaveStyle({left:'10%',top:'20%'});
+    fireEvent.click(screen.getByRole('button',{name:/2\. Proposal.pdf/}));
+    expect(screen.queryByRole('img',{name:'Supporting OCR block'})).not.toBeInTheDocument();
+    expect(loadPage).toHaveBeenCalledOnce();
   });
   it('handles Ctrl+wheel only on page images, anchors zoom and clamps its range', async () => {
     const p=props();render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);

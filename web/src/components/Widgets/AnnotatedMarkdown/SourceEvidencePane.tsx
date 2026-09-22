@@ -1,7 +1,8 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {useSourcePageNavigation} from './useSourcePageNavigation';
+import {SourcePageCache, IMAGE_LOAD_ERROR, type SourcePage, type SourcePageLoader, type SourceRegion} from './sourcePageCache';
+export type {SourcePage, SourcePageLoader, SourceRegion} from './sourcePageCache';
 
-export interface SourceRegion {region_id: string; image_sha256: string; bbox: number[]; origin: 'ocr' | 'review_crop'}
 export interface SourceReference {
   id: string; document_id: string; document_name: string; page_number: number;
   quote: string; locator?: string; evidence_type: string; regions?: SourceRegion[];
@@ -14,8 +15,6 @@ export interface ReviewEvidence {
   sources?: {document_id: string; name: string}[];
   pages?: {document_id: string; page_number: number}[];
 }
-export interface SourcePage {document_id: string; page_number: number; text: string; image_url?: string; image_error?: string; image_sha256?: string}
-export type SourcePageLoader = (document: string, page: number) => Promise<SourcePage>;
 
 /** Whitespace-normalized, unambiguous transcript highlighting; never inject HTML. */
 export function HighlightedTranscript({text, quote}: {text: string; quote: string}) {
@@ -29,15 +28,16 @@ export function HighlightedTranscript({text, quote}: {text: string; quote: strin
   return <>{text.slice(0, match.index)}<mark>{match[0]}</mark>{text.slice(match.index + match[0].length)}</>;
 }
 
-function LazyPage({document, page, loader, scrollRoot, quote, regions, onVisible, zoom}: {
-  document: string; page: number; loader: SourcePageLoader; scrollRoot: React.RefObject<HTMLDivElement | null>;
-  quote: string; regions: SourceRegion[]; onVisible: (page: number) => void; zoom: number;
+function LazyPage({document, page, loader, cache, scrollRoot, quote, regions, referenceId, onVisible, zoom}: {
+  document: string; page: number; loader: SourcePageLoader; cache: SourcePageCache; scrollRoot: React.RefObject<HTMLDivElement | null>;
+  quote: string; regions: SourceRegion[]; referenceId?: string; onVisible: (page: number) => void; zoom: number;
 }) {
   const element = useRef<HTMLElement>(null);
   const callback = useRef(onVisible); callback.current = onVisible;
   const load = useRef(loader); load.current = loader;
   const [near, setNear] = useState(false);
   const [value, setValue] = useState<SourcePage | null>(null);
+  const [imageURL, setImageURL] = useState('');
   const [error, setError] = useState('');
   const [retry, setRetry] = useState(0);
   const [transcript, setTranscript] = useState(false);
@@ -54,33 +54,44 @@ function LazyPage({document, page, loader, scrollRoot, quote, regions, onVisible
   }, [document, page, scrollRoot]);
   useEffect(() => {
     let active = true;
-    setValue(null);setError('');
-    if (near) load.current(document, page).then(data => {
+    let objectURL = '';
+    setValue(null);setImageURL('');setError('');
+    if (near) cache.get(document, page, load.current).then(data => {
       if (!active) return;
-      if (data.document_id !== document || data.page_number !== page) throw new Error('Source page does not match this selection.');
-      setValue(data);
+      setValue({...data.page, image_error: data.imageError || data.page.image_error});
+      if (data.image) {
+        objectURL = URL.createObjectURL(data.image);
+        setImageURL(objectURL);
+      }
+      setError(data.imageError || '');
     }).catch(e => {if (active) setError(e instanceof Error ? e.message : 'Unable to load this source page.');});
-    return () => {active = false;};
-  }, [document, page, near, retry]);
-  const highlights = regions.filter(region => region.image_sha256 === value?.image_sha256 &&
+    return () => {active = false;if (objectURL) URL.revokeObjectURL(objectURL);};
+  }, [document, page, near, retry, cache]);
+  const pageRegions = regions.length ? regions : (referenceId && value?.reference_regions?.[referenceId]) || [];
+  const highlights = pageRegions.filter(region => region.image_sha256 === value?.image_sha256 &&
     /^[a-f0-9]{64}$/.test(region.image_sha256) && ['ocr', 'review_crop'].includes(region.origin) &&
     Array.isArray(region.bbox) && region.bbox.length === 4 && region.bbox.every(Number.isFinite) &&
     region.bbox[0] >= 0 && region.bbox[1] >= 0 && region.bbox[2] <= 1 && region.bbox[3] <= 1 &&
     region.bbox[2] > region.bbox[0] && region.bbox[3] > region.bbox[1]);
   return <article ref={element} className="source-page" data-source-page={page} style={{width: `${zoom}%`}} aria-label={`Source page ${page}`}>
-    <header><strong>Page {page}</strong><button className="annotation-button" onClick={() => setTranscript(!transcript)}>
+    <header><strong>Page {page}</strong><button className="annotation-button" onClick={() => {
+      if (transcript && !imageURL && value?.image_error) {cache.invalidate(document, page);setRetry(r => r + 1);}
+      setTranscript(!transcript);
+    }}>
       {transcript ? 'Show page image' : 'Show transcript'}</button></header>
     <div className="source-page-content">
-      {!near ? null : error ? <div role="alert" className="source-page-message">{error}<button className="annotation-button" onClick={() => setRetry(r => r + 1)}>Retry page</button></div>
+      {!near ? null : error ? <div role="alert" className="source-page-message">{error}<button className="annotation-button" onClick={() => {cache.invalidate(document, page);setRetry(r => r + 1);}}>Retry page</button></div>
         : !value ? <p className="source-page-message" role="status">Loading page {page}…</p>
-        : transcript || !value.image_url ? <div className="source-transcript"><p>{value.image_error}</p><HighlightedTranscript text={value.text} quote={quote}/></div>
-        : <div className="source-page-image" title={zoom > 100 ? "Ctrl+scroll to zoom; drag to pan" : "Ctrl+scroll to zoom"}><img draggable={false} src={value.image_url} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
-          onError={() => setError('The page image could not be loaded. Retry for a fresh link, or use the transcript.')} />
+        : transcript || !imageURL ? <div className="source-transcript"><p>{value.image_error}</p><HighlightedTranscript text={value.text} quote={quote}/></div>
+        : <div className="source-page-image" title={zoom > 100 ? "Ctrl+scroll to zoom; drag to pan" : "Ctrl+scroll to zoom"}><img draggable={false} src={imageURL} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
+          onError={() => {cache.invalidate(document, page);setError(IMAGE_LOAD_ERROR);}} />
           {highlights.map(region => <div key={region.region_id} className="source-image-region" role="img"
             aria-label={region.origin === 'ocr' ? 'Supporting OCR block' : 'Reviewed source crop'}
             style={{left: `${region.bbox[0] * 100}%`, top: `${region.bbox[1] * 100}%`,
               width: `${(region.bbox[2] - region.bbox[0]) * 100}%`, height: `${(region.bbox[3] - region.bbox[1]) * 100}%`}}/>)}
           </div>}
+      {near && value && !error && !transcript && imageURL && quote && !highlights.length &&
+        <p className="source-region-unavailable">No recorded image region for this passage. Use the transcript to locate the quote.</p>}
       {error && value && <button className="annotation-button" onClick={() => {setError('');setTranscript(true);}}>Read transcript</button>}
     </div>
   </article>;
@@ -90,6 +101,8 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading, d
   evidence: ReviewEvidence | null; point: EvidencePoint | null; loadPage: SourcePageLoader;
   error: string; loading: boolean; divider?: React.ReactNode; onPreview?: () => void;
 }) {
+  const cache = useMemo(() => new SourcePageCache(), [evidence?.revision, evidence?.available, error]);
+  useEffect(() => () => cache.clear(), [cache]);
   const [document, setDocument] = useState('');
   const [active, setActive] = useState('');
   const [page, setPage] = useState(1);
@@ -170,7 +183,8 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading, d
         </div>
         <div className="source-pages-scroll" ref={scroll} data-zoomed={zoom > 100}>
           {pages.map(p => <LazyPage key={`${document}:${p.page_number}`} document={document} page={p.page_number}
-            loader={loadPage} scrollRoot={scroll} onVisible={visible} zoom={zoom}
+            loader={loadPage} cache={cache} scrollRoot={scroll} onVisible={visible} zoom={zoom}
+            referenceId={activeRef?.document_id === document && activeRef.page_number === p.page_number ? activeRef.id : undefined}
             regions={activeRef?.document_id === document && activeRef.page_number === p.page_number ? activeRef.regions || [] : []}
             quote={activeRef?.document_id === document && activeRef.page_number === p.page_number ? activeRef.quote : ''}/>)}
         </div>
