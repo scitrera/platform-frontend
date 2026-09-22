@@ -1238,11 +1238,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "8b87939ed7849afcd5a57aa0502d92834cc47f3a4ba45f9402a608e307dcb093"
+      "sha256": "50984f6dca005547be79cd45f5afed088dead8bf85121ff75416ccf6cfc69a8a"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "76052f9852fb337547f9f67b290053b1207e9d0cf5bde9dbdbcfb2015535ada5"
+      "sha256": "dee7d5f86cb2ea081f571f15f7a759688d25e7ff8a7769ba3a5ccfb7a973dfd0"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1257,8 +1257,16 @@
       "sha256": "8c6d184de2add7ee1c8c85a8f0dbc657035a11d230cd5a6ff42eddb1bd88baee"
     },
     {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/sourcePageCache.test.ts",
+      "sha256": "eb0b95a233b9765af2882dc8764696473f1f4f9caa6242b1a0c4247a4e70a42b"
+    },
+    {
+      "path": "web/src/components/Widgets/AnnotatedMarkdown/sourcePageCache.ts",
+      "sha256": "b0ac0fa7efb469e422bc6c44e8ef1017a8cde44911975c8819d2f5711f3ca876"
+    },
+    {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
-      "sha256": "8e652f203ef5ba7e1f376f83cd6a0319223f587687a802a03efd092921135d93"
+      "sha256": "267f674cf7ec7a051eacc4ad26899b8c46d48e0c9dd7d7e6e003906bdfb8e177"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/useSourcePageNavigation.ts",
