@@ -16,6 +16,11 @@ async function loadIcon(iconName) {
 }
 
 export default function LazyLucideIcon({iconName, ...props}) {
+    // Reset the loaded component when metadata changes, while reusing the cache.
+    return <ResolvedLucideIcon key={iconName} iconName={iconName} {...props}/>;
+}
+
+function ResolvedLucideIcon({iconName, ...props}) {
     // TODO: if icon name ends with jpg/png, etc. then we just render image instead of Lucide icon?!?!
 
     const [IconComponent, setIconComponent] = useState(() =>

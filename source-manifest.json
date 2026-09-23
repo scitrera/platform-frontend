@@ -1206,7 +1206,11 @@
     },
     {
       "path": "web/src/components/UI/LazyLucideIcon.jsx",
-      "sha256": "5703fa87ee2bbb9cf203c7a484304b3861a9b2623593d85c6fadb2f95028f246"
+      "sha256": "2f0b05deb1ce69a7cd486ccca928b9e9323494ec9c16e02da0e4de71d111b9d7"
+    },
+    {
+      "path": "web/src/components/UI/LazyLucideIcon.test.jsx",
+      "sha256": "58744440002926b30cb190d01c5f712417195a8d866b850f595e4fa4fc39c4d6"
     },
     {
       "path": "web/src/components/UI/PoweredByScitrera.jsx",
