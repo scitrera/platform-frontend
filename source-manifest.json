@@ -726,7 +726,7 @@
     },
     {
       "path": "web/e2e/platform.spec.ts",
-      "sha256": "c9755363995eb303b619b5f4383783e4bf119da0e013a87bb4e6c395fe7387bd"
+      "sha256": "c9b832b5ea19f80b84dd60703ccf38b82204e9e0b8e57967c2c6567b9bbe41d9"
     },
     {
       "path": "web/eslint.config.js",
