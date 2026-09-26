@@ -718,7 +718,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "f3c1f37319baa086c438ca935e2f6cca02b834472fbe51b5f0bd5d7199fed07c"
+      "sha256": "3cfcae028c51e99f0f86c66a6a4286e550fdd220d8abbaff91248d556024ece8"
     },
     {
       "path": "web/components.json",
@@ -1482,11 +1482,11 @@
     },
     {
       "path": "web/src/contexts/WebSocketContext.jsx",
-      "sha256": "a494b4b53e3593bd06b79bd06b45215f2347a7edcc26567095dc8f6ce9ed236d"
+      "sha256": "36333ff9e07eb625a08108a5d86d9fd6b509dd8e05fd50ab96cddccaaa7a67b9"
     },
     {
       "path": "web/src/contexts/WebSocketContext.test.jsx",
-      "sha256": "058f2f0269dc4a231189b57aeec356173cfd344feff2f7db91790f6a1b7b8aa7"
+      "sha256": "7756edf3dcaa16883d9b57bc0da2289819649a0814536510cc3f2d64160238b7"
     },
     {
       "path": "web/src/hooks/useAgentTools.tsx",
@@ -1679,6 +1679,14 @@
     {
       "path": "web/src/utils/artifactExtractor.ts",
       "sha256": "744c3a9bd3afb3f278827fa80d4ead34f17fe1355d6de87f81872947044968e3"
+    },
+    {
+      "path": "web/src/utils/authRedirect.js",
+      "sha256": "05d085c5642b6d1378f51e3dda15ef97b7bda132f818a7cb18d31fcbd46006a8"
+    },
+    {
+      "path": "web/src/utils/authRedirect.test.js",
+      "sha256": "53be80f6e75dec344b2b54ac4b362829f0e67cea6978fa3668f7d43645bd4bb7"
     },
     {
       "path": "web/src/utils/defaultWorkspace.test.ts",

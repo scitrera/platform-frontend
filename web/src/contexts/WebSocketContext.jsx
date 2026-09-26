@@ -1,5 +1,6 @@
 import React, {useState, createContext, useCallback, useEffect, useMemo, useRef} from 'react';
 import {io} from 'socket.io-client';
+import {followAuthApplicationRedirect} from '../utils/authRedirect.js';
 import {CONNECTION, CONNECTION_REFUSED, WORKSPACE} from '../constants/WebSocketConstants';
 import {DEBUG_MODE} from '../constants/AppConstants';
 import {useChatState} from "../hooks/useChatState";
@@ -157,10 +158,11 @@ export const WebSocketProvider = ({children}) => {
     const checkAuthentication = useCallback(async () => {
         DEBUG_MODE && console.log('call to checkAuthentication()')
         try {
-            const authCheckUrl = getAuthUrl('/checkz');
+            const authCheckUrl = new URL(getAuthUrl('/checkz'), window.location.origin);
+            authCheckUrl.searchParams.set('rd', window.location.href);
             DEBUG_MODE && console.log('Auth check URL:', authCheckUrl);
 
-            const response = await fetch(authCheckUrl, {
+            const response = await fetch(authCheckUrl.toString(), {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -172,6 +174,7 @@ export const WebSocketProvider = ({children}) => {
                 return false;
             } else if (response.ok) {
                 const authData = await response.json();
+                if (followAuthApplicationRedirect(authData)) return false;
                 useAuthStore.getState().setAuthenticated(true);
                 setIsAuthenticated(true);
                 DEBUG_MODE && console.log('User is authenticated');

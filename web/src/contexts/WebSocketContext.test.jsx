@@ -21,6 +21,7 @@ import {render, waitFor} from '@testing-library/react';
 import {beforeEach, afterEach, describe, expect, it, vi} from 'vitest';
 
 import {io} from 'socket.io-client';
+import * as authRedirect from '../utils/authRedirect.js';
 
 import {WebSocketProvider} from './WebSocketContext.jsx';
 import {createWebSocketTransport} from '../utils/wsTransport.js';
@@ -125,6 +126,18 @@ describe.each([
         window.localStorage.setItem(
             'ws_transport', label.startsWith('websocket') ? 'websocket' : 'socketio',
         );
+    });
+
+    it('navigates a sole-tenant generic entry before opening a backend socket', async () => {
+        window.history.replaceState({}, '', '/');
+        const hint = {auth: 'valid', tenants: [ACME], redirect_url: 'https://acme.example/acme'};
+        const navigate = vi.spyOn(authRedirect, 'followAuthApplicationRedirect').mockReturnValue(true);
+        vi.stubGlobal('fetch', vi.fn(() => checkzOk(hint)));
+        renderProvider();
+        await waitFor(() => expect(navigate).toHaveBeenCalledWith(hint));
+        expect(sockets).toHaveLength(0);
+        const checkURL = new URL(fetch.mock.calls[0][0]);
+        expect(checkURL.searchParams.get('rd')).toBe(window.location.href);
     });
 
     // Contract test for a field auth-go does not emit YET (see the note in

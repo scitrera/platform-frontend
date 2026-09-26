@@ -196,3 +196,13 @@ the environment, then run `npm run deploy --prefix web` from the repository root
 Deployment uploads the existing `dist/`; run `build:cloudflare` first after source,
 configuration or browser-test changes. The GitHub check workflows do not deploy;
 Cloudflare's independently configured push workflow performs publication.
+
+### Shared and dedicated tenant entry points
+
+The shared frontend can connect to tenant backends through `VITE_WS_ORIGIN` and
+`/<tenant>/rfe1-ws`; auth-go remains at `VITE_AUTH_ORIGIN`. A deployment may provide
+an optional `redirect_url` in its signed-in `/checkz` response for a user with one
+tenant at a generic frontend root. The client follows a valid HTTPS hint before
+opening a backend connection. An explicit shared tenant URL (`/tenant/...`)
+remains on the shared frontend, and missing hints retain existing behavior. This
+requires the corresponding auth-go application-URL feature and operator policy.
