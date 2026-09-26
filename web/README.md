@@ -75,10 +75,11 @@ identity, reverse proxying or backend services. Full installation orchestration 
 owned by the separate integration project. Build-time VITE values are public and
 embedded into JS. Never put tokens, private keys, or privileged headers there.
 
-Use `python3 scripts/artifacts.py web` from the repository root after building to
-create an asset archive, matching source archive and dependency notices. The
-version dialog links to https://scitrera.ai. Serve the packaged source archive and
-notices beside the app.
+The Cloudflare build includes license texts and dependency notices beside the app;
+it does not generate or serve a source tarball. The version dialog links to
+https://scitrera.ai for the project's website and source disclosures. For optional
+local release archives, run `python3 scripts/artifacts.py web` from the repository
+root after building. Its source archive stays separate from the served assets.
 Tenant appearance is configured through the authenticated profile's `uiConfig`
 (operator API: `TenantInterface2.set_ui_config_variables`). No image rebuild is
 needed to change these values; reload the client to fetch an updated profile.
@@ -161,10 +162,10 @@ For the existing Cloudflare build-on-push workflow, set these
 | Build variable `NODE_VERSION` | `24.13.0` |
 
 Cloudflare installs web dependencies from its lockfile. `build:cloudflare` then
-installs/builds the vendored messaging spec, builds the frontend, and packages the
-matching source and license disclosures into `dist/`. It requires Python 3.11+
-for the packaging step. No auth/WebSocket build variables are required for the
-existing hosted deployment; optionally set them under **Build variables and
+installs/builds the vendored messaging spec, builds the frontend, and adds license
+texts and dependency notices to `dist/`. It does not generate or include source
+archives. Python 3.11+ is required for release checks and notice generation. No
+auth/WebSocket build variables are required for the existing hosted deployment; optionally set them under **Build variables and
 secrets** to override the committed defaults. Runtime **Variables & Secrets** are
 a separate setting. Existing auth CORS, allowed return URLs and cookies must
 continue to match the app's origin.

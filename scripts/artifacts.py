@@ -9,7 +9,7 @@ import shutil
 import sys
 import tarfile
 from check_release import ROOT, verify
-from notices import collect
+from notices import prepare_assets
 
 def archive(target, entries):
     with target.open('wb') as raw, gzip.GzipFile(filename='', mode='wb', fileobj=raw, mtime=0) as compressed, tarfile.open(fileobj=compressed, mode='w') as out:
@@ -33,12 +33,9 @@ products = [source]
 if component != 'local-agent':
     assets = ROOT / component / 'dist'
     if not (assets / 'index.html').is_file(): raise SystemExit(f'Build {component} first')
-    collect(component)
-    for name in ['LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md']:
-        shutil.copyfile(ROOT / name, assets / name)
-    shutil.copytree(ROOT / 'LICENSES', assets / 'LICENSES', dirs_exist_ok=True)
-    shutil.copyfile(ROOT / 'vendor/messaging-spec/LICENSE', assets / 'LICENSES/messaging-spec-LICENSE')
-    shutil.copyfile(source, assets / 'source.tar.gz')
+    prepare_assets(component)
+    if component != 'web':
+        shutil.copyfile(source, assets / 'source.tar.gz')
     product = output / f'{component}-{version}-assets.tar.gz'
     archive(product, [(str(p.relative_to(assets)), p) for p in sorted(assets.rglob('*')) if p.is_file()])
     products.append(product)

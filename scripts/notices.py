@@ -2,6 +2,7 @@
 """Collect installed npm notices, preserving upstream and declared-license sources."""
 import hashlib
 import json
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,10 +89,24 @@ def collect(component):
     return records
 
 
+def prepare_assets(component):
+    """Stage license disclosures beside built assets without generating archives."""
+    records = collect(component)
+    assets = ROOT / component / 'dist'
+    for name in ['LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md']:
+        shutil.copyfile(ROOT / name, assets / name)
+    shutil.copytree(ROOT / 'LICENSES', assets / 'LICENSES', dirs_exist_ok=True)
+    shutil.copyfile(ROOT / 'vendor/messaging-spec/LICENSE', assets / 'LICENSES/messaging-spec-LICENSE')
+    if component == 'web':
+        # Remove source bundles left by the former web packaging workflow.
+        (assets / 'source.tar.gz').unlink(missing_ok=True)
+    return records
+
+
 if __name__ == '__main__':
     import sys
     for component in sys.argv[1:] or ['web', 'office-addin']:
         if component not in {'web', 'office-addin'}:
             raise SystemExit('Expected web or office-addin')
-        records = collect(component)
+        records = prepare_assets(component)
         print(component, len(records), 'installed package notices collected')

@@ -178,7 +178,7 @@
     },
     {
       "path": "docs/development.md",
-      "sha256": "5863de0fc91ce01167be7c94cea3242a8796aeca4823abdf790a61f62f1a64db"
+      "sha256": "816394356bea4620ed8b5248dbf947c55bbb1740aeaa1737123c7180dc71806f"
     },
     {
       "path": "docs/markdown-annotations.md",
@@ -494,7 +494,7 @@
     },
     {
       "path": "scripts/artifacts.py",
-      "sha256": "ae0e158f48f6068c636cbb26d8b179b750a795b2daaa4d2713e7861bc23b9476"
+      "sha256": "da42e9b2900092fbab3934c58b1ceccea3e3bcb819497b533c3278bef23218a4"
     },
     {
       "path": "scripts/check.py",
@@ -506,7 +506,7 @@
     },
     {
       "path": "scripts/notices.py",
-      "sha256": "bbd9f560521233dce74ab3e413f746b621a3ae355bda296645bcae7f1a4279c5"
+      "sha256": "6ab337da5dd6c83cd93031b5329bec1f0e1451130a9e5e7b54a78ad4f5670a19"
     },
     {
       "path": "scripts/update_manifest.py",
@@ -718,7 +718,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "25e07d71e57765b8ff75c2cad92d18d81600cef87ce7646c7b8a6d77eb4b5781"
+      "sha256": "9d3a8a90e65207c3b4d02bdcf01ec26dec40e418110e77841cbf5d50be5308ac"
     },
     {
       "path": "web/components.json",
@@ -742,7 +742,7 @@
     },
     {
       "path": "web/package.json",
-      "sha256": "0bc34a7a78b5d093dd489f198ec19deb0eb3cb3c86e1b4ef7a0ac9ca088ee9f9"
+      "sha256": "2e8208f5b8e955dabf14816973ebd363140820725dabe74735d46501b1ba9281"
     },
     {
       "path": "web/playwright.config.ts",

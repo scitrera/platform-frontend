@@ -40,11 +40,18 @@ python3 scripts/artifacts.py local-agent
 ```
 
 Artifacts go to ignored `dist/`. Each component's source archive contains the full
-reviewed monorepo source and build instructions. JavaScript asset archives include
-matching `/source.tar.gz`, license map and dependency notices. Serve all these
-files together; the web version dialog links to https://scitrera.ai. Local-agent
-currently has a source artifact; its checked debug binaries are not distributed.
-Artifacts have SHA-256 sidecars. No artifact command contacts deployment services.
+reviewed monorepo source and build instructions. Web asset archives include the
+license map and dependency notices; the web source archive is a separate local
+release artifact and is never copied into served assets. Office asset archives
+retain their matching `/source.tar.gz`. The web version dialog links to
+https://scitrera.ai. Local-agent currently has a source artifact; its checked debug
+binaries are not distributed. Artifacts have SHA-256 sidecars. No artifact command
+contacts deployment services.
+
+`npm run build:cloudflare --prefix web` prepares the app and license notices only;
+it does not run the archive generator. `python3 scripts/notices.py web` can also
+refresh those notices on an existing build and removes any stale `source.tar.gz`
+left in `web/dist/` by the older packaging workflow.
 
 To verify a clean source archive, unpack it into an empty temporary directory,
 repeat the locked installs/builds above, then run the release checker there.
