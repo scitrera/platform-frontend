@@ -718,7 +718,7 @@
     },
     {
       "path": "web/README.md",
-      "sha256": "9d3a8a90e65207c3b4d02bdcf01ec26dec40e418110e77841cbf5d50be5308ac"
+      "sha256": "f3c1f37319baa086c438ca935e2f6cca02b834472fbe51b5f0bd5d7199fed07c"
     },
     {
       "path": "web/components.json",
@@ -1762,7 +1762,7 @@
     },
     {
       "path": "web/vite.config.js",
-      "sha256": "32c3c5134b1a9e7d20736ae11bc9e0e96846b77d4a8b527a622da1c9d57db215"
+      "sha256": "75837826cd6ef73f8a5d23e365c48ac9ab4f7e9d93bdc00a1e112a83dabd374c"
     },
     {
       "path": "web/vitest.config.ts",

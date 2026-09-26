@@ -35,7 +35,7 @@ committed public defaults in `.env.production`; override those in ignored
 | `VITE_WS_TENANT_PATH` | `true`: `/{tenant}/rfe1-ws`; `false`: `/rfe1-ws` |
 | `VITE_WS_TRANSPORT` | `websocket`; optional `socketio` |
 | `VITE_SENTRY_DSN` | Empty disables telemetry; configured telemetry sends no default PII/tracing |
-| `BUILD_REVISION` | Build process variable for the version dialog; default `source` |
+| `BUILD_REVISION` | Optional revision override; otherwise uses `WORKERS_CI_COMMIT_SHA` on Cloudflare, or `source` when unavailable |
 
 `localStorage.ws_transport` is an optional browser override unless the build sets
 `VITE_WS_TRANSPORT`. Both paths require the same authenticated gateway. Native
@@ -160,6 +160,11 @@ For the existing Cloudflare build-on-push workflow, set these
 | Build command | `npm run build:cloudflare` |
 | Deploy command | `npm run deploy` |
 | Build variable `NODE_VERSION` | `24.13.0` |
+
+Cloudflare automatically supplies `WORKERS_CI_COMMIT_SHA` during Workers Builds.
+The frontend uses it for the version dialog, displaying the first eight commit
+characters. `BUILD_REVISION` remains an explicit override for other build systems.
+No manually maintained revision variable is needed on Cloudflare.
 
 Cloudflare installs web dependencies from its lockfile. `build:cloudflare` then
 installs/builds the vendored messaging spec, builds the frontend, and adds license

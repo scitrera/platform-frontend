@@ -29,7 +29,7 @@ export default defineConfig(({mode}) => {
         build: {cssCodeSplit: false, sourcemap: false},
         // Source archives also build: no dependency on a Git checkout or private history.
         define: {
-            __GIT_COMMIT_HASH__: JSON.stringify(process.env.BUILD_REVISION || 'source'),
+            __GIT_COMMIT_HASH__: JSON.stringify(process.env.BUILD_REVISION || process.env.WORKERS_CI_COMMIT_SHA || 'source'),
             __BUILD_TIMESTAMP__: JSON.stringify(process.env.BUILD_TIMESTAMP || new Date().toISOString()),
         },
     };
