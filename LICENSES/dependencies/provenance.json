@@ -1,4 +1,98 @@
 {
+  "@cloudflare/kv-asset-handler@0.5.0": {
+    "file": "LICENSES/dependencies/cloudflare-workers-sdk.txt",
+    "npm_package": "@cloudflare/kv-asset-handler@0.5.0",
+    "sha256": "55ca41b3624d3d3be6d6d16d06232ee32c4d46492b21b41aaec958c37564fa67",
+    "source": "https://raw.githubusercontent.com/cloudflare/workers-sdk/47cf644ab0e22ee2e429f19dd7ca4e84955be59b/LICENSE-MIT ; https://raw.githubusercontent.com/cloudflare/workers-sdk/47cf644ab0e22ee2e429f19dd7ca4e84955be59b/LICENSE-APACHE",
+    "upstream_revision": "47cf644ab0e22ee2e429f19dd7ca4e84955be59b"
+  },
+  "@cloudflare/unenv-preset@2.16.2": {
+    "file": "LICENSES/dependencies/cloudflare-workers-sdk.txt",
+    "npm_package": "@cloudflare/unenv-preset@2.16.2",
+    "sha256": "55ca41b3624d3d3be6d6d16d06232ee32c4d46492b21b41aaec958c37564fa67",
+    "source": "https://raw.githubusercontent.com/cloudflare/workers-sdk/6e7712725698df46db9ec25ac738dd155ff8d39e/LICENSE-MIT ; https://raw.githubusercontent.com/cloudflare/workers-sdk/6e7712725698df46db9ec25ac738dd155ff8d39e/LICENSE-APACHE",
+    "upstream_revision": "6e7712725698df46db9ec25ac738dd155ff8d39e"
+  },
+  "@img/sharp-libvips-darwin-arm64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-darwin-arm64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-darwin-x64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-darwin-x64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-arm64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-arm64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-arm@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-arm@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-ppc64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-ppc64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-riscv64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-riscv64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-s390x@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-s390x@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linux-x64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linux-x64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linuxmusl-arm64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linuxmusl-arm64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
+  "@img/sharp-libvips-linuxmusl-x64@1.3.3": {
+    "file": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+    "license_terms_revision": "090ff9c73c79ab83eea66a010887a0ca8002ec6e",
+    "npm_package": "@img/sharp-libvips-linuxmusl-x64@1.3.3",
+    "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106",
+    "source": "https://raw.githubusercontent.com/lovell/sharp-libvips/6e5971d333377743163edc3ad9e5d0b897abcbc9/THIRD-PARTY-NOTICES.md ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3.LIB ; https://raw.githubusercontent.com/gcc-mirror/gcc/090ff9c73c79ab83eea66a010887a0ca8002ec6e/COPYING3",
+    "upstream_revision": "6e5971d333377743163edc3ad9e5d0b897abcbc9"
+  },
   "@radix-ui/number@1.1.1": {
     "file": "LICENSES/dependencies/_radix-ui_number_1.1.1.txt",
     "npm_package": "@radix-ui/number@1.1.1",
@@ -157,5 +251,12 @@
     "npm_package": "strictdom@1.0.1",
     "sha256": "eec385fa29ca410bf6bdbb5ddd5939af2067f474d3cd6d3fd46a4488656d8cbf",
     "source": "npm tarball README license section"
+  },
+  "wrangler@4.141.0": {
+    "file": "LICENSES/dependencies/cloudflare-workers-sdk.txt",
+    "npm_package": "wrangler@4.141.0",
+    "sha256": "55ca41b3624d3d3be6d6d16d06232ee32c4d46492b21b41aaec958c37564fa67",
+    "source": "https://raw.githubusercontent.com/cloudflare/workers-sdk/8d61ca8ef19a77b2384b24c4b3e2ed0264055f33/LICENSE-MIT ; https://raw.githubusercontent.com/cloudflare/workers-sdk/8d61ca8ef19a77b2384b24c4b3e2ed0264055f33/LICENSE-APACHE",
+    "upstream_revision": "8d61ca8ef19a77b2384b24c4b3e2ed0264055f33"
   }
 }

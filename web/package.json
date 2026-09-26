@@ -10,7 +10,11 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "wrangler deploy",
+    "deploy:dry-run": "wrangler deploy --dry-run",
+    "preview:worker": "wrangler dev --local --ip 127.0.0.1",
+    "build:cloudflare": "npm ci --prefix ../vendor/messaging-spec/typescript && npm run build --prefix ../vendor/messaging-spec/typescript && npm run build && python3 ../scripts/artifacts.py web"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
@@ -70,6 +74,7 @@
     "typescript": "^6.0.2",
     "vite": "^7.2.7",
     "vitest": "^4.1.4",
+    "wrangler": "4.141.0",
     "zustand": "^5.0.12"
   },
   "license": "AGPL-3.0-only",

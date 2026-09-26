@@ -21,13 +21,17 @@ npm run test:e2e --prefix web
 The full lint command retains existing warnings; see ../docs/verification.md.
 Vite compilation and the separate TypeScript check are reported independently.
 Browser tests use Chromium (`cd web && npx playwright install chromium`).
+`test:e2e` rebuilds with synthetic same-origin services and telemetry disabled.
+Rebuild with production settings before deploying after browser tests.
 
-Copy `.env.example` to `.env.local` and set public configuration before building:
+For development, copy `.env.example` to `.env.local`. Production builds load the
+committed public defaults in `.env.production`; override those in ignored
+`.env.production.local` or the build environment. All these values are public:
 
 | Variable | Default / meaning |
 | --- | --- |
-| `VITE_AUTH_ORIGIN` | Empty: same-origin `/api/auth` proxy; otherwise an HTTP(S) origin |
-| `VITE_WS_ORIGIN` | Empty: same-origin gateway; otherwise an HTTP(S) origin, converted to ws(s) |
+| `VITE_AUTH_ORIGIN` | HTTP(S) auth origin; empty uses a same-origin `/api/auth` proxy |
+| `VITE_WS_ORIGIN` | HTTP(S) gateway origin, converted to ws(s); empty uses the same origin |
 | `VITE_WS_TENANT_PATH` | `true`: `/{tenant}/rfe1-ws`; `false`: `/rfe1-ws` |
 | `VITE_WS_TRANSPORT` | `websocket`; optional `socketio` |
 | `VITE_SENTRY_DSN` | Empty disables telemetry; configured telemetry sends no default PII/tracing |
@@ -105,3 +109,84 @@ preview (including when the pointer leaves the image). The zoom selector still
 works; ordinary scrolling and transcript text selection keep their usual behavior.
 The comment margin occupies space only while it contains saved comments or an
 open comment editor. The Add comment toolbar action remains available when empty.
+
+## Cloudflare Worker
+
+`wrangler.toml` retains the original frontend's Worker name
+(`scitrera-app-frontend-v2`), compatibility date (`2025-06-11`) and SPA fallback.
+The only asset configuration addition is `directory = "./dist"`, because the
+standard Vite build already produces everything Wrangler uploads. This uses
+[Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/),
+without requiring the Cloudflare Vite plugin or changing local Vite development.
+
+Install dependencies and build the vendored messaging spec as shown above. For an
+in-place replacement, use the **same Cloudflare account** as the existing Worker.
+The configuration deliberately has no account ID, route or custom-domain
+assignments, matching the original configuration. Keep those deployment settings
+with the existing operator setup. Another installation can override the name with
+`npm run deploy -- --name <worker-name>` from `web/`.
+
+This Worker serves assets only. It does not proxy auth or WebSockets.
+Committed `.env.production` supplies the existing hosted frontend's public auth
+and gateway origins and tenant path routing. It contains no credentials.
+Development and unit tests do not load this production-only file.
+
+Vite loads these settings in order of increasing priority:
+
+1. `.env` and `.env.local` (generic values).
+2. `.env.production` (committed production defaults).
+3. `.env.production.local` (ignored local production overrides).
+4. Environment variables supplied to the build, including Cloudflare build variables.
+
+See [Vite environment loading](https://vite.dev/guide/env-and-mode#env-files).
+Use `.env.production.local`, rather than `.env.local`, to override production
+values locally. For another installation, use its service origins; for a
+same-origin installation, explicitly set both origins to empty strings and
+provide an auth/gateway reverse proxy. Missing origins do not fail compilation:
+the browser falls back to same-origin URLs, which this static Worker cannot serve
+as backend APIs. The production defaults remove that dependency on local files.
+
+These are Vite **build-time** inputs. Worker runtime variables and `.dev.vars`
+do not configure browser JS. Never put credentials in `VITE_*`: they are embedded
+in the public bundle regardless of whether the input file is committed.
+
+For the existing Cloudflare build-on-push workflow, set these
+[Workers Builds settings](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/):
+
+| Setting | Value |
+| --- | --- |
+| Root directory | `web` |
+| Build command | `npm run build:cloudflare` |
+| Deploy command | `npm run deploy` |
+| Build variable `NODE_VERSION` | `24.13.0` |
+
+Cloudflare installs web dependencies from its lockfile. `build:cloudflare` then
+installs/builds the vendored messaging spec, builds the frontend, and packages the
+matching source and license disclosures into `dist/`. It requires Python 3.11+
+for the packaging step. No auth/WebSocket build variables are required for the
+existing hosted deployment; optionally set them under **Build variables and
+secrets** to override the committed defaults. Runtime **Variables & Secrets** are
+a separate setting. Existing auth CORS, allowed return URLs and cookies must
+continue to match the app's origin.
+
+For local preparation, from the repository root after installing web dependencies:
+
+```sh
+npm run build:cloudflare --prefix web
+npm run deploy:dry-run --prefix web
+npm run preview:worker --prefix web
+```
+
+The local Worker preview listens on `http://127.0.0.1:8787` and serves the built
+assets, including deep-link fallback. It supplies no test identity or backend.
+`npm run test:e2e --prefix web` builds its own same-origin synthetic configuration.
+Wrangler state, `.dev.vars*` and `.env.production.local` are ignored and excluded
+from source archives. `.env.production` is included; the release checker allows
+its two approved public origins while continuing to scan for private material.
+
+For a manual deployment, authenticate Wrangler with the existing account (for
+example, `cd web && npx wrangler login`) or supply deployment credentials through
+the environment, then run `npm run deploy --prefix web` from the repository root.
+Deployment uploads the existing `dist/`; run `build:cloudflare` first after source,
+configuration or browser-test changes. The GitHub check workflows do not deploy;
+Cloudflare's independently configured push workflow performs publication.

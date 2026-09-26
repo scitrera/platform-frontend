@@ -22,8 +22,9 @@ python3 scripts/check.py local-agent
 ```
 
 Checks continue to report independent failures, then return nonzero. Full web lint,
-typecheck, tests and build pass. CI runs those checks and does not deploy, publish
-or require a cloud account.
+typecheck, tests and build pass. GitHub CI runs those checks and does not deploy,
+publish or require a cloud account. Cloudflare Builds can separately build/deploy on push;
+see [the web configuration](../web/README.md#cloudflare-worker).
 Office uses only synthetic build IDs in CI and does not install into Office.
 
 After reviewing edits, stage the source paths and update the public file inventory:
@@ -48,7 +49,10 @@ Artifacts have SHA-256 sidecars. No artifact command contacts deployment service
 To verify a clean source archive, unpack it into an empty temporary directory,
 repeat the locked installs/builds above, then run the release checker there.
 Generated files, dependency caches, private histories, source maps, captures,
-storage snapshots, local TLS files and environment files are excluded.
+storage snapshots, local TLS files and local environment overrides are excluded.
+`web/.env.production` contains reviewed public defaults and is included. Browser
+tests rebuild with same-origin services and telemetry disabled, overriding both
+production defaults and local environment files.
 
 Notices are collected from the actual installed npm packages, including a superset
 of development dependencies; the font and icon packages keep their upstream terms.

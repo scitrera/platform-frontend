@@ -18,7 +18,7 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "4d167e21eddd6ba30792df88837983668b88d9120ece512dd08cfa1290e50394"
+      "sha256": "b2ff2a17d67377137b9da993ef3b6d3d8d1e73080de627b85066a7facff131f0"
     },
     {
       "path": ".nvmrc",
@@ -93,6 +93,10 @@
       "sha256": "0e80a2d229d2fd4fc7e8636142ec5d0ff0bc031f14c15b682e2ac01dfd5b5138"
     },
     {
+      "path": "LICENSES/dependencies/cloudflare-workers-sdk.txt",
+      "sha256": "55ca41b3624d3d3be6d6d16d06232ee32c4d46492b21b41aaec958c37564fa67"
+    },
+    {
       "path": "LICENSES/dependencies/data-uri-to-buffer_4.0.1.txt",
       "sha256": "f371518d484954487c52533db5698d3cb17ce594874f7ee16eae00ce1724fcb2"
     },
@@ -110,7 +114,7 @@
     },
     {
       "path": "LICENSES/dependencies/provenance.json",
-      "sha256": "4e55759c51cc31d75fefde8867f42559cc3021d596a4e4d832f257ebadfa4b64"
+      "sha256": "2e366a034099f7a5e99d63e8d036135cd8ee5331efb53cb7a5359575e7373c0b"
     },
     {
       "path": "LICENSES/dependencies/react-force-graph-2d_1.29.1.txt",
@@ -127,6 +131,10 @@
     {
       "path": "LICENSES/dependencies/saxes_6.0.0.txt",
       "sha256": "0fac2374380621b22e6b50451057721a9c52935b02d16d106a9f04897f061d0e"
+    },
+    {
+      "path": "LICENSES/dependencies/sharp-libvips-1.3.3.txt",
+      "sha256": "49aca1978fefa8dfe966f898d4aa33d13b032d57ebe7c4bc0de167072b53f106"
     },
     {
       "path": "LICENSES/dependencies/stackback-V8-notice.txt",
@@ -150,7 +158,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "cb21230380e38d886062538735d46fee57a2bbb213a882b6a04c55d0444e6b51"
+      "sha256": "cd4fb5bf8fb034ed5e8bdfc056964a303e85101ef195f7343e0cbaec4b145655"
     },
     {
       "path": "SECURITY.md",
@@ -170,7 +178,7 @@
     },
     {
       "path": "docs/development.md",
-      "sha256": "9be0c980d1a832aa07216d4f6d41c039f9bf76bab6d9e438fc2309327c0e7b4f"
+      "sha256": "5863de0fc91ce01167be7c94cea3242a8796aeca4823abdf790a61f62f1a64db"
     },
     {
       "path": "docs/markdown-annotations.md",
@@ -494,7 +502,7 @@
     },
     {
       "path": "scripts/check_release.py",
-      "sha256": "cd5a4df657fdb41d811215e19e071497591195bdb53810be59cb1d272c9ea2ea"
+      "sha256": "e182050bd5abee8e259fc3b58bf8df1e38148e7e92211d39ab624e8f692cbd96"
     },
     {
       "path": "scripts/notices.py",
@@ -702,11 +710,15 @@
     },
     {
       "path": "web/.env.example",
-      "sha256": "c4f97c9a73a0b376fee2786f5ce86f0a64287a8143ea8d54564f8b24e06823d6"
+      "sha256": "bfce775bceb7e6e03b63219db67fb4f76a28899bc3825139176308851a728bfd"
+    },
+    {
+      "path": "web/.env.production",
+      "sha256": "ba76807ea3e95327a7d66f2eaeb4a5e10ffbeb4c1081fbe6fd5f58495e9f501d"
     },
     {
       "path": "web/README.md",
-      "sha256": "6aa031ba6cea5866c63840e138481b9755db48e93ad92046946964353ba364ef"
+      "sha256": "25e07d71e57765b8ff75c2cad92d18d81600cef87ce7646c7b8a6d77eb4b5781"
     },
     {
       "path": "web/components.json",
@@ -726,15 +738,15 @@
     },
     {
       "path": "web/package-lock.json",
-      "sha256": "9e76d988cd3f5aba5c07c94e73a17be904942ac62916e69ca389762f3b1ce859"
+      "sha256": "77b4f2b65c3ef819939fbf57b8df0ef56afc2352a4e91526ee17024bb32b4750"
     },
     {
       "path": "web/package.json",
-      "sha256": "be8d4877ee7e328a38e91113ef7358bfa70a92c1735d3535d1a5be41f8b811f6"
+      "sha256": "0bc34a7a78b5d093dd489f198ec19deb0eb3cb3c86e1b4ef7a0ac9ca088ee9f9"
     },
     {
       "path": "web/playwright.config.ts",
-      "sha256": "c8fd74c79b76d9e64d2eb9bea07e6eccb626f614b4c7d001633387d97271152e"
+      "sha256": "d4b27224b1d7d9358733810897d6df18de06f8e7eb9a6bfdb40a505decd8f9e6"
     },
     {
       "path": "web/postcss.config.js",
@@ -1755,6 +1767,10 @@
     {
       "path": "web/vitest.config.ts",
       "sha256": "9f3ccf72de1427c1d5e85b2d5c1576891768dcd0b64a145f03544e4328d2f068"
+    },
+    {
+      "path": "web/wrangler.toml",
+      "sha256": "8bf775db48e00ecd0c3c5f3392ca08b67477203e293b3bcd0af4e45d37340064"
     }
   ]
 }

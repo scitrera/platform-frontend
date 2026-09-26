@@ -21,8 +21,9 @@ npm run dev --prefix web
 ```
 
 Configure an auth-go instance and an authenticated platform gateway as described in
-[web/README.md](web/README.md). The unconfigured frontend never contacts a hosted
-Scitrera auth/backend. It needs real platform services to sign in or chat.
+[web/README.md](web/README.md). Development defaults to same-origin services.
+Production builds use the public hosted service defaults in `web/.env.production`;
+other installations override those origins. The app needs real platform services to sign in or chat.
 
 [Development](docs/development.md), [client contracts](docs/client-contracts.md),
 [verification](docs/verification.md), and [license map](THIRD_PARTY_NOTICES.md).
@@ -35,5 +36,7 @@ First-party web/Office/root code: **AGPL-3.0-only**. Local-agent: **MIT**.
 Messaging spec and Chainlit cursor: **Apache-2.0**. shadcn/ui primitives: **MIT**.
 See LICENSE, NOTICE and THIRD_PARTY_NOTICES.md for exact scope.
 
-No deployment or publication workflow is enabled. Component versions and tag
-prefixes in versions.yaml describe candidate artifacts, not published releases.
+Web supports [Cloudflare Worker deployment](web/README.md#cloudflare-worker),
+including Cloudflare Builds on push. The GitHub check workflows do not deploy or
+publish. Component versions and tag prefixes in versions.yaml describe candidate
+artifacts, not published releases.
