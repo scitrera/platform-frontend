@@ -1,3 +1,4 @@
+import {useAuthStore} from '../../../stores/authStore';
 import React, {useEffect, useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {useSourcePageNavigation} from './useSourcePageNavigation';
 import {SourcePageCache, IMAGE_LOAD_ERROR, type SourcePage, type SourcePageLoader, type SourceRegion} from './sourcePageCache';
@@ -101,7 +102,10 @@ export function SourceEvidencePane({evidence, point, loadPage, error, loading, d
   evidence: ReviewEvidence | null; point: EvidencePoint | null; loadPage: SourcePageLoader;
   error: string; loading: boolean; divider?: React.ReactNode; onPreview?: () => void;
 }) {
-  const cache = useMemo(() => new SourcePageCache(), [evidence?.revision, evidence?.available, error]);
+  const storageOrigin = useAuthStore(state => state.uiConfig.storageOrigin);
+  const tenantId = useAuthStore(state => state.tenantId);
+  const cache = useMemo(() => new SourcePageCache(undefined, storageOrigin),
+    [evidence?.revision, evidence?.available, error, storageOrigin, tenantId]);
   useEffect(() => () => cache.clear(), [cache]);
   const [document, setDocument] = useState('');
   const [active, setActive] = useState('');

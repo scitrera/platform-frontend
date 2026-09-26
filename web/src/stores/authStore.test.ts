@@ -28,6 +28,14 @@ describe('tenant UI configuration', () => {
         expect(useAuthStore.getState().uiConfig).toMatchObject({forcedTheme: null, showThemeToggle: true});
     });
 
+    it('resets a dedicated storage origin when switching to a same-origin tenant', () => {
+        const {setUserProfile} = useAuthStore.getState();
+        setUserProfile(profile('alpha', {storageOrigin: 'https://alpha.example.test'}));
+        expect(useAuthStore.getState().uiConfig.storageOrigin).toBe('https://alpha.example.test');
+        setUserProfile(profile('beta'));
+        expect(useAuthStore.getState().uiConfig.storageOrigin).toBeNull();
+    });
+
     it('does not carry a tenant opt-in into another tenant or retain a removed override', () => {
         const {setUserProfile} = useAuthStore.getState();
         setUserProfile(profile('alpha', {enableWorkProfileSelection: true, workspaceHomedThreads: true}));

@@ -1,4 +1,5 @@
 import React from 'react';
+import {useAuthStore} from '../../../stores/authStore';
 import {act, fireEvent, render, screen, waitFor, within} from '@testing-library/react';
 import {beforeAll, beforeEach, describe, expect, it, vi} from 'vitest';
 import {AnnotatedMarkdown} from './index';
@@ -8,6 +9,7 @@ vi.mock('../../Apps/Chat/SciMarkdown', () => ({SciMarkdown: ({children}: {childr
   <ul>{children.split('\n').filter(line => line.startsWith('* ')).map((line, i) => <li key={i}>{line.slice(2)}</li>)}</ul>}));
 const nearby = new Map<Element, (visible: boolean) => void>();
 beforeEach(() => {
+  useAuthStore.setState(useAuthStore.getInitialState());
   nearby.clear();
   vi.stubGlobal('fetch', vi.fn(async () => ({ok:true, headers:new Headers(),
     blob:async () => new Blob(['synthetic'], {type:'image/png'})})));
@@ -106,6 +108,17 @@ describe('expanded source review', () => {
     await screen.findByRole('img',{name:'Original source, page 1'});
     expect(fetch).toHaveBeenCalledTimes(2);
     unmount();expect(URL.revokeObjectURL).toHaveBeenCalledTimes(3);
+  });
+  it('uses authenticated tenant storage settings and discards cached pages when the tenant or origin changes', async () => {
+    useAuthStore.setState({tenantId:'first',uiConfig:{storageOrigin:'https://first.example.test'}});
+    const p=props();render(<SourceEvidencePane evidence={evidence} point={null} loadPage={p.loadSourcePage} error="" loading={false}/>);
+    await screen.findByRole('img',{name:'Original source, page 1'});
+    expect(fetch).toHaveBeenLastCalledWith('https://first.example.test/storage/tenant/blob/page.png',expect.objectContaining({credentials:'include'}));
+    act(()=>useAuthStore.setState({tenantId:'second',uiConfig:{storageOrigin:'https://second.example.test'}}));
+    await waitFor(()=>expect(p.loadSourcePage).toHaveBeenCalledTimes(2));
+    await screen.findByRole('img',{name:'Original source, page 1'});
+    expect(fetch).toHaveBeenLastCalledWith('https://second.example.test/storage/tenant/blob/page.png',expect.objectContaining({credentials:'include'}));
+    expect(URL.revokeObjectURL).toHaveBeenCalled();
   });
   it('does not show evidence from a different rendered revision', async () => {
     const p=props();render(<AnnotatedMarkdown {...p} documentVersion="new-version"/>);

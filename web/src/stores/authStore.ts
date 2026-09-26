@@ -77,6 +77,8 @@ export interface AccessDenial {
 }
 
 const DEFAULT_UI_CONFIG: Record<string, unknown> = {
+  // Operator-configured tenant storage origin; null retains same-origin hosting.
+  storageOrigin: null,
   showAppsSidebar: false,
   showWorkspacesSidebar: true,
   showAppsLauncher: true,

@@ -10,13 +10,38 @@ export interface LoadedSourcePage {page: SourcePage; image?: Blob; imageError?: 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const IMAGE_LOAD_ERROR = 'The page image could not be loaded. Retry for a fresh link, or use the transcript.';
 
+/** The authenticated tenant profile selects the storage origin, never document content. */
+export function resolveSourceImageURL(imageURL: string, configuredOrigin: unknown): URL {
+  let origin = window.location.origin;
+  if (configuredOrigin != null && configuredOrigin !== '') {
+    if (typeof configuredOrigin !== 'string' || /[\\\s?#*]/.test(configuredOrigin)) {
+      throw new Error('Invalid tenant storage origin');
+    }
+    const configured = new URL(configuredOrigin);
+    if (!['https:', 'http:'].includes(configured.protocol) || configured.username || configured.password ||
+        configured.pathname !== '/' || (window.location.protocol === 'https:' && configured.protocol !== 'https:')) {
+      throw new Error('Invalid tenant storage origin');
+    }
+    origin = configured.origin;
+  }
+  if (/^[\s]|[\\\r\n\t]/.test(imageURL) || imageURL.startsWith('//')) {
+    throw new Error('Invalid source image URL');
+  }
+  const url = new URL(imageURL, origin + '/');
+  if (url.origin !== origin || !url.pathname.startsWith('/storage/') || url.username || url.password || url.hash) {
+    throw new Error('Unexpected source image origin');
+  }
+  return url;
+}
+
 /** Private to one open review/revision. Never writes browser or shared HTTP caches. */
 export class SourcePageCache {
   private entries = new Map<string, {value: LoadedSourcePage; bytes: number; expiresAt: number; timer: ReturnType<typeof setTimeout>}>();
   private pending = new Map<string, {promise: Promise<LoadedSourcePage>; controller: AbortController}>();
   private bytes = 0;
 
-  constructor(private limits = {pages: 16, bytes: 32 * 1024 * 1024, ttlMs: 5 * 60 * 1000}) {}
+  constructor(private limits = {pages: 16, bytes: 32 * 1024 * 1024, ttlMs: 5 * 60 * 1000},
+              private storageOrigin: unknown = null) {}
 
   get(document: string, page: number, loader: SourcePageLoader): Promise<LoadedSourcePage> {
     const key = JSON.stringify([document, page]);
@@ -83,16 +108,13 @@ export class SourcePageCache {
     const {image_url: imageURL, ...page} = source;
     if (!imageURL) return {page};
     try {
-      const url = new URL(imageURL, window.location.href);
-      if (url.origin !== window.location.origin || !url.pathname.startsWith('/storage/') || url.username || url.password) {
-        throw new Error('Unexpected source image origin');
-      }
+      const url = resolveSourceImageURL(imageURL, this.storageOrigin);
       const capability = url.searchParams.get('cap');
       if (!capability) throw new Error('Missing source image capability');
       // The authenticated proxy forwards this header as the edge bearer token.
       // Keep it out of URL rewrites, shared cache keys, and request-line logs.
       url.searchParams.delete('cap');
-      const response = await fetch(url.href, {credentials: 'same-origin', cache: 'no-store',
+      const response = await fetch(url.href, {credentials: url.origin === window.location.origin ? 'same-origin' : 'include', cache: 'no-store',
         headers: {'X-Blob-Capability': capability},
         referrerPolicy: 'no-referrer', redirect: 'error', signal});
       if (!response.ok || Number(response.headers.get('Content-Length')) > MAX_IMAGE_BYTES) {

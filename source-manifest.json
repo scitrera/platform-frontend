@@ -1254,15 +1254,15 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/README.md",
-      "sha256": "4467c779b6cea8a095d4b94daccc5062ace58579dc89522a6b07f4caf5eea3f2"
+      "sha256": "b3887fe540f39ad9ac6c1e88d8d2581cc1dca582e67ae48555665b698a2039e0"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "50984f6dca005547be79cd45f5afed088dead8bf85121ff75416ccf6cfc69a8a"
+      "sha256": "28a18a4014881d6a628acbd34e619fd38eb208b38c1daf8a8f539663fd135ada"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",
-      "sha256": "dee7d5f86cb2ea081f571f15f7a759688d25e7ff8a7769ba3a5ccfb7a973dfd0"
+      "sha256": "4783fba09b93ffead05c3bd8a478fa2138af219276e32e2b3167c4040ea661a0"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/anchors.test.ts",
@@ -1278,11 +1278,11 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/sourcePageCache.test.ts",
-      "sha256": "eb0b95a233b9765af2882dc8764696473f1f4f9caa6242b1a0c4247a4e70a42b"
+      "sha256": "a1c371dff4d411b2f55ba27d2d719247fc1cb261e8ee6c49558c2e120778cfde"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/sourcePageCache.ts",
-      "sha256": "b0ac0fa7efb469e422bc6c44e8ef1017a8cde44911975c8819d2f5711f3ca876"
+      "sha256": "9ae3e8abdf41326e1773bc9ce169615b74c36ee4ca98ae3a8eb68dbcc6dd94a6"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
@@ -1590,11 +1590,11 @@
     },
     {
       "path": "web/src/stores/authStore.test.ts",
-      "sha256": "ef85b8adbcfea8697b3cd6f16bd77db538f26f9dabe7f79adbc9c83277554d82"
+      "sha256": "e58b6da54bbc4d1a3541831c633b6054a4a75c11cc99da1ae004a84a9628d0b6"
     },
     {
       "path": "web/src/stores/authStore.ts",
-      "sha256": "e5824a6a74b7c5312d90ac9d36556d51f0e182488fe740a81b4bb2a5bd2b1ee7"
+      "sha256": "7d9ce7af167e99bd21d6dfff1addc35843e141bdfd11616447dddc53d348a5b1"
     },
     {
       "path": "web/src/stores/chatRailStore.ts",

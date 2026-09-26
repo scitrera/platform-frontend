@@ -17,3 +17,12 @@ zoom, keyboard evidence selection, a resizable divider and mobile pane switching
 References may carry multiple intermediate `via` analysis passages. Transcript
 highlighting is an exact whitespace-normalized unique match; prose locators do
 not imply pixel coordinates. Missing/stale evidence is displayed explicitly.
+
+Source image paths resolve against the authenticated tenant profile's
+`uiConfig.storageOrigin`, falling back to the frontend origin for older or
+same-origin deployments. Cross-origin reads include session cookies and send
+capabilities only in `X-Blob-Capability`; the storage host must allow the exact
+frontend origin with credentialed GET/HEAD CORS and that header. Arbitrary image
+origins, redirects and HTTPS-to-HTTP downgrades are rejected. Cache state is
+cleared when the tenant or configured storage origin changes. No customer
+hostname is compiled into the shared frontend.

@@ -6,8 +6,8 @@ const page = (document_id = 'doc', page_number = 1) => ({document_id, page_numbe
 const response = (size = 100, type = 'image/png') => ({ok: true, headers: new Headers(),
   blob: async () => new Blob([new Uint8Array(size)], {type})});
 const caches: SourcePageCache[] = [];
-const cache = (limits?: {pages: number; bytes: number; ttlMs: number}) => {
-  const c = new SourcePageCache(limits);caches.push(c);return c;
+const cache = (limits?: {pages: number; bytes: number; ttlMs: number}, storageOrigin?: unknown) => {
+  const c = new SourcePageCache(limits, storageOrigin);caches.push(c);return c;
 };
 beforeEach(() => {vi.stubGlobal('fetch', vi.fn(async () => response()));});
 afterEach(() => {caches.splice(0).forEach(c => c.clear());vi.useRealTimers();vi.unstubAllGlobals();});
@@ -21,6 +21,34 @@ describe('private source page cache', () => {
     expect(loader).toHaveBeenCalledOnce();expect(fetch).toHaveBeenCalledOnce();
     expect(fetch).toHaveBeenCalledWith(expect.stringMatching(/\/storage\/example\/blob\/page\.png$/), expect.objectContaining({
       credentials: 'same-origin', cache: 'no-store', headers: {'X-Blob-Capability': 'synthetic'}, redirect: 'error', referrerPolicy: 'no-referrer'}));
+  });
+  it('resolves tenant-relative images against configured storage with cookies and a private capability header', async () => {
+    const c = cache(undefined, 'https://customer.example.test');
+    expect((await c.get('doc', 1, async () => page())).image).toBeDefined();
+    expect(fetch).toHaveBeenCalledWith('https://customer.example.test/storage/example/blob/page.png',
+      expect.objectContaining({credentials: 'include', cache: 'no-store', redirect: 'error',
+        referrerPolicy: 'no-referrer', headers: {'X-Blob-Capability': 'synthetic'}}));
+  });
+  it('allows absolute links only on the configured tenant storage origin', async () => {
+    const c = cache(undefined, 'https://customer.example.test/');
+    expect((await c.get('doc', 1, async () => ({...page(), image_url: 'https://customer.example.test' + page().image_url}))).image).toBeDefined();
+    c.clear();vi.mocked(fetch).mockClear();
+    for (const image_url of ['https://other.example.test' + page().image_url, '//other.example.test' + page().image_url,
+      'https://user:password@customer.example.test' + page().image_url, '/api/other?cap=synthetic']) {
+      expect((await c.get('doc', 1, async () => ({...page(), image_url}))).imageError).toBe(IMAGE_LOAD_ERROR);
+    }
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it.each(['*', 'https://*.example.test', 'https://customer.example.test/path', 'https://user:pass@customer.example.test',
+    'https://customer.example.test?key=x', 'https://customer.example.test#fragment', ' https://customer.example.test',
+    'javascript:alert(1)', true])('fails closed for invalid configured storage origin %s', async origin => {
+    expect((await cache(undefined, origin).get('doc', 1, async () => page())).imageError).toBe(IMAGE_LOAD_ERROR);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it('does not downgrade an HTTPS frontend to HTTP storage', async () => {
+    vi.stubGlobal('window', {location: {origin: 'https://app.example.test', protocol: 'https:'}});
+    expect((await cache(undefined, 'http://customer.example.test').get('doc', 1, async () => page())).imageError).toBe(IMAGE_LOAD_ERROR);
+    expect(fetch).not.toHaveBeenCalled();
   });
   it('expires idle entries and requests fresh authorization', async () => {
     vi.useFakeTimers();
