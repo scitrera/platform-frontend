@@ -174,7 +174,7 @@
     },
     {
       "path": "docs/client-contracts.md",
-      "sha256": "feaef0db9135860c93664413535b21794a9052a7de0d96ed224493753961dbe0"
+      "sha256": "05cb6e87f301351290dc20cb3f375a5631ff20aa8adcbe79f0e810c9ef9e850a"
     },
     {
       "path": "docs/development.md",
@@ -726,7 +726,7 @@
     },
     {
       "path": "web/e2e/platform.spec.ts",
-      "sha256": "c9b832b5ea19f80b84dd60703ccf38b82204e9e0b8e57967c2c6567b9bbe41d9"
+      "sha256": "3e411c4d25c8a85e43b3ba36f05acd6cf4a0b645f707c900fd9a421e32e24497"
     },
     {
       "path": "web/eslint.config.js",
@@ -1282,7 +1282,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/sourcePageCache.ts",
-      "sha256": "9ae3e8abdf41326e1773bc9ce169615b74c36ee4ca98ae3a8eb68dbcc6dd94a6"
+      "sha256": "80162c6bfebceec07425e9fedc47a4ccb8a176b90b361bffd5f8dbd4a2e8db27"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/styles.css",
@@ -1330,7 +1330,11 @@
     },
     {
       "path": "web/src/components/Widgets/FileDownload.jsx",
-      "sha256": "8bc97bc20c7fbacda730f9343833c33df7794a1dbebf4c24b515ecd6d7beac2d"
+      "sha256": "0da3d2e2232d14e5e2ce89b8267e6b24e66f24a043f5186d50e6f591b030e42e"
+    },
+    {
+      "path": "web/src/components/Widgets/FileDownload.test.tsx",
+      "sha256": "bb3cf9446e7907422000d1b8182ca724bacc061f06d96eee1b5c0036872d1dbf"
     },
     {
       "path": "web/src/components/Widgets/FileUpload.jsx",
@@ -1731,6 +1735,14 @@
     {
       "path": "web/src/utils/parseCsv.ts",
       "sha256": "9d09f7fe8ca4f68d9ec7967e4c231fdb1d39672c3f460b0c7f936087d7dd72e0"
+    },
+    {
+      "path": "web/src/utils/storageFetch.test.ts",
+      "sha256": "13d6f5ce8521e32cf80b091e57856e4938e8bdd73d8f05b5ae5c002a85d1f62e"
+    },
+    {
+      "path": "web/src/utils/storageFetch.ts",
+      "sha256": "c178235388c964aa8781175f2ab14f0a63a10103794e48c6d7a44ebd0fee2886"
     },
     {
       "path": "web/src/utils/urlUtils.js",

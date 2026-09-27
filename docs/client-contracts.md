@@ -86,3 +86,20 @@ The version dialog displays eight hexadecimal commit characters without changing
 the underlying revision identity. Frontend builds embed `BUILD_TIMESTAMP`;
 backend images receive the same variable through their Docker build argument.
 The integration builder records each image’s timestamp in its local image record.
+
+## Authenticated blob downloads
+
+FileDownload and source-page images share the tenant blob transport. It resolves
+`/storage/...` against the authenticated profile's `uiConfig.storageOrigin` (or
+the current origin when unset), moves the single `cap` value into
+`X-Blob-Capability`, and includes session cookies. Capability reads reject
+unexpected origins and redirects, use no-referrer and no-store, and never
+choose their trusted origin from document content. Cross-origin hosting needs
+credentialed read CORS for the exact frontend origin and capability header.
+
+Every download click mints fresh authority. Authenticated blobs are fetched before
+saving, including when no custom filename is supplied. A failed fetch leaves the
+metadata and download button available for retry. Changing the document,
+workspace, tenant or storage origin (or closing the widget) cancels pending work;
+late responses cannot start a stale download. Independent presigned storage
+providers retain direct downloads unless a custom filename requires a blob fetch.

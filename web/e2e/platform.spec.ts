@@ -1,4 +1,6 @@
 import {test, expect, type Page, type WebSocketRoute} from '@playwright/test';
+import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
 
 // Synthetic protocol fixtures only. These tests exercise the production bundle
 // in a real browser; they do not authenticate to a deployed backend or Office.
@@ -6,8 +8,9 @@ const tenant = {id: 'demo', name: 'Demo Organization', default_workspace: '_priv
 const workspaces = {private: [{id: '_private', label: 'My workspace', default_app: null}], shared: [{id: 'project', label: 'Synthetic project', default_app: null}], hidden: [], templates: []};
 const makeMessage = (text: string, id = 'saved') => ({schema_version: '1.0', id, role: 'assistant', created_at: '2026-01-01T00:00:00Z', addr: {tenant_id: 'demo', workspace_id: '_private', thread_id: '_default'}, content: [{type: 'text', text}], meta: {}, ref: null});
 
-async function fixture(page: Page, options: {tenants?: object[]; authorized?: boolean; ready?: boolean; history?: boolean; deferHistory?: boolean} = {}) {
+async function fixture(page: Page, options: {tenants?: object[]; authorized?: boolean; ready?: boolean; history?: boolean; deferHistory?: boolean; download?: {origin: string; filename?: string}} = {}) {
   const sent: any[] = [];
+  let downloadMints = 0;
   const sockets: WebSocketRoute[] = [];
   const external: string[] = [];
   const errors: string[] = [];
@@ -24,12 +27,19 @@ async function fixture(page: Page, options: {tenants?: object[]; authorized?: bo
     socket.onMessage(raw => {
       const msg = JSON.parse(String(raw)); sent.push(msg);
       switch (msg.type) {
-        case 'GET_USER_PROFILE': return reply(msg, {id: 'tester', email: 'tester@example.test', name: 'Synthetic Tester', tenant: new URL(socket.url()).searchParams.get('tenant'), tenants: ['demo', 'second'], permissions: {isTenantAdmin: true}, uiConfig: {enableDefaultThreads: true}});
+        case 'GET_USER_PROFILE': return reply(msg, {id: 'tester', email: 'tester@example.test', name: 'Synthetic Tester', tenant: new URL(socket.url()).searchParams.get('tenant'), tenants: ['demo', 'second'], permissions: {isTenantAdmin: true}, uiConfig: {enableDefaultThreads: true, storageOrigin: options.download?.origin}});
         case 'GET_WORKSPACES': return reply(msg, workspaces);
         case 'GET_APPS': return reply(msg, []);
         case 'GET_BACKGROUND_TASKS': case 'CT_LIST': return reply(msg, []);
         case 'CHAT_GET_ACTIVE_TASKS': return reply(msg, {});
-        case 'GET_CHAT_HISTORY': if(options.deferHistory)return; return reply(msg, {threadId: msg.payload.threadId || '_default', messages: options.history ? [makeMessage('Synthetic persisted conversation')] : []});
+        case 'GET_CHAT_HISTORY': {
+          if (options.deferHistory) return;
+          const message = makeMessage('Synthetic document download');
+          if (options.download) (message.content as any[]).push({type: 'dynamic', kind: 'file', payload: {doc_id: 'synthetic-document', filename: options.download.filename}});
+          return reply(msg, {threadId: msg.payload.threadId || '_default', messages: options.download ? [message] : options.history ? [makeMessage('Synthetic persisted conversation')] : []});
+        }
+        case 'FILE_METADATA_GET': return reply(msg, {name: 'report.docx', size: 24});
+        case 'FILE_DOWNLOAD_GET': return reply(msg, {url: options.download!.origin + '/storage/demo/blob/report.docx?cap=synthetic-' + (++downloadMints)});
         case 'ADMIN_RPC_CALL': return socket.send(JSON.stringify({event: 'RPC', id: msg.id, type: 'RPX', payload: {message: 'Synthetic admin service unavailable'}}));
         default: if (msg.id) reply(msg, {});
       }
@@ -180,3 +190,53 @@ test('delayed history preserves a live approval and its scoped decision', async 
   expect(f.sent.find(m => m.type === 'CHAT_MSG_CONTROL').payload.message.content[0].request_id).toBe('late-permission');
   expect(f.errors).toEqual([]);
 });
+
+// A real second HTTP origin exercises credentialed CORS; the blob contents,
+// capability and session are synthetic and never leave loopback.
+for (const crossOrigin of [false, true]) for (const renamed of [false, true]) {
+  test(`file download saves bytes and retries: crossOrigin=${crossOrigin}, renamed=${renamed}`, async ({page, context}) => {
+    const body = 'Synthetic document bytes';
+    const frontendOrigin = 'http://127.0.0.1:4178';
+    const requests: {url: string; capability: string | undefined; cookie: string | undefined}[] = [];
+    const server = createServer((req, res) => {
+      res.setHeader('Access-Control-Allow-Origin', frontendOrigin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Access-Control-Allow-Headers', 'X-Blob-Capability');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.setHeader('Cache-Control', 'no-store');
+      if (req.method === 'OPTIONS') {res.writeHead(204); res.end(); return;}
+      requests.push({url: req.url!, capability: req.headers['x-blob-capability'] as string | undefined, cookie: req.headers.cookie});
+      res.writeHead(requests.length === 1 ? 401 : 200, {'Content-Type': requests.length === 1 ? 'application/json' : 'application/octet-stream'});
+      res.end(requests.length === 1 ? '{"error":"synthetic expired capability"}' : body);
+    });
+    await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
+    const address = server.address() as {port: number};
+    const origin = crossOrigin ? `http://127.0.0.1:${address.port}` : frontendOrigin;
+    try {
+      const f = await fixture(page, {download: {origin, filename: renamed ? 'Summary.docx' : undefined}});
+      if (!crossOrigin) await page.route('**/storage/demo/blob/report.docx*', async route => {
+        const req = route.request();
+        requests.push({url: new URL(req.url()).pathname + new URL(req.url()).search,
+          capability: await req.headerValue('x-blob-capability') ?? undefined, cookie: await req.headerValue('cookie') ?? undefined});
+        await route.fulfill({status: requests.length === 1 ? 401 : 200, contentType: 'application/octet-stream', body: requests.length === 1 ? 'synthetic expired capability' : body});
+      });
+      await context.addCookies([{name: 'synthetic-session', value: 'active', domain: '127.0.0.1', path: '/storage', httpOnly: true, sameSite: 'Lax'}]);
+      await page.goto('/demo/_private');
+      const button = page.getByRole('button', {name: 'Download file'});
+      await button.click();
+      await expect(page.getByRole('alert')).toHaveText('Failed to download file. Try again.');
+      await expect(button).toBeEnabled();
+      const saved = page.waitForEvent('download');
+      await button.click();
+      const download = await saved;
+      expect(download.suggestedFilename()).toBe(renamed ? 'Summary.docx' : 'report.docx');
+      expect(await readFile((await download.path())!, 'utf8')).toBe(body);
+      expect(requests).toEqual([1, 2].map(n => ({url: '/storage/demo/blob/report.docx', capability: `synthetic-${n}`, cookie: 'synthetic-session=active'})));
+      await expect(page.getByRole('alert')).toHaveCount(0);
+      expect(f.external).toEqual([]); expect(f.errors).toEqual([]);
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+    }
+  });
+}

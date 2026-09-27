@@ -1,5 +1,7 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import React, {useState, useCallback, useEffect, useMemo, useRef} from 'react';
 import {useWebSocket} from '../../hooks/useWebSocket.jsx';
+import {useAuthStore} from '@/stores/authStore';
+import {fetchDownloadURL, isTenantBlobURL} from '@/utils/storageFetch';
 import {useWorkspaceStore} from '@/stores/workspaceStore';
 import {formatFileSize, timestampToString} from '../../lib/utils';
 import {FileIcon, Download} from 'lucide-react';
@@ -20,6 +22,19 @@ function FileDownloadInner({
 
     const {sendRpcRequest} = useWebSocket();
     const currentWorkspaceId = useWorkspaceStore(s => s.currentWorkspaceId);
+    const tenantId = useAuthStore(s => s.tenantId);
+    const storageOrigin = useAuthStore(s => s.uiConfig.storageOrigin);
+    const downloadController = useRef(null);
+    useEffect(() => {
+        setError(null);
+        setIsDownloading(false);
+        downloadController.current = null;
+        return () => {
+            downloadController.current?.abort();
+            downloadController.current = null;
+        };
+    }, [docId, currentWorkspaceId, tenantId, storageOrigin]);
+
 
     // Metadata + download-URL minting are shared with DynamicContentList's
     // image renderer via hooks/useDocumentPresignedUrl — single cache + one
@@ -45,66 +60,47 @@ function FileDownloadInner({
     );
 
     const handleDownload = useCallback(async () => {
-        if (!docId || isDownloading) return;
-
+        if (!docId || downloadController.current) return;
+        const controller = new AbortController();
+        downloadController.current = controller;
+        const {signal} = controller;
+        setError(null);
         setIsDownloading(true);
-        onDownloadStart && onDownloadStart(docId);
-
-        // to ensure compatibility with Chrome+ for altDownloadName, we download to a blob
-        // and then handle from there
-        if (altDownloadName) {
-            try {
-                const {url} = await requestDownloadWithRetry(docId, 1);
-
-                // Use fetch + blob approach for reliable filename setting in Chrome
-                // This ensures the download attribute is respected even for remote URLs
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
+        let blobUrl = null;
+        try {
+            onDownloadStart && onDownloadStart(docId);
+            const {url} = await requestDownloadWithRetry(docId, 1, () => !signal.aborted);
+            signal.throwIfAborted();
+            let downloadUrl = url;
+            // Auth-bound blobs need the capability header even without a custom
+            // filename. Keep direct downloads for other signed providers.
+            if (altDownloadName || isTenantBlobURL(url)) {
+                const response = await fetchDownloadURL(url, storageOrigin, signal);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const blob = await response.blob();
-                const blobUrl = URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = altDownloadName || fileMetadata?.name || 'download';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                // Clean up the blob URL to free memory
-                URL.revokeObjectURL(blobUrl);
-
-                setIsDownloading(false);
-                onDownloadComplete && onDownloadComplete(docId);
-            } catch (err) {
-                console.error('Error downloading file:', err);
-                setError('Failed to download file');
-                setIsDownloading(false);
+                signal.throwIfAborted();
+                blobUrl = URL.createObjectURL(blob);
+                downloadUrl = blobUrl;
+            }
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = altDownloadName || fileMetadata?.name || 'download';
+            document.body.appendChild(a);
+            try { a.click(); } finally { a.remove(); }
+            onDownloadComplete && onDownloadComplete(docId);
+        } catch (err) {
+            if (!signal.aborted) {
+                setError('Failed to download file. Try again.');
                 onError && onError(err);
             }
-        } else { // if altDownloadName is not defined, then the classic (simpler) approach seems fine
-            requestDownloadWithRetry(docId, 1)
-                .then(({url}) => {
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = fileMetadata?.name || 'download';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-
-                    setIsDownloading(false);
-                    onDownloadComplete && onDownloadComplete(docId);
-                })
-                .catch((err) => {
-                    console.error('Error getting download URL:', err);
-                    setError('Failed to download file');
-                    setIsDownloading(false);
-                    onError && onError(err);
-                });
+        } finally {
+            if (blobUrl) URL.revokeObjectURL(blobUrl);
+            if (downloadController.current === controller) {
+                downloadController.current = null;
+                setIsDownloading(false);
+            }
         }
-    }, [docId, isDownloading, fileMetadata, altDownloadName, onDownloadStart, onDownloadComplete, onError, requestDownloadWithRetry]);
+    }, [docId, fileMetadata, altDownloadName, storageOrigin, onDownloadStart, onDownloadComplete, onError, requestDownloadWithRetry]);
 
     // --- render ---
     if (isLoading) {
@@ -116,7 +112,7 @@ function FileDownloadInner({
         );
     }
 
-    if (error) {
+    if (error && !fileMetadata) {
         return (
             <div className="bg-white shadow rounded-md p-4 border-l-4 border-red-500">
                 <p className="text-red-500 text-sm">{error}</p>
@@ -134,6 +130,7 @@ function FileDownloadInner({
 
     return (
         <div className="bg-white shadow rounded-md p-4 hover:shadow-md transition-shadow">
+            {error && <p role="alert" className="text-red-500 text-sm mb-2">{error}</p>}
             <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-3">
                     <FileIcon className="w-8 h-8 text-gray-400"/>

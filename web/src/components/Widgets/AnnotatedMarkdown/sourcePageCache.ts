@@ -1,3 +1,5 @@
+import {fetchTenantBlob} from '../../../utils/storageFetch';
+export {resolveStorageURL as resolveSourceImageURL} from '../../../utils/storageFetch';
 export interface SourceRegion {region_id: string; image_sha256: string; bbox: number[]; origin: 'ocr' | 'review_crop'}
 export interface SourcePage {
   document_id: string; page_number: number; text: string;
@@ -9,30 +11,6 @@ export interface LoadedSourcePage {page: SourcePage; image?: Blob; imageError?: 
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 export const IMAGE_LOAD_ERROR = 'The page image could not be loaded. Retry for a fresh link, or use the transcript.';
-
-/** The authenticated tenant profile selects the storage origin, never document content. */
-export function resolveSourceImageURL(imageURL: string, configuredOrigin: unknown): URL {
-  let origin = window.location.origin;
-  if (configuredOrigin != null && configuredOrigin !== '') {
-    if (typeof configuredOrigin !== 'string' || /[\\\s?#*]/.test(configuredOrigin)) {
-      throw new Error('Invalid tenant storage origin');
-    }
-    const configured = new URL(configuredOrigin);
-    if (!['https:', 'http:'].includes(configured.protocol) || configured.username || configured.password ||
-        configured.pathname !== '/' || (window.location.protocol === 'https:' && configured.protocol !== 'https:')) {
-      throw new Error('Invalid tenant storage origin');
-    }
-    origin = configured.origin;
-  }
-  if (/^[\s]|[\\\r\n\t]/.test(imageURL) || imageURL.startsWith('//')) {
-    throw new Error('Invalid source image URL');
-  }
-  const url = new URL(imageURL, origin + '/');
-  if (url.origin !== origin || !url.pathname.startsWith('/storage/') || url.username || url.password || url.hash) {
-    throw new Error('Unexpected source image origin');
-  }
-  return url;
-}
 
 /** Private to one open review/revision. Never writes browser or shared HTTP caches. */
 export class SourcePageCache {
@@ -108,15 +86,7 @@ export class SourcePageCache {
     const {image_url: imageURL, ...page} = source;
     if (!imageURL) return {page};
     try {
-      const url = resolveSourceImageURL(imageURL, this.storageOrigin);
-      const capability = url.searchParams.get('cap');
-      if (!capability) throw new Error('Missing source image capability');
-      // The authenticated proxy forwards this header as the edge bearer token.
-      // Keep it out of URL rewrites, shared cache keys, and request-line logs.
-      url.searchParams.delete('cap');
-      const response = await fetch(url.href, {credentials: url.origin === window.location.origin ? 'same-origin' : 'include', cache: 'no-store',
-        headers: {'X-Blob-Capability': capability},
-        referrerPolicy: 'no-referrer', redirect: 'error', signal});
+      const response = await fetchTenantBlob(imageURL, this.storageOrigin, signal);
       if (!response.ok || Number(response.headers.get('Content-Length')) > MAX_IMAGE_BYTES) {
         throw new Error('Source image request failed');
       }
