@@ -1258,7 +1258,7 @@
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceEvidencePane.tsx",
-      "sha256": "28a18a4014881d6a628acbd34e619fd38eb208b38c1daf8a8f539663fd135ada"
+      "sha256": "f0a1078a32e9956ad22446d9ced0aabdabf03eeceb6d3caa397b321637842b7f"
     },
     {
       "path": "web/src/components/Widgets/AnnotatedMarkdown/SourceReview.test.tsx",

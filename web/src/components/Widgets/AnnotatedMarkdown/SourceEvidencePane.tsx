@@ -84,7 +84,7 @@ function LazyPage({document, page, loader, cache, scrollRoot, quote, regions, re
       {!near ? null : error ? <div role="alert" className="source-page-message">{error}<button className="annotation-button" onClick={() => {cache.invalidate(document, page);setRetry(r => r + 1);}}>Retry page</button></div>
         : !value ? <p className="source-page-message" role="status">Loading page {page}…</p>
         : transcript || !imageURL ? <div className="source-transcript"><p>{value.image_error}</p><HighlightedTranscript text={value.text} quote={quote}/></div>
-        : <div className="source-page-image" title={zoom > 100 ? "Ctrl+scroll to zoom; drag to pan" : "Ctrl+scroll to zoom"}><img draggable={false} src={imageURL} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
+        : <div className="source-page-image"><img draggable={false} src={imageURL} alt={`Original source, page ${page}`} referrerPolicy="no-referrer"
           onError={() => {cache.invalidate(document, page);setError(IMAGE_LOAD_ERROR);}} />
           {highlights.map(region => <div key={region.region_id} className="source-image-region" role="img"
             aria-label={region.origin === 'ocr' ? 'Supporting OCR block' : 'Reviewed source crop'}
